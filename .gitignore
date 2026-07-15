@@ -1,0 +1,28 @@
+# Claude Code local settings
+.claude/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Large pipeline data files — too big for GitHub
+data/clickstream_enwiki_*.tsv.gz
+data/desc2026.xml
+data/article_leads.csv
+data/clickstream_medicine.tsv
+data/clickstream_build.log
+data/phase1_pmids.json
+
+# Pipeline scripts output logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (if added later)
+.env
+secrets.toml
