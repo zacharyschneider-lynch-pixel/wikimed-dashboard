@@ -27,6 +27,17 @@ QUALITY_COLORS = {
 }
 QUALITY_ORDER = ["Stub", "Start", "C", "B", "GA", "FA"]
 
+# ColorBrewer RdBu-6 diverging palette for the attention scatter plot.
+# Red = poor quality (urgent), Blue = good quality (less urgent). Colorblind-safe.
+QUALITY_SCATTER_COLORS = {
+    "Stub":  "#B2182B",
+    "Start": "#EF8A62",
+    "C":     "#FDBF93",
+    "B":     "#92C5DE",
+    "GA":    "#4393C3",
+    "FA":    "#2166AC",
+}
+
 # ColorBrewer Greens (4-class) for importance — sequential, distinct from Blues.
 IMPORTANCE_COLORS = {
     "Low":  "#EDF8E9",
@@ -45,6 +56,16 @@ _SCORE_BUCKETS = [
     (50,  "#FDD0A2", "#333"),
     (0,   "#FFF5EB", "#555"),    # below median
 ]
+
+_EDIT_TYPE_STYLES = {
+    "Expand content":    "background-color:#FEE0D2; color:#99000D; font-weight:600",
+    "Improve citations": "background-color:#FFF3CD; color:#7A5500",
+    "Polish & review":   "background-color:#EDF8E9; color:#1A6B2E",
+    "Maintain / Update": "",
+}
+
+def _edit_type_style(col):
+    return [_EDIT_TYPE_STYLES.get(str(v), "") for v in col]
 
 def _score_style(v):
     """Return CSS string for a single Impact-Need Score value."""
@@ -172,7 +193,7 @@ st.markdown("""
     }
     </style>
     <h1 style="font-size:3.2rem; font-weight:800; margin-top:-2rem; margin-bottom:0.2rem; line-height:1.1;">WikiMed Article Recommender</h1>
-    <p style="font-size:1.05rem; color:#333333; margin-bottom:1.2rem;">Helping WikiMed student editors find the medical articles that need them most. Ranked by impact need, real-time public attention, and clinical relevance.</p>
+    <p style="font-size:1.05rem; color:#333333; margin-bottom:1.2rem;">Helping WikiMed student editors find the WikiProject Medicine articles that need them most — ranked by impact need, real-time public attention, and clinical relevance. All data reflects the ~53,000 articles tagged by <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine" target="_blank">WikiProject Medicine</a>.</p>
 """, unsafe_allow_html=True)
 
 # ── Guard: no data yet ───────────────────────────────────────────────────────
@@ -621,6 +642,8 @@ else:
         styler = styler.background_gradient(
             subset=["wiki_attention_score"], cmap="PuBu", vmin=0, vmax=100, gmap=attention_gmap
         )
+    if "edit_type" in table_df.columns:
+        styler = styler.apply(_edit_type_style, subset=["edit_type"])
 
     st.dataframe(
         styler,
@@ -683,10 +706,10 @@ tab_overview, tab_matrix, tab_attention, tab_equity = st.tabs([
 # ── Tab 1: Score Overview ────────────────────────────────────────────────────
 with tab_overview:
     st.markdown(
-        "**Score Distribution** shows how Impact-Need Scores spread across all articles in the dataset. "
+        "**Score Distribution** shows how Impact-Need Scores spread across all ~53,000 WikiProject Medicine articles. "
         "Most articles cluster near zero — the right tail represents the highest-priority editing targets. "
-        "**Quality Breakdown** shows how many articles fall into each Wikipedia editorial tier; "
-        "Stub and Start together typically account for the majority of the corpus."
+        "**Quality Breakdown** shows how many of those articles fall into each Wikipedia editorial tier; "
+        "Stub and Start together typically account for the majority."
     )
     ov1, ov2 = st.columns(2)
     with ov1:
@@ -800,34 +823,73 @@ with tab_matrix:
 with tab_attention:
     if has_attention:
         st.markdown(
-            "Articles in the **top-right quadrant** score high on both need and current public attention — "
-            "they're being heavily read right now while remaining poorly developed. "
-            "These are the best candidates for immediate editing impact. "
-            "Articles in the **bottom-right** are trending but already well-covered. "
-            "**Top-left** are high-need but not currently in the spotlight."
+            "Each dot is a WikiProject Medicine article. **Color shows quality** — red dots are Stub/Start "
+            "articles with the most room to grow; blue dots are already well-developed. "
+            "Use the quadrant selector below to highlight the articles that matter most for your editing goals."
         )
-        st.subheader("Impact-Need vs. Attention Score")
-        scatter_df = df[df["wiki_attention_score"].notna() & df["impact_need_score"].notna()].copy()
+
+        _Q_OPTIONS = {
+            "All quadrants": None,
+            "🔴 Edit now — high need + high attention": (True, True),
+            "🟡 Hidden gems — high need + low attention": (False, True),
+            "🟢 Well-covered — low need + high attention": (True, False),
+            "⚪ Low priority — low need + low attention": (False, False),
+        }
+        _sel_q_label = st.radio(
+            "Highlight quadrant", list(_Q_OPTIONS.keys()),
+            horizontal=True, key="quadrant_sel", index=0,
+        )
+        _sel_q = _Q_OPTIONS[_sel_q_label]
+
+        st.subheader("Impact-Need vs. Attention Score — WikiProject Medicine articles")
+        _scatter_src = df[df["wiki_attention_score"].notna() & df["impact_need_score"].notna()].copy()
+        _scatter_plot = _scatter_src.sample(min(5000, len(_scatter_src)), random_state=42).copy()
+
+        if _sel_q is not None:
+            _high_att, _high_need = _sel_q
+            _in_q = (
+                ((_scatter_plot["wiki_attention_score"] >= 50) == _high_att) &
+                ((_scatter_plot["impact_need_score"]    >= 50) == _high_need)
+            )
+            _scatter_plot["_color"] = _scatter_plot["quality_class"].where(_in_q, "_other")
+            _cmap = {**QUALITY_SCATTER_COLORS, "_other": "#CCCCCC"}
+            _cat  = {"_color": ["FA", "GA", "B", "C", "Start", "Stub", "_other"]}
+        else:
+            _scatter_plot["_color"] = _scatter_plot["quality_class"]
+            _cmap = QUALITY_SCATTER_COLORS
+            _cat  = {"_color": ["FA", "GA", "B", "C", "Start", "Stub"]}
+
         fig_scatter = px.scatter(
-            scatter_df.sample(min(5000, len(scatter_df)), random_state=42),
+            _scatter_plot,
             x="wiki_attention_score",
             y="impact_need_score",
-            color="quality_class",
-            color_discrete_map=QUALITY_COLORS,
-            category_orders={"quality_class": ["FA", "GA", "B", "C", "Start", "Stub"]},
+            color="_color",
+            color_discrete_map=_cmap,
+            category_orders=_cat,
             labels={
                 "wiki_attention_score": "Attention Score (0–100)",
                 "impact_need_score":    "Impact-Need Score (0–100)",
-                "quality_class":        "Quality",
+                "_color":              "Quality",
             },
             hover_name="title",
-            opacity=0.45,
+            opacity=0.55,
         )
-        fig_scatter.add_vline(x=50, line_dash="dot", line_color="lightgray", line_width=1)
-        fig_scatter.add_hline(y=50, line_dash="dot", line_color="lightgray", line_width=1)
-        fig_scatter.add_annotation(x=95, y=97, text="Edit now →", showarrow=False,
-                                   font=dict(size=11, color="#555"))
-        fig_scatter.update_layout(margin=dict(t=10, b=40))
+        fig_scatter.add_vline(x=50, line_dash="dot", line_color="#AAAAAA", line_width=1.5)
+        fig_scatter.add_hline(y=50, line_dash="dot", line_color="#AAAAAA", line_width=1.5)
+        fig_scatter.add_annotation(x=75, y=97, text="🔴 Edit now", showarrow=False,
+                                   font=dict(size=12, color="#B2182B"))
+        fig_scatter.add_annotation(x=25, y=97, text="🟡 Hidden gems", showarrow=False,
+                                   font=dict(size=12, color="#7A5500"))
+        fig_scatter.add_annotation(x=75, y=3,  text="🟢 Well-covered", showarrow=False,
+                                   font=dict(size=12, color="#2A6B2E"))
+        fig_scatter.add_annotation(x=25, y=3,  text="⚪ Low priority", showarrow=False,
+                                   font=dict(size=12, color="#888888"))
+        fig_scatter.update_layout(
+            margin=dict(t=10, b=40),
+            plot_bgcolor="#F0F0F0",
+            xaxis=dict(range=[0, 100], gridcolor="#E0E0E0", zeroline=False),
+            yaxis=dict(range=[0, 100], gridcolor="#E0E0E0", zeroline=False),
+        )
         st.plotly_chart(fig_scatter, width='stretch')
         st.page_link("pages/Methodology.py", label="📖 How is the Attention Score calculated?")
     else:
