@@ -8,7 +8,7 @@ import os
 from difflib import get_close_matches
 
 st.set_page_config(
-    page_title="WikiMed Article Recommender",
+    page_title="WikiProject Medicine Article Recommender",
     page_icon="🔬",
     layout="wide",
 )
@@ -44,6 +44,16 @@ IMPORTANCE_COLORS = {
     "Mid":  "#74C476",
     "High": "#238B45",
     "Top":  "#00441B",
+}
+
+# Quadrant definitions for the attention scatter selector.
+# Key = label shown in radio; value = (high_attention, high_need) bool pair, or None for "all".
+_Q_OPTIONS = {
+    "All quadrants": None,
+    "🔴 Edit now — high need + high attention": (True, True),
+    "🟡 Hidden gems — high need + low attention": (False, True),
+    "🟢 Well-covered — low need + high attention": (True, False),
+    "⚪ Low priority — low need + low attention": (False, False),
 }
 
 # Custom non-equal score buckets weighted toward the top end.
@@ -214,6 +224,8 @@ if "rare_filter" not in st.session_state:
     st.session_state["rare_filter"] = None
 if "show_onboarding" not in st.session_state:
     st.session_state["show_onboarding"] = True
+if "quadrant_sel" not in st.session_state:
+    st.session_state["quadrant_sel"] = "All quadrants"
 
 has_equity     = "reading_level" in df.columns and "is_rare_disease" in df.columns
 has_attention  = "wiki_attention_score" in df.columns
@@ -439,6 +451,15 @@ if _rd and "is_rare_disease" in filtered.columns:
         (filtered["quality_class"]   == _rd)
     ]
 
+# Quadrant filter — applied when user selects a quadrant in the Attention tab
+_sel_q = _Q_OPTIONS.get(st.session_state.get("quadrant_sel", "All quadrants"))
+if _sel_q is not None and has_attention and "wiki_attention_score" in filtered.columns:
+    _high_att, _high_need = _sel_q
+    filtered = filtered[
+        ((filtered["wiki_attention_score"] >= 50) == _high_att) &
+        ((filtered["impact_need_score"]    >= 50) == _high_need)
+    ]
+
 # ── Summary metric cards ─────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
 n = len(filtered)
@@ -494,6 +515,14 @@ if _rd:
     rc1.info(f"🦓 **Rare disease filter:** {_rd} quality — {n_rare_q:,} rare disease articles in full dataset")
     if rc2.button("✕ Clear", key="clear_rare_filter"):
         st.session_state["rare_filter"] = None
+        st.rerun()
+
+_active_q_label = st.session_state.get("quadrant_sel", "All quadrants")
+if _active_q_label != "All quadrants":
+    qc1, qc2 = st.columns([8, 1])
+    qc1.info(f"⚡ **Quadrant filter:** {_active_q_label}")
+    if qc2.button("✕ Clear", key="clear_quadrant_filter"):
+        st.session_state["quadrant_sel"] = "All quadrants"
         st.rerun()
 
 st.divider()
@@ -738,7 +767,7 @@ with tab_overview:
         )
         st.plotly_chart(fig_density, width='stretch')
     with ov2:
-        st.subheader("Quality Level Breakdown")
+        st.subheader("Quality Level Breakdown — WikiProject Medicine")
         qcounts = (
             df["quality_class"]
             .value_counts()
@@ -758,8 +787,8 @@ with tab_overview:
 # ── Tab 2: Priority Matrix ───────────────────────────────────────────────────
 with tab_matrix:
     st.markdown(
-        "Each cell shows how many articles sit at that combination of **importance** "
-        "(how medically significant the topic is) and **quality** (how complete the article is). "
+        "Each cell shows how many **WikiProject Medicine articles** sit at that combination of "
+        "**importance** (how medically significant the topic is) and **quality** (how complete the article is). "
         "**Top-left cells** (Top/High importance × Stub/Start quality) represent the biggest "
         "unmet need — clinically important topics with very poor coverage."
     )
@@ -828,16 +857,9 @@ with tab_attention:
             "Use the quadrant selector below to highlight the articles that matter most for your editing goals."
         )
 
-        _Q_OPTIONS = {
-            "All quadrants": None,
-            "🔴 Edit now — high need + high attention": (True, True),
-            "🟡 Hidden gems — high need + low attention": (False, True),
-            "🟢 Well-covered — low need + high attention": (True, False),
-            "⚪ Low priority — low need + low attention": (False, False),
-        }
         _sel_q_label = st.radio(
             "Highlight quadrant", list(_Q_OPTIONS.keys()),
-            horizontal=True, key="quadrant_sel", index=0,
+            horizontal=True, key="quadrant_sel",
         )
         _sel_q = _Q_OPTIONS[_sel_q_label]
 
