@@ -725,10 +725,10 @@ else:
 
 # ── Charts ───────────────────────────────────────────────────────────────────
 st.divider()
-tab_overview, tab_matrix, tab_attention, tab_equity = st.tabs([
+tab_attention, tab_overview, tab_matrix, tab_equity = st.tabs([
+    "⚡ Attention",
     "📊 Score Overview",
     "🔥 Priority Matrix",
-    "⚡ Attention",
     "🏥 Health Equity",
 ])
 
