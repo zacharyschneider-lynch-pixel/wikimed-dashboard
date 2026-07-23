@@ -898,14 +898,18 @@ with tab_attention:
         )
         fig_scatter.add_vline(x=50, line_dash="dot", line_color="#AAAAAA", line_width=1.5)
         fig_scatter.add_hline(y=50, line_dash="dot", line_color="#AAAAAA", line_width=1.5)
-        fig_scatter.add_annotation(x=75, y=97, text="🔴 Edit now", showarrow=False,
-                                   font=dict(size=12, color="#B2182B"))
-        fig_scatter.add_annotation(x=25, y=97, text="🟡 Hidden gems", showarrow=False,
-                                   font=dict(size=12, color="#7A5500"))
-        fig_scatter.add_annotation(x=75, y=3,  text="🟢 Well-covered", showarrow=False,
-                                   font=dict(size=12, color="#2A6B2E"))
-        fig_scatter.add_annotation(x=25, y=3,  text="⚪ Low priority", showarrow=False,
-                                   font=dict(size=12, color="#888888"))
+        fig_scatter.add_annotation(x=99, y=98, text="Edit now", showarrow=False,
+                                   xanchor="right", yanchor="top",
+                                   font=dict(size=11, color="#B2182B"))
+        fig_scatter.add_annotation(x=1,  y=98, text="Hidden gems", showarrow=False,
+                                   xanchor="left", yanchor="top",
+                                   font=dict(size=11, color="#7A5500"))
+        fig_scatter.add_annotation(x=99, y=2,  text="Well-covered", showarrow=False,
+                                   xanchor="right", yanchor="bottom",
+                                   font=dict(size=11, color="#2A6B2E"))
+        fig_scatter.add_annotation(x=1,  y=2,  text="Low priority", showarrow=False,
+                                   xanchor="left", yanchor="bottom",
+                                   font=dict(size=11, color="#888888"))
         fig_scatter.update_layout(
             margin=dict(t=10, b=40),
             plot_bgcolor="#F0F0F0",
