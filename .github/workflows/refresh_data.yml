@@ -1,0 +1,64 @@
+name: Refresh WikiMed Attention Data
+
+# Runs on the 1st of every month at 6 AM UTC, or on-demand from the GitHub Actions tab.
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+    inputs:
+      full_refresh:
+        description: 'Also re-run wiki_scraper.py (full refresh — may take 3+ hours)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360    # 6-hour cap; fetch_attention.py typically takes ~2 hours
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── Optional full scrape (manual trigger only) ──────────────────────────
+      - name: Full scrape — re-fetch quality ratings and 12-month pageviews
+        if: github.event.inputs.full_refresh == 'true'
+        run: |
+          rm -f data/wikiproject_medicine.csv
+          python wiki_scraper.py --workers 12
+
+      # ── Monthly refresh — attention signals + scores ─────────────────────────
+      - name: Clear stale attention signals
+        run: rm -f data/attention_signals.csv
+
+      - name: Fetch attention signals (inbound links + 3-month pageviews)
+        run: python fetch_attention.py --workers 8
+
+      - name: Recompute article scores
+        run: python scoring.py
+
+      # ── Commit results ───────────────────────────────────────────────────────
+      - name: Commit and push refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/attention_signals.csv data/scored_articles.csv
+          if [ "${{ github.event.inputs.full_refresh }}" = "true" ]; then
+            git add data/wikiproject_medicine.csv
+          fi
+          git diff --cached --quiet \
+            && echo "No data changes to commit." \
+            || git commit -m "data: auto-refresh WikiMed signals ($(date -u '+%Y-%m-%d'))"
+          git push
