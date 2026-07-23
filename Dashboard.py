@@ -50,10 +50,10 @@ IMPORTANCE_COLORS = {
 # Key = label shown in radio; value = (high_attention, high_need) bool pair, or None for "all".
 _Q_OPTIONS = {
     "All quadrants": None,
-    "Edit now — high need + high attention": (True, True),
-    "Hidden gems — high need + low attention": (False, True),
-    "Well-covered — low need + high attention": (True, False),
-    "Low priority — low need + low attention": (False, False),
+    "Edit now": (True, True),
+    "Hidden gems": (False, True),
+    "Well-covered": (True, False),
+    "Low priority": (False, False),
 }
 
 # Custom non-equal score buckets weighted toward the top end.
