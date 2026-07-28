@@ -87,6 +87,28 @@ def _score_style(v):
     return ""
 
 
+_READING_LEVEL_STYLES = {
+    "≤6 Elementary":    "background-color:#D4EDDA; color:#155724",
+    "7–8 Middle":       "background-color:#D1ECF1; color:#0C5460",
+    "9–12 High School": "background-color:#FFF3CD; color:#856404",
+    "13–16 College":    "background-color:#FFE5D0; color:#7D3C00",
+    "17+ Graduate":     "background-color:#F8D7DA; color:#721C24",
+}
+
+def _reading_level_bucket(v):
+    if pd.isna(v):
+        return "Too short"
+    v = float(v)
+    if v <= 6:   return "≤6 Elementary"
+    if v <= 8:   return "7–8 Middle"
+    if v <= 12:  return "9–12 High School"
+    if v <= 16:  return "13–16 College"
+    return "17+ Graduate"
+
+def _reading_level_style(col):
+    return [_READING_LEVEL_STYLES.get(str(v), "") for v in col]
+
+
 @st.cache_data
 def load_mesh_index(mesh_path="data/desc2026.xml"):
     """Build a lightweight MeSH search index: name → IDs and ID → tree numbers."""
@@ -628,7 +650,7 @@ else:
         "edit_type":          st.column_config.TextColumn("Recommended Action", width="medium"),
         "difficulty":         st.column_config.TextColumn("Difficulty",         width="small"),
         "specialty":          st.column_config.TextColumn("Specialty",          width="medium"),
-        "reading_level":      st.column_config.TextColumn("Reading Level (FK grade)", width="small",
+        "reading_level":      st.column_config.TextColumn("Reading Level", width="medium",
             help="Flesch-Kincaid Grade Level (FKGL) — estimates the U.S. school grade needed to understand the text. Computed from the article's Wikipedia lead section. 'Too short' = lead section under 30 words."),
         "mesh_id":            st.column_config.TextColumn("MeSH ID",            width="small"),
         "mesh_preferred_name": st.column_config.TextColumn("MeSH Term",         width="medium"),
@@ -659,7 +681,7 @@ else:
     if "unique_editors"      in table_df.columns:
         table_df["unique_editors"]      = table_df["unique_editors"].map(lambda x: f"{x:.0f}"      if pd.notna(x) else "")
     if "reading_level"       in table_df.columns:
-        table_df["reading_level"]       = table_df["reading_level"].map(lambda x: f"{x:.1f}"       if pd.notna(x) else "Too short")
+        table_df["reading_level"]       = table_df["reading_level"].map(_reading_level_bucket)
 
     styler = table_df.style
     if impact_gmap is not None:
@@ -673,6 +695,8 @@ else:
         )
     if "edit_type" in table_df.columns:
         styler = styler.apply(_edit_type_style, subset=["edit_type"])
+    if "reading_level" in table_df.columns:
+        styler = styler.apply(_reading_level_style, subset=["reading_level"])
 
     st.dataframe(
         styler,
@@ -762,8 +786,9 @@ with tab_overview:
             xaxis_title="Impact-Need Score (0–100)",
             yaxis_title="Density",
             showlegend=False,
-            xaxis=dict(range=[0, 100]),
-            yaxis=dict(showticklabels=False),
+            plot_bgcolor="#F0F0F0",
+            xaxis=dict(range=[0, 100], gridcolor="#E0E0E0"),
+            yaxis=dict(showticklabels=False, gridcolor="#E0E0E0"),
         )
         st.plotly_chart(fig_density, width='stretch')
     with ov2:
@@ -780,7 +805,7 @@ with tab_overview:
             color="Quality",
             color_discrete_map=QUALITY_COLORS,
         )
-        fig_bar.update_layout(margin=dict(t=10, b=40), showlegend=False)
+        fig_bar.update_layout(margin=dict(t=10, b=40), showlegend=False, plot_bgcolor="#F0F0F0", yaxis=dict(gridcolor="#E0E0E0"))
         st.plotly_chart(fig_bar, width='stretch')
     st.page_link("pages/Methodology.py", label="📖 How is the Impact-Need Score calculated?")
 
@@ -827,6 +852,7 @@ with tab_matrix:
         coloraxis_showscale=False,
         clickmode="event+select",
         dragmode=False,
+        plot_bgcolor="#F0F0F0",
     )
     gap_event = st.plotly_chart(fig_heat, on_select="rerun", key="gap_matrix", use_container_width=True)
     if gap_event and gap_event.selection and gap_event.selection.points:
@@ -894,6 +920,7 @@ with tab_attention:
                 "_color":              "Quality",
             },
             hover_name="title",
+            custom_data=["title"],
             opacity=0.55,
         )
         fig_scatter.add_vline(x=50, line_dash="dot", line_color="#AAAAAA", line_width=1.5)
@@ -913,7 +940,15 @@ with tab_attention:
             xaxis=dict(range=[0, 100], gridcolor="#E0E0E0", zeroline=False),
             yaxis=dict(range=[0, 100], gridcolor="#E0E0E0", zeroline=False),
         )
-        st.plotly_chart(fig_scatter, width='stretch')
+        _att_event = st.plotly_chart(fig_scatter, on_select="rerun", key="attention_scatter", use_container_width=True)
+        if _att_event and _att_event.selection and _att_event.selection.points:
+            _pt = _att_event.selection.points[0]
+            _sel_title = ((_pt.get("customdata") or [None])[0]) or _pt.get("hovertext")
+            if _sel_title:
+                st.link_button(
+                    f"Open in Wikipedia: {_sel_title}",
+                    f"https://en.wikipedia.org/wiki/{_sel_title.replace(' ', '_')}",
+                )
         st.page_link("pages/Methodology.py", label="📖 How is the Attention Score calculated?")
     else:
         st.info(
@@ -978,13 +1013,25 @@ with tab_equity:
             tick_grades = [4, 6, 8, 10, 12, 16, 20, 28]
             fig_rl.update_layout(
                 margin=dict(t=10, b=40),
+                plot_bgcolor="#F0F0F0",
                 xaxis=dict(
                     title="Flesch-Kincaid Grade Level (√ scale)",
                     tickvals=[np.sqrt(g) for g in tick_grades],
                     ticktext=[str(g) for g in tick_grades],
+                    gridcolor="#E0E0E0",
                 ),
+                yaxis=dict(gridcolor="#E0E0E0"),
             )
-            st.plotly_chart(fig_rl, width='stretch')
+            _rl_event = st.plotly_chart(fig_rl, on_select="rerun", key="readability_scatter", use_container_width=True)
+            if _rl_event and _rl_event.selection and _rl_event.selection.points:
+                _pt_rl = _rl_event.selection.points[0]
+                _cd_rl = _pt_rl.get("customdata") or []
+                _sel_title_rl = _cd_rl[1] if len(_cd_rl) > 1 else None
+                if _sel_title_rl:
+                    st.link_button(
+                        f"Open in Wikipedia: {_sel_title_rl}",
+                        f"https://en.wikipedia.org/wiki/{_sel_title_rl.replace(' ', '_')}",
+                    )
         with eq2:
             st.subheader("Rare Disease Coverage by Quality Class")
             st.caption(
@@ -1005,7 +1052,7 @@ with tab_equity:
                     color="Quality",
                     color_discrete_map=QUALITY_COLORS,
                 )
-                fig_rare.update_layout(margin=dict(t=10, b=40), showlegend=False)
+                fig_rare.update_layout(margin=dict(t=10, b=40), showlegend=False, plot_bgcolor="#F0F0F0", yaxis=dict(gridcolor="#E0E0E0"))
                 rare_event = st.plotly_chart(fig_rare, on_select="rerun", key="rare_bar", use_container_width=True)
                 if rare_event and rare_event.selection and rare_event.selection.points:
                     clicked_q = rare_event.selection.points[0].get("x")
