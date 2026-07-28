@@ -937,6 +937,8 @@ with tab_attention:
         fig_scatter.update_layout(
             margin=dict(t=10, b=40),
             plot_bgcolor="#F0F0F0",
+            clickmode="event+select",
+            dragmode=False,
             xaxis=dict(range=[0, 100], gridcolor="#E0E0E0", zeroline=False),
             yaxis=dict(range=[0, 100], gridcolor="#E0E0E0", zeroline=False),
         )
