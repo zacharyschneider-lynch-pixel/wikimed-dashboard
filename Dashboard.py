@@ -1026,3 +1026,9 @@ with tab_equity:
             "then this tab will populate automatically."
         )
 
+st.divider()
+st.caption(
+    "© 2026 Zach Schneider-Lynch, Brown University. "
+    "Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)."
+)
+
