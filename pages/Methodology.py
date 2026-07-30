@@ -222,5 +222,89 @@ of the MeSH hierarchy, not just those with "antibiotic" in the title.
 """)
 
 st.divider()
+
+# ── Cancer Article Identification ─────────────────────────────────────────────
+st.header("🎗️ Cancer Article Identification")
+st.markdown("""
+The [Cancer Dashboard](pages/Cancer_Dashboard.py) identifies oncology-relevant Wikipedia articles
+using three complementary MeSH relationship types from the NLM 2026 descriptor file, plus a
+title-keyword fallback for articles without MeSH tags. Each layer captures a distinct class of
+cancer content that the others would miss.
+""")
+
+st.subheader("Layer 1 — MeSH C04 Neoplasms Tree")
+st.markdown("""
+The NLM MeSH hierarchy places all neoplasm descriptors under tree branch **C04**.
+Any article whose assigned MeSH ID has a tree number beginning with `C04` is directly
+classified as a cancer article. This covers primary tumor types, histological subtypes,
+and cancer-by-site classifications.
+
+- **703 MeSH descriptors** span the full C04 subtree (e.g., C04.588.274 = Lymphoma,
+  C04.557.470 = Carcinoma, C04.626 = Neoplasms by Site)
+- These represent the core oncology corpus — named tumors and malignancies
+""")
+
+st.subheader("Layer 2 — Antineoplastic Drug & Protocol MeSH (PharmacologicalAction links)")
+st.markdown("""
+Cancer drugs like Cisplatin, Rituximab, and Tamoxifen are classified in the MeSH **D-tree**
+by *chemical structure* — not by their clinical use. A Cisplatin article has MeSH ID D002945,
+which sits in `D01.210` (Inorganic Chemicals), not in C04.
+
+However, the MeSH XML encodes a separate relationship — **PharmacologicalAction** — that links
+each drug to the pharmacological role it plays. Cisplatin's entry contains:
+
+```
+PharmacologicalAction → D000970: Antineoplastic Agents
+```
+
+We extract all MeSH descriptor IDs whose tree number falls under `D27.505.954.248`
+(the Antineoplastic Agents pharmacological role subtree), then find every drug in the
+descriptor file that lists one of those IDs as a PharmacologicalAction. This yields
+**268 cancer drug descriptors** — a class of articles that a pure C04 tree search
+would entirely miss.
+
+Antineoplastic protocol entries (E-tree, `E02.319.077` and `E02.183.750`) add 2 more.
+""")
+
+st.subheader("Layer 3 — Hereditary Cancer Syndromes (C16.320.700 subtree)")
+st.markdown("""
+Inherited cancer predisposition syndromes — Lynch syndrome, Li-Fraumeni syndrome, hereditary
+breast and ovarian cancer syndrome (BRCA1/2), Muir-Torre, Birt-Hogg-Dubé, and others — are
+classified under MeSH `C16.320.700` (Neoplastic Syndromes, Hereditary), a branch of the
+C16 Congenital and Hereditary Diseases tree, not C04.
+
+Extracting this subtree adds **25 hereditary cancer syndrome descriptors** that are clinically
+oncology but structurally separated from the main Neoplasms tree.
+""")
+
+st.subheader("Layer 4 — Title Keyword Fallback")
+st.markdown("""
+Approximately 39% of WikiProject Medicine articles have no MeSH ID assigned (see MeSH pipeline
+above). For those, a keyword search over the article title catches obvious cancer content
+not reachable by MeSH:
+
+`cancer · carcinoma · tumor · tumour · malignant · malignancy · leukemia · leukaemia ·
+lymphoma · sarcoma · melanoma · neoplasm · oncology · glioma · blastoma · adenoma ·
+mesothelioma · myeloma · metastasis · metastatic`
+
+This is the least precise layer and most likely to produce false positives, but it is
+necessary to cover the untagged portion of the corpus.
+""")
+
+st.markdown("""
+**Coverage summary by layer:**
+
+| Layer | Source | Descriptors / Articles |
+|---|---|---|
+| MeSH C04 tree | Neoplasms hierarchy | 703 MeSH descriptors |
+| PharmacologicalAction (D27.505.954.248) | Antineoplastic drugs | 268 drug descriptors |
+| Hereditary syndromes (C16.320.700) | Inherited cancer predispositions | 25 descriptors |
+| Title keyword | Untagged article fallback | Variable |
+
+Articles matched by multiple layers are attributed to the highest-confidence source (C04 > MeSH treatment > keyword).
+The match type is visible in the Cancer Dashboard table and can be filtered in the sidebar.
+""")
+
+st.divider()
 st.caption("Data sources: Wikipedia API, WikiProject Medicine categories, NLM MeSH 2026, Wikipedia Clickstream (May 2026), PubMed efetch, BioPortal Annotator, NCBI eSearch, NLM MTI.")
 st.page_link("Dashboard.py", label="← Back to Dashboard")
