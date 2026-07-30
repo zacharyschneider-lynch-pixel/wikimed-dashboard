@@ -74,8 +74,30 @@ _EDIT_TYPE_STYLES = {
     "Maintain / Update": "",
 }
 
+_QUALITY_TABLE_STYLES = {
+    "Stub":  "background-color:#08306B; color:white",
+    "Start": "background-color:#08519C; color:white",
+    "C":     "background-color:#2171B5; color:white",
+    "B":     "background-color:#6BAED6; color:#1C1C1A",
+    "GA":    "background-color:#9ECAE1; color:#1C1C1A",
+    "FA":    "background-color:#DEEBF7; color:#1C1C1A",
+}
+
+_IMPORTANCE_TABLE_STYLES = {
+    "Top":  "background-color:#AD1457; color:white; font-weight:600",
+    "High": "background-color:#6A1B9A; color:white",
+    "Mid":  "background-color:#AB47BC; color:white",
+    "Low":  "background-color:#F3E5F5; color:#4A148C",
+}
+
 def _edit_type_style(col):
     return [_EDIT_TYPE_STYLES.get(str(v), "") for v in col]
+
+def _quality_table_style(col):
+    return [_QUALITY_TABLE_STYLES.get(str(v), "") for v in col]
+
+def _importance_table_style(col):
+    return [_IMPORTANCE_TABLE_STYLES.get(str(v), "") for v in col]
 
 def _score_style(v):
     """Return CSS string for a single Impact-Need Score value."""
@@ -669,6 +691,8 @@ else:
     # Streamlit's canvas renderer ignores Styler.format() so we pre-format directly in table_df.
     impact_gmap    = table_df["impact_need_score"].to_numpy()    if "impact_need_score"   in table_df.columns else None
     attention_gmap = table_df["wiki_attention_score"].to_numpy() if "wiki_attention_score" in table_df.columns else None
+    pageviews_gmap = pd.to_numeric(table_df["pageviews_12mo"], errors="coerce").to_numpy() if "pageviews_12mo" in table_df.columns else None
+    editors_gmap   = pd.to_numeric(table_df["unique_editors"],  errors="coerce").to_numpy() if "unique_editors"  in table_df.columns else None
 
     if "impact_need_score"   in table_df.columns:
         table_df["impact_need_score"]   = table_df["impact_need_score"].map(lambda x: f"{x:.2f}"   if pd.notna(x) else "")
@@ -692,6 +716,18 @@ else:
     if attention_gmap is not None:
         styler = styler.background_gradient(
             subset=["wiki_attention_score"], cmap="PuBu", vmin=0, vmax=100, gmap=attention_gmap
+        )
+    if "quality_class" in table_df.columns:
+        styler = styler.apply(_quality_table_style, subset=["quality_class"])
+    if "importance_label" in table_df.columns:
+        styler = styler.apply(_importance_table_style, subset=["importance_label"])
+    if pageviews_gmap is not None:
+        styler = styler.background_gradient(
+            subset=["pageviews_12mo"], cmap="Blues", gmap=pageviews_gmap
+        )
+    if editors_gmap is not None:
+        styler = styler.background_gradient(
+            subset=["unique_editors"], cmap="Greens", gmap=editors_gmap
         )
     if "edit_type" in table_df.columns:
         styler = styler.apply(_edit_type_style, subset=["edit_type"])
