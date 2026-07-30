@@ -1,0 +1,296 @@
+mesh_id,mesh_name,category
+D000068196,Albumin-Bound Paclitaxel,antineoplastic_drug
+D000068258,Bevacizumab,antineoplastic_drug
+D000068338,Everolimus,antineoplastic_drug
+D000068437,Pemetrexed,antineoplastic_drug
+D000068556,Interferon beta-1a,antineoplastic_drug
+D000068818,Cetuximab,antineoplastic_drug
+D000068877,Imatinib Mesylate,antineoplastic_drug
+D000068878,Trastuzumab,antineoplastic_drug
+D000069283,Rituximab,antineoplastic_drug
+D000069286,Bortezomib,antineoplastic_drug
+D000069287,Capecitabine,antineoplastic_drug
+D000069347,Erlotinib Hydrochloride,antineoplastic_drug
+D000069439,Dasatinib,antineoplastic_drug
+D000069461,Bendamustine Hydrochloride,antineoplastic_drug
+D000069501,Abiraterone Acetate,antineoplastic_drug
+D000069579,Ranibizumab,antineoplastic_drug
+D000069594,Abatacept,antineoplastic_drug
+D000074323,Alemtuzumab,antineoplastic_drug
+D000074324,Ipilimumab,antineoplastic_drug
+D000077143,Docetaxel,antineoplastic_drug
+D000077146,Irinotecan,antineoplastic_drug
+D000077150,Oxaliplatin,antineoplastic_drug
+D000077156,Gefitinib,antineoplastic_drug
+D000077157,Sorafenib,antineoplastic_drug
+D000077190,Interferon alpha-2,antineoplastic_drug
+D000077204,Temozolomide,antineoplastic_drug
+D000077209,Decitabine,antineoplastic_drug
+D000077210,Sunitinib,antineoplastic_drug
+D000077235,Vinorelbine,antineoplastic_drug
+D000077237,Arsenic Trioxide,antineoplastic_drug
+D000077266,Moxifloxacin,antineoplastic_drug
+D000077267,Fulvestrant,antineoplastic_drug
+D000077269,Lenalidomide,antineoplastic_drug
+D000077271,Imiquimod,antineoplastic_drug
+D000077276,Lycopene,antineoplastic_drug
+D000077289,Letrozole,antineoplastic_drug
+D000077332,Artesunate,antineoplastic_drug
+D000077337,Vorinostat,antineoplastic_drug
+D000077341,Lapatinib,antineoplastic_drug
+D000077384,Anastrozole,antineoplastic_drug
+D000077385,Silybin,antineoplastic_drug
+D000077484,Vemurafenib,antineoplastic_drug
+D000077544,Panitumumab,antineoplastic_drug
+D000077546,Roscovitine,antineoplastic_drug
+D000077547,Crizotinib,antineoplastic_drug
+D000077556,Alitretinoin,antineoplastic_drug
+D000077584,2-Methoxyestradiol,antineoplastic_drug
+D000077594,Nivolumab,antineoplastic_drug
+D000077606,Trabectedin,antineoplastic_drug
+D000077609,O-(Chloroacetylcarbamoyl)fumagillol,antineoplastic_drug
+D000077610,Bexarotene,antineoplastic_drug
+D000077704,Tirapazamine,antineoplastic_drug
+D000077716,Afatinib,antineoplastic_drug
+D000077734,Gatifloxacin,antineoplastic_drug
+D000077735,Gemifloxacin,antineoplastic_drug
+D000077767,Panobinostat,antineoplastic_drug
+D000077784,Axitinib,antineoplastic_drug
+D000077863,Homoharringtonine,antineoplastic_drug
+D000077866,Clofarabine,antineoplastic_drug
+D000077868,Atrasentan,antineoplastic_drug
+D000079963,Brentuximab Vedotin,antineoplastic_drug
+D000079982,Gemtuzumab,antineoplastic_drug
+D000080044,Ado-Trastuzumab Emtansine,antineoplastic_drug
+D000080045,Inotuzumab Ozogamicin,antineoplastic_drug
+D000080084,Calicheamicins,antineoplastic_drug
+D000080890,Duocarmycins,antineoplastic_drug
+D000091304,Angiopoietin-Like Protein 1,antineoplastic_drug
+D000093542,Gemcitabine,antineoplastic_drug
+D000096662,Ramucirumab,antineoplastic_drug
+D000097245,Ursolic Acid,antineoplastic_drug
+D000099289,Avapritinib,antineoplastic_drug
+D000175,Acronine,antineoplastic_drug
+D000518,Eflornithine,antineoplastic_drug
+D000616,Aminoglutethimide,antineoplastic_drug
+D000677,Amsacrine,antineoplastic_drug
+D000678,Amygdalin,antineoplastic_drug
+D000816,Aniline Mustard,antineoplastic_drug
+D000876,Anthramycin,antineoplastic_drug
+D000971,Antineoplastic Combined Chemotherapy Protocols,antineoplastic_protocol
+D001215,Asparaginase,antineoplastic_drug
+D001374,Azacitidine,antineoplastic_drug
+D001375,Azaguanine,antineoplastic_drug
+D001377,Azaserine,antineoplastic_drug
+D001379,Azathioprine,antineoplastic_drug
+D001380,Azauridine,antineoplastic_drug
+D001478,Basal Cell Nevus Syndrome,hereditary_cancer_syndrome
+D001761,Bleomycin,antineoplastic_drug
+D001973,Bromodeoxyuridine,antineoplastic_drug
+D002066,Busulfan,antineoplastic_drug
+D002166,Camptothecin,antineoplastic_drug
+D002225,Carbazilquinone,antineoplastic_drug
+D002330,Carmustine,antineoplastic_drug
+D002360,Carubicin,antineoplastic_drug
+D002699,Chlorambucil,antineoplastic_drug
+D002741,Chlorotrianisene,antineoplastic_drug
+D002865,Chromomycins,antineoplastic_drug
+D002937,Cinoxacin,antineoplastic_drug
+D002939,Ciprofloxacin,antineoplastic_drug
+D002945,Cisplatin,antineoplastic_drug
+D003070,Coformycin,antineoplastic_drug
+D003123,"Colorectal Neoplasms, Hereditary Nonpolyposis",hereditary_cancer_syndrome
+D003474,Curcumin,antineoplastic_drug
+D003504,Ancitabine,antineoplastic_drug
+D003520,Cyclophosphamide,antineoplastic_drug
+D003561,Cytarabine,antineoplastic_drug
+D003606,Dacarbazine,antineoplastic_drug
+D003609,Dactinomycin,antineoplastic_drug
+D003630,Daunorubicin,antineoplastic_drug
+D003703,Demecolcine,antineoplastic_drug
+D003907,Dexamethasone,antineoplastic_drug
+D003961,Dianhydrogalactitol,antineoplastic_drug
+D003980,Diazooxonorleucine,antineoplastic_drug
+D004317,Doxorubicin,antineoplastic_drug
+D004416,Dysplastic Nevus Syndrome,hereditary_cancer_syndrome
+D004448,Echinomycin,antineoplastic_drug
+D004611,Ellipticines,antineoplastic_drug
+D004961,Estramustine,antineoplastic_drug
+D004998,Ethiodized Oil,antineoplastic_drug
+D005009,Ethoglucid,antineoplastic_drug
+D005020,Ethyl Methanesulfonate,antineoplastic_drug
+D005047,Etoposide,antineoplastic_drug
+D005097,"Exostoses, Multiple Hereditary",hereditary_cancer_syndrome
+D005467,Floxuridine,antineoplastic_drug
+D005472,Fluorouracil,antineoplastic_drug
+D005485,Flutamide,antineoplastic_drug
+D005573,Formycins,antineoplastic_drug
+D005641,Tegafur,antineoplastic_drug
+D005736,Gardner Syndrome,hereditary_cancer_syndrome
+D005900,Glaucarubin,antineoplastic_drug
+D006048,"Gold Colloid, Radioactive",antineoplastic_drug
+D006144,Guanazole,antineoplastic_drug
+D006223,"Hamartoma Syndrome, Multiple",hereditary_cancer_syndrome
+D006248,Harringtonines,antineoplastic_drug
+D006585,Altretamine,antineoplastic_drug
+D006589,Hexestrol,antineoplastic_drug
+D006918,Hydroxyurea,antineoplastic_drug
+D007069,Ifosfamide,antineoplastic_drug
+D007370,Interferon Type I,antineoplastic_drug
+D007372,Interferons,antineoplastic_drug
+D007376,Interleukin-2,antineoplastic_drug
+D007912,Lentinan,antineoplastic_drug
+D008130,Lomustine,antineoplastic_drug
+D008357,Mannomustine,antineoplastic_drug
+D008453,Maytansine,antineoplastic_drug
+D008466,Mechlorethamine,antineoplastic_drug
+D008524,Medrogestone,antineoplastic_drug
+D008535,Megestrol,antineoplastic_drug
+D008558,Melphalan,antineoplastic_drug
+D008727,Methotrexate,antineoplastic_drug
+D008741,Methyl Methanesulfonate,antineoplastic_drug
+D008776,Methylprednisolone Hemisuccinate,antineoplastic_drug
+D008777,Methyltestosterone,antineoplastic_drug
+D008920,Misonidazole,antineoplastic_drug
+D008926,Plicamycin,antineoplastic_drug
+D008927,Mitobronitol,antineoplastic_drug
+D008935,Mitoguazone,antineoplastic_drug
+D008936,Mitolactol,antineoplastic_drug
+D008937,Mitomycins,antineoplastic_drug
+D008939,Mitotane,antineoplastic_drug
+D008942,Mitoxantrone,antineoplastic_drug
+D009012,Mopidamol,antineoplastic_drug
+D009173,Mycophenolic Acid,antineoplastic_drug
+D009256,Nafoxidine,antineoplastic_drug
+D009268,Nalidixic Acid,antineoplastic_drug
+D009353,Zinostatin,antineoplastic_drug
+D009377,Multiple Endocrine Neoplasia,hereditary_cancer_syndrome
+D009386,"Neoplastic Syndromes, Hereditary",hereditary_cancer_syndrome
+D009396,Wilms Tumor,hereditary_cancer_syndrome
+D009456,Neurofibromatosis 1,hereditary_cancer_syndrome
+D009564,Nitracrine,antineoplastic_drug
+D009588,Nitrogen Mustard Compounds,antineoplastic_drug
+D009621,Nogalamycin,antineoplastic_drug
+D009643,Norfloxacin,antineoplastic_drug
+D009848,Olivomycins,antineoplastic_drug
+D010093,Oxolinic Acid,antineoplastic_drug
+D010142,Pactamycin,antineoplastic_drug
+D010440,Peptichemio,antineoplastic_drug
+D010580,Peutz-Jeghers Syndrome,hereditary_cancer_syndrome
+D010692,Phleomycins,antineoplastic_drug
+D010752,Phosphoramide Mustards,antineoplastic_drug
+D010844,Picibanil,antineoplastic_drug
+D010885,Pipobroman,antineoplastic_drug
+D011033,Podophyllin,antineoplastic_drug
+D011034,Podophyllotoxin,antineoplastic_drug
+D011125,Adenomatous Polyposis Coli,hereditary_cancer_syndrome
+D011160,Porfiromycin,antineoplastic_drug
+D011238,Prednimustine,antineoplastic_drug
+D011239,Prednisolone,antineoplastic_drug
+D011241,Prednisone,antineoplastic_drug
+D011344,Procarbazine,antineoplastic_drug
+D011447,Prospidium,antineoplastic_drug
+D011691,Puromycin,antineoplastic_drug
+D011692,Puromycin Aminonucleoside,antineoplastic_drug
+D011713,Pyran Copolymer,antineoplastic_drug
+D011796,Quinacrine,antineoplastic_drug
+D011929,Razoxane,antineoplastic_drug
+D012566,Sizofiran,antineoplastic_drug
+D012673,Semustine,antineoplastic_drug
+D012787,Showdomycin,antineoplastic_drug
+D013033,Sparsomycin,antineoplastic_drug
+D013308,Streptonigrin,antineoplastic_drug
+D013310,Streptovaricin,antineoplastic_drug
+D013311,Streptozocin,antineoplastic_drug
+D013467,Sulindac,antineoplastic_drug
+D013498,Suramin,antineoplastic_drug
+D013629,Tamoxifen,antineoplastic_drug
+D013713,Teniposide,antineoplastic_drug
+D013720,Tenuazonic Acid,antineoplastic_drug
+D013721,Triethylenephosphoramide,antineoplastic_drug
+D013738,Testolactone,antineoplastic_drug
+D013792,Thalidomide,antineoplastic_drug
+D013852,Thiotepa,antineoplastic_drug
+D013866,Thioguanine,antineoplastic_drug
+D013868,Thioinosine,antineoplastic_drug
+D013994,Tilorone,antineoplastic_drug
+D014127,Toyocamycin,antineoplastic_drug
+D014128,Chromomycin A3,antineoplastic_drug
+D014212,Tretinoin,antineoplastic_drug
+D014228,Triaziquone,antineoplastic_drug
+D014265,Triethylenemelamine,antineoplastic_drug
+D014372,Tubercidin,antineoplastic_drug
+D014402,Tuberous Sclerosis,hereditary_cancer_syndrome
+D014499,Uracil Mustard,antineoplastic_drug
+D014520,Urethane,antineoplastic_drug
+D014747,Vinblastine,antineoplastic_drug
+D014748,Vinca Alkaloids,antineoplastic_drug
+D014750,Vincristine,antineoplastic_drug
+D014751,Vindesine,antineoplastic_drug
+D015092,3-Deazauridine,antineoplastic_drug
+D015122,Mercaptopurine,antineoplastic_drug
+D015242,Ofloxacin,antineoplastic_drug
+D015250,Aclarubicin,antineoplastic_drug
+D015251,Epirubicin,antineoplastic_drug
+D015255,Idarubicin,antineoplastic_drug
+D015282,Octreotide,antineoplastic_drug
+D015365,Enoxacin,antineoplastic_drug
+D015366,Pefloxacin,antineoplastic_drug
+D015376,Nimustine,antineoplastic_drug
+D015649,Pentostatin,antineoplastic_drug
+D015739,Nocodazole,antineoplastic_drug
+D015847,Interleukin-4,antineoplastic_drug
+D015978,Trichosanthin,antineoplastic_drug
+D016190,Carboplatin,antineoplastic_drug
+D016518,Neurofibromatosis 2,hereditary_cancer_syndrome
+D016576,Fleroxacin,antineoplastic_drug
+D016597,Trimetrexate,antineoplastic_drug
+D016685,Mitomycin,antineoplastic_drug
+D016729,Leuprolide,antineoplastic_drug
+D016864,Li-Fraumeni Syndrome,hereditary_cancer_syndrome
+D016899,Interferon-beta,antineoplastic_drug
+D017026,Swainsonine,antineoplastic_drug
+D017239,Paclitaxel,antineoplastic_drug
+D017253,Neurofibromatoses,hereditary_cancer_syndrome
+D017258,Medroxyprogesterone Acetate,antineoplastic_drug
+D017273,Goserelin,antineoplastic_drug
+D017290,Menogaril,antineoplastic_drug
+D017312,Toremifene,antineoplastic_drug
+D017313,Fenretinide,antineoplastic_drug
+D017316,Fadrozole,antineoplastic_drug
+D017323,Dihematoporphyrin Ether,antineoplastic_drug
+D017324,Hematoporphyrin Derivative,antineoplastic_drug
+D017329,Triptorelin Pamoate,antineoplastic_drug
+D017338,Cladribine,antineoplastic_drug
+D017341,Etanidazole,antineoplastic_drug
+D017373,Cyproterone Acetate,antineoplastic_drug
+D017624,WAGR Syndrome,hereditary_cancer_syndrome
+D017663,Peplomycin,antineoplastic_drug
+D017666,Deuterium Oxide,antineoplastic_drug
+D018664,Interleukin-12,antineoplastic_drug
+D018761,Multiple Endocrine Neoplasia Type 1,hereditary_cancer_syndrome
+D018813,Multiple Endocrine Neoplasia Type 2a,hereditary_cancer_syndrome
+D018814,Multiple Endocrine Neoplasia Type 2b,hereditary_cancer_syndrome
+D019290,Megestrol Acetate,antineoplastic_drug
+D019328,Buthionine Sulfoximine,antineoplastic_drug
+D019772,Topotecan,antineoplastic_drug
+D019797,3-Iodobenzylguanidine,antineoplastic_drug
+D019830,Adenosine-5'-(N-ethylcarboxamide),antineoplastic_drug
+D019833,Genistein,antineoplastic_drug
+D020032,Tyrphostins,antineoplastic_drug
+D020123,Sirolimus,antineoplastic_drug
+D024221,Antineoplastic Protocols,antineoplastic_protocol
+D030321,Denys-Drash Syndrome,hereditary_cancer_syndrome
+D043165,Angiostatic Proteins,antineoplastic_drug
+D043168,Angiostatins,antineoplastic_drug
+D043169,Endostatins,antineoplastic_drug
+D053380,Tumor Necrosis Factor Ligand Superfamily Member 15,antineoplastic_drug
+D053683,Oncostatin M,antineoplastic_drug
+D053759,Interleukin-23,antineoplastic_drug
+D055653,Muir-Torre Syndrome,hereditary_cancer_syndrome
+D055847,Lynch Syndrome II,hereditary_cancer_syndrome
+D056604,Grape Seed Extract,antineoplastic_drug
+D058249,Birt-Hogg-Dube Syndrome,hereditary_cancer_syndrome
+D061325,Hereditary Breast and Ovarian Cancer Syndrome,hereditary_cancer_syndrome
+D064704,Levofloxacin,antineoplastic_drug
+D064730,Dexrazoxane,antineoplastic_drug

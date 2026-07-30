@@ -59,28 +59,39 @@ def load_all():
 
 @st.cache_data
 def load_cancer_mesh_ids():
-    path = "data/cancer_mesh_ids.csv"
-    if not os.path.exists(path):
-        return set()
-    return set(pd.read_csv(path)["mesh_id"].dropna().tolist())
+    """Returns (c04_ids, treatment_ids, treatment_categories) where treatment_ids maps mesh_id → category."""
+    c04_ids = set()
+    treatment_map = {}
+    if os.path.exists("data/cancer_mesh_ids.csv"):
+        c04_ids = set(pd.read_csv("data/cancer_mesh_ids.csv")["mesh_id"].dropna().tolist())
+    if os.path.exists("data/cancer_treatment_mesh_ids.csv"):
+        tx = pd.read_csv("data/cancer_treatment_mesh_ids.csv")
+        treatment_map = dict(zip(tx["mesh_id"].astype(str), tx["category"].astype(str)))
+    return c04_ids, treatment_map
 
 
 @st.cache_data
 def get_cancer_df():
     df = load_all()
-    cancer_ids = load_cancer_mesh_ids()
-    mesh_match = (
-        df["mesh_id"].isin(cancer_ids)
-        if "mesh_id" in df.columns
-        else pd.Series(False, index=df.index)
-    )
+    c04_ids, treatment_map = load_cancer_mesh_ids()
+    all_cancer_ids = c04_ids | set(treatment_map.keys())
+
+    mesh_col = df["mesh_id"].astype(str) if "mesh_id" in df.columns else pd.Series("", index=df.index)
+    c04_match       = mesh_col.isin(c04_ids)
+    treatment_match = mesh_col.isin(treatment_map.keys())
+    mesh_match      = c04_match | treatment_match
     kw_match = df["title"].str.lower().str.contains(
         "|".join(_CANCER_KW), regex=True, na=False
     )
     mask = mesh_match | (~mesh_match & kw_match)
     out = df[mask].copy()
-    out["match_type"] = "MeSH C04"
-    out.loc[~mesh_match[mask.values], "match_type"] = "Title keyword"
+
+    # Assign match_type with priority: C04 > treatment MeSH > keyword
+    out["match_type"] = "Title keyword"
+    out.loc[treatment_match[mask.values], "match_type"] = out.loc[
+        treatment_match[mask.values], "mesh_id"
+    ].astype(str).map(treatment_map).fillna("antineoplastic_drug")
+    out.loc[c04_match[mask.values], "match_type"] = "MeSH C04"
     return out, len(df)
 
 
@@ -92,10 +103,13 @@ if not os.path.exists("data/scored_articles.csv"):
 df, n_total = get_cancer_df()
 has_attention = "wiki_attention_score" in df.columns
 
-n_cancer    = len(df)
+n_cancer     = len(df)
 n_stub_start = df["quality_class"].isin(["Stub", "Start"]).sum()
-pct_low     = n_stub_start / n_cancer * 100 if n_cancer else 0
-n_mesh      = (df["match_type"] == "MeSH C04").sum()
+pct_low      = n_stub_start / n_cancer * 100 if n_cancer else 0
+n_c04        = (df["match_type"] == "MeSH C04").sum()
+n_treatment  = df["match_type"].isin(["antineoplastic_drug", "antineoplastic_protocol"]).sum()
+n_hereditary = (df["match_type"] == "hereditary_cancer_syndrome").sum()
+n_keyword    = (df["match_type"] == "Title keyword").sum()
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -105,7 +119,8 @@ st.markdown("""
     <p style="font-size:1.05rem;color:#444;margin-bottom:1.2rem;">
         Oncology-focused view of WikiProject Medicine — identifying the highest-priority
         cancer Wikipedia articles for WikiMed student editors, ranked by public reach and quality gap.
-        Articles matched via the NLM MeSH <strong>C04 Neoplasms</strong> tree (703 descriptors).
+        Articles matched via NLM MeSH: <strong>C04 Neoplasms</strong> tree (703 descriptors),
+        antineoplastic drug PharmacologicalAction links, and hereditary cancer syndromes.
     </p>
 """, unsafe_allow_html=True)
 
@@ -114,7 +129,12 @@ m1, m2, m3, m4 = st.columns(4)
 m1.metric(
     "Cancer-related articles",
     f"{n_cancer:,}",
-    help=f"{n_mesh:,} matched via MeSH C04 tree · {n_cancer - n_mesh:,} via title keywords",
+    help=(
+        f"{n_c04:,} via MeSH C04 (Neoplasms) · "
+        f"{n_treatment:,} via antineoplastic drug/protocol MeSH · "
+        f"{n_hereditary:,} via hereditary cancer syndrome MeSH · "
+        f"{n_keyword:,} via title keyword fallback"
+    ),
 )
 m2.metric(
     "Stub or Start quality",
@@ -244,16 +264,23 @@ with st.sidebar:
     )
     sel_match = st.multiselect(
         "Article identification",
-        ["MeSH C04", "Title keyword"],
-        default=["MeSH C04", "Title keyword"],
-        help="MeSH C04 = confirmed via NLM Neoplasms tree. Title keyword = cancer-related title without a MeSH tag.",
+        ["MeSH C04", "antineoplastic_drug", "antineoplastic_protocol", "hereditary_cancer_syndrome", "Title keyword"],
+        default=["MeSH C04", "antineoplastic_drug", "antineoplastic_protocol", "hereditary_cancer_syndrome", "Title keyword"],
+        help=(
+            "MeSH C04 = NLM Neoplasms tree · "
+            "antineoplastic_drug = cancer drugs via MeSH PharmacologicalAction · "
+            "hereditary_cancer_syndrome = Li-Fraumeni, Lynch, BRCA-related, etc. · "
+            "Title keyword = no MeSH match, keyword fallback"
+        ),
     )
     top_n = st.slider("Show top N articles", 10, 500, 100, 10)
 
     st.divider()
     st.caption(f"**{n_cancer:,}** cancer articles")
-    st.caption(f"**{n_mesh:,}** matched via MeSH C04")
-    st.caption(f"**{n_cancer - n_mesh:,}** matched via title keyword")
+    st.caption(f"**{n_c04:,}** via MeSH C04 (Neoplasms)")
+    st.caption(f"**{n_treatment:,}** via antineoplastic drug MeSH")
+    st.caption(f"**{n_hereditary:,}** via hereditary cancer syndrome MeSH")
+    st.caption(f"**{n_keyword:,}** via title keyword fallback")
     st.divider()
     st.page_link("Dashboard.py", label="← Full WikiMed Dashboard")
 
