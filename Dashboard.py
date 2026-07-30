@@ -75,12 +75,12 @@ _EDIT_TYPE_STYLES = {
 }
 
 _QUALITY_TABLE_STYLES = {
-    "Stub":  "background-color:#08306B; color:white",
-    "Start": "background-color:#08519C; color:white",
-    "C":     "background-color:#2171B5; color:white",
-    "B":     "background-color:#6BAED6; color:#1C1C1A",
-    "GA":    "background-color:#9ECAE1; color:#1C1C1A",
-    "FA":    "background-color:#DEEBF7; color:#1C1C1A",
+    "Stub":  "background-color:#B10026; color:white",
+    "Start": "background-color:#E31A1C; color:white",
+    "C":     "background-color:#FC4E2A; color:white",
+    "B":     "background-color:#FD8D3C; color:#4D0000",
+    "GA":    "background-color:#FEB24C; color:#4D0000",
+    "FA":    "background-color:#FED976; color:#4D0000",
 }
 
 _IMPORTANCE_TABLE_STYLES = {
@@ -691,8 +691,9 @@ else:
     # Streamlit's canvas renderer ignores Styler.format() so we pre-format directly in table_df.
     impact_gmap    = table_df["impact_need_score"].to_numpy()    if "impact_need_score"   in table_df.columns else None
     attention_gmap = table_df["wiki_attention_score"].to_numpy() if "wiki_attention_score" in table_df.columns else None
-    pageviews_gmap = pd.to_numeric(table_df["pageviews_12mo"], errors="coerce").to_numpy() if "pageviews_12mo" in table_df.columns else None
-    editors_gmap   = pd.to_numeric(table_df["unique_editors"],  errors="coerce").to_numpy() if "unique_editors"  in table_df.columns else None
+    pageviews_gmap  = pd.to_numeric(table_df["pageviews_12mo"],  errors="coerce").to_numpy() if "pageviews_12mo"   in table_df.columns else None
+    editors_gmap    = pd.to_numeric(table_df["unique_editors"],  errors="coerce").to_numpy() if "unique_editors"   in table_df.columns else None
+    relevance_gmap  = pd.to_numeric(table_df["medical_relevance"], errors="coerce").to_numpy() if "medical_relevance" in table_df.columns else None
 
     if "impact_need_score"   in table_df.columns:
         table_df["impact_need_score"]   = table_df["impact_need_score"].map(lambda x: f"{x:.2f}"   if pd.notna(x) else "")
@@ -728,6 +729,10 @@ else:
     if editors_gmap is not None:
         styler = styler.background_gradient(
             subset=["unique_editors"], cmap="Greens", gmap=editors_gmap
+        )
+    if relevance_gmap is not None:
+        styler = styler.background_gradient(
+            subset=["medical_relevance"], cmap="YlGn", vmin=0, vmax=10, gmap=relevance_gmap
         )
     if "edit_type" in table_df.columns:
         styler = styler.apply(_edit_type_style, subset=["edit_type"])
