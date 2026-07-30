@@ -44,6 +44,7 @@ _CANCER_KW = [
 def load_all():
     df = pd.read_csv("data/scored_articles.csv")
     df["wiki_url"] = "https://en.wikipedia.org/wiki/" + df["title"]
+    df["hemonc_url"] = "https://hemonc.org/wiki/" + df["title"].str.replace(" ", "_", regex=False)
     df["edit_url"] = (
         "https://en.wikipedia.org/w/index.php?title="
         + df["title"].str.replace(" ", "_", regex=False)
@@ -307,7 +308,7 @@ st.caption(
 if len(filtered) == 0:
     st.warning("No articles match the current filters.")
 else:
-    table_cols = ["rank", "wiki_url", "impact_need_score"]
+    table_cols = ["rank", "wiki_url", "hemonc_url", "impact_need_score"]
     if "wiki_attention_score" in filtered.columns:
         table_cols.append("wiki_attention_score")
     table_cols += ["quality_class", "importance_label", "pageviews_12mo",
@@ -335,6 +336,12 @@ else:
     col_cfg = {
         "rank":                 st.column_config.NumberColumn("Rank", width="small"),
         "wiki_url":             st.column_config.LinkColumn("Article", display_text=r"wiki/(.+)", width="large"),
+        "hemonc_url":           st.column_config.LinkColumn(
+            "HemOnc.org",
+            display_text="HemOnc ↗",
+            width="small",
+            help="Link to the HemOnc.org page for this topic. Best coverage for drugs and regimens — disease articles may not have a page. Requires a free HemOnc.org account.",
+        ),
         "impact_need_score":    st.column_config.TextColumn("Impact-Need Score", width="medium"),
         "wiki_attention_score": st.column_config.TextColumn("Attention Score", width="medium"),
         "quality_class":        st.column_config.TextColumn("Quality", width="small"),
