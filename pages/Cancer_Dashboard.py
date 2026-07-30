@@ -338,9 +338,9 @@ else:
         "wiki_url":             st.column_config.LinkColumn("Article", display_text=r"wiki/(.+)", width="large"),
         "hemonc_url":           st.column_config.LinkColumn(
             "HemOnc.org",
-            display_text="HemOnc ↗",
+            display_text="↗",
             width="small",
-            help="Link to the HemOnc.org page for this topic. Best coverage for drugs and regimens — disease articles may not have a page. Requires a free HemOnc.org account.",
+            help="Open this topic on HemOnc.org. Best coverage for drugs and regimens — broad disease terms may not have a page. Requires a free HemOnc.org account.",
         ),
         "impact_need_score":    st.column_config.TextColumn("Impact-Need Score", width="medium"),
         "wiki_attention_score": st.column_config.TextColumn("Attention Score", width="medium"),
