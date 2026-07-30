@@ -32,12 +32,12 @@ _EDIT_TYPE_STYLES = {
     "Maintain / Update": "",
 }
 _QUALITY_TABLE_STYLES = {
-    "Stub":  "background-color:#B10026; color:white",
-    "Start": "background-color:#E31A1C; color:white",
-    "C":     "background-color:#FC4E2A; color:white",
-    "B":     "background-color:#FD8D3C; color:#4D0000",
-    "GA":    "background-color:#FEB24C; color:#4D0000",
-    "FA":    "background-color:#FED976; color:#4D0000",
+    "Stub":  "background-color:#B2182B; color:white",
+    "Start": "background-color:#EF8A62; color:#4D0000",
+    "C":     "background-color:#FDBF93; color:#4D0000",
+    "B":     "background-color:#92C5DE; color:#003366",
+    "GA":    "background-color:#4393C3; color:white",
+    "FA":    "background-color:#2166AC; color:white",
 }
 _IMPORTANCE_TABLE_STYLES = {
     "Top":  "background-color:#AD1457; color:white; font-weight:600",
