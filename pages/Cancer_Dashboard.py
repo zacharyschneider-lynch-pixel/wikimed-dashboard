@@ -31,6 +31,42 @@ _EDIT_TYPE_STYLES = {
     "Polish & review":   "background-color:#EDF8E9; color:#1A6B2E",
     "Maintain / Update": "",
 }
+_QUALITY_TABLE_STYLES = {
+    "Stub":  "background-color:#B10026; color:white",
+    "Start": "background-color:#E31A1C; color:white",
+    "C":     "background-color:#FC4E2A; color:white",
+    "B":     "background-color:#FD8D3C; color:#4D0000",
+    "GA":    "background-color:#FEB24C; color:#4D0000",
+    "FA":    "background-color:#FED976; color:#4D0000",
+}
+_IMPORTANCE_TABLE_STYLES = {
+    "Top":  "background-color:#AD1457; color:white; font-weight:600",
+    "High": "background-color:#6A1B9A; color:white",
+    "Mid":  "background-color:#AB47BC; color:white",
+    "Low":  "background-color:#F3E5F5; color:#4A148C",
+}
+_SCORE_BUCKETS = [
+    (90, "#7F2704", "white"),
+    (75, "#D94801", "white"),
+    (60, "#F16913", "white"),
+    (45, "#FD8D3C", "#4D0000"),
+    (30, "#FDBE85", "#4D0000"),
+    ( 0, "#FEE6CE", "#4D0000"),
+]
+
+def _score_style(v):
+    if v is None or (isinstance(v, float) and v != v):
+        return ""
+    for threshold, bg, fg in _SCORE_BUCKETS:
+        if v >= threshold:
+            return f"background-color:{bg}; color:{fg}"
+    return ""
+
+def _quality_table_style(col):
+    return [_QUALITY_TABLE_STYLES.get(str(v), "") for v in col]
+
+def _importance_table_style(col):
+    return [_IMPORTANCE_TABLE_STYLES.get(str(v), "") for v in col]
 
 _CANCER_KW = [
     "cancer", "carcinoma", "tumor", "tumour", "malignant", "malignancy",
@@ -317,6 +353,13 @@ else:
         table_cols.append("mesh_id")
 
     table_df = filtered[[c for c in table_cols if c in filtered.columns]].copy()
+
+    # Save numeric arrays for gradient mapping before formatting columns as strings
+    impact_gmap    = pd.to_numeric(table_df["impact_need_score"],    errors="coerce").to_numpy() if "impact_need_score"   in table_df.columns else None
+    attention_gmap = pd.to_numeric(table_df["wiki_attention_score"], errors="coerce").to_numpy() if "wiki_attention_score" in table_df.columns else None
+    pageviews_gmap = pd.to_numeric(table_df["pageviews_12mo"],       errors="coerce").to_numpy() if "pageviews_12mo"       in table_df.columns else None
+    editors_gmap   = pd.to_numeric(table_df["unique_editors"],       errors="coerce").to_numpy() if "unique_editors"       in table_df.columns else None
+
     for col, fmt in [
         ("impact_need_score",    lambda x: f"{x:.2f}" if pd.notna(x) else ""),
         ("wiki_attention_score", lambda x: f"{x:.2f}" if pd.notna(x) else ""),
@@ -327,6 +370,26 @@ else:
             table_df[col] = table_df[col].map(fmt)
 
     styler = table_df.style
+    if impact_gmap is not None:
+        def _apply_score_buckets(col, arr=impact_gmap):
+            return [_score_style(v) for v in arr]
+        styler = styler.apply(_apply_score_buckets, subset=["impact_need_score"])
+    if attention_gmap is not None:
+        styler = styler.background_gradient(
+            subset=["wiki_attention_score"], cmap="PuBu", vmin=0, vmax=100, gmap=attention_gmap
+        )
+    if "quality_class" in table_df.columns:
+        styler = styler.apply(_quality_table_style, subset=["quality_class"])
+    if "importance_label" in table_df.columns:
+        styler = styler.apply(_importance_table_style, subset=["importance_label"])
+    if pageviews_gmap is not None:
+        styler = styler.background_gradient(
+            subset=["pageviews_12mo"], cmap="Blues", gmap=pageviews_gmap
+        )
+    if editors_gmap is not None:
+        styler = styler.background_gradient(
+            subset=["unique_editors"], cmap="Greens", gmap=editors_gmap
+        )
     if "edit_type" in table_df.columns:
         styler = styler.apply(
             lambda col: [_EDIT_TYPE_STYLES.get(str(v), "") for v in col],
