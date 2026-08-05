@@ -245,6 +245,20 @@ st.markdown("""
         color: #333333;
         margin-bottom: 1.2rem;
     }
+    /* Tighten sidebar top so content starts near the top */
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-top: 0.5rem !important;
+    }
+    /* Shrink the collapse/expand toggle button */
+    [data-testid="stSidebarCollapseButton"] button {
+        width: 1.4rem !important;
+        height: 1.4rem !important;
+        padding: 0.1rem !important;
+    }
+    [data-testid="stSidebarCollapseButton"] svg {
+        width: 0.75rem !important;
+        height: 0.75rem !important;
+    }
     </style>
     <h1 style="font-size:3.2rem; font-weight:800; margin-top:-2rem; margin-bottom:0.2rem; line-height:1.1;">WikiMed Article Recommender</h1>
     <p style="font-size:1.05rem; color:#333333; margin-bottom:1.2rem;">Helping WikiMed student editors find the WikiProject Medicine articles that need them most — ranked by impact need, real-time public attention, and clinical relevance. All data reflects the ~53,000 articles tagged by <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine" target="_blank">WikiProject Medicine</a>.</p>

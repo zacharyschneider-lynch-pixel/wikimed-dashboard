@@ -16,6 +16,23 @@ st.set_page_config(
     layout="wide",
 )
 
+st.markdown("""
+    <style>
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-top: 0.5rem !important;
+    }
+    [data-testid="stSidebarCollapseButton"] button {
+        width: 1.4rem !important;
+        height: 1.4rem !important;
+        padding: 0.1rem !important;
+    }
+    [data-testid="stSidebarCollapseButton"] svg {
+        width: 0.75rem !important;
+        height: 0.75rem !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 QUALITY_COLORS = {
     "Stub": "#08306B", "Start": "#08519C", "C": "#2171B5",
     "B": "#6BAED6", "GA": "#9ECAE1", "FA": "#DEEBF7",
