@@ -330,7 +330,7 @@ with st.sidebar:
     st.caption(f"**{n_hereditary:,}** via hereditary cancer syndrome MeSH")
     st.caption(f"**{n_keyword:,}** via title keyword fallback")
     st.divider()
-    st.page_link("Dashboard.py", label="← Full WikiMed Dashboard")
+    st.page_link("pages/Home.py", label="← Full WikiMed Dashboard")
 
 # ── Apply sidebar filters ─────────────────────────────────────────────────────
 filtered = df.copy()
