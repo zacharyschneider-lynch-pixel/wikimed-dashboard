@@ -13,6 +13,10 @@ st.set_page_config(
     layout="wide",
 )
 
+# Promote any pending mesh_id value before the text_input widget renders
+if "_mesh_id_pending" in st.session_state:
+    st.session_state["mesh_id_input"] = st.session_state.pop("_mesh_id_pending")
+
 DATA_PATH = "data/scored_articles.csv"
 
 # ColorBrewer Blues (6-class), dark→light maps Stub→FA so the most urgent
@@ -406,7 +410,7 @@ with st.sidebar:
         )
         if sel_mesh_id.strip():
             if st.button("✕ Clear MeSH ID filter", key="clear_mesh_id"):
-                st.session_state["mesh_id_input"] = ""
+                st.session_state["_mesh_id_pending"] = ""
                 st.rerun()
     else:
         sel_mesh_id = ""
@@ -799,7 +803,7 @@ else:
         with brow2:
             st.write("&nbsp;", unsafe_allow_html=True)
             if st.button("Browse all →", disabled=not picked_id, use_container_width=True):
-                st.session_state["mesh_id_input"] = picked_id
+                st.session_state["_mesh_id_pending"] = picked_id
                 st.rerun()
 
 # ── Charts ───────────────────────────────────────────────────────────────────
