@@ -17,6 +17,13 @@ st.set_page_config(
 if "_mesh_id_pending" in st.session_state:
     st.session_state["mesh_id_input"] = st.session_state.pop("_mesh_id_pending")
 
+pg = st.navigation([
+    st.Page("Dashboard.py",                    title="WikiMed Dashboard",  icon="🔬", default=True),
+    st.Page("pages/Cancer_Dashboard.py",       title="Cancer Dashboard",   icon="🎗️"),
+    st.Page("pages/Methodology.py",            title="Methodology",        icon="📖"),
+])
+pg.run()
+
 DATA_PATH = "data/scored_articles.csv"
 
 # ColorBrewer Blues (6-class), dark→light maps Stub→FA so the most urgent

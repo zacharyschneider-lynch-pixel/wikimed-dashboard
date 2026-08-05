@@ -1,6 +1,5 @@
 import streamlit as st
 
-st.set_page_config(page_title="Methodology — WikiMed Article Recommender", page_icon="📖", layout="wide")
 
 st.title("How Scores Are Calculated")
 st.caption("WikiMed Article Dashboard — scoring methodology")

@@ -10,12 +10,6 @@ import plotly.graph_objects as go
 import numpy as np
 import os
 
-st.set_page_config(
-    page_title="Cancer Articles — WikiMed Recommender",
-    page_icon="🎗️",
-    layout="wide",
-)
-
 st.markdown("""
     <style>
     section[data-testid="stSidebar"] > div:first-child {
