@@ -369,12 +369,24 @@ with st.sidebar:
         sel_specialty = []
 
     # Medical relevance filter
+    st.divider()
+    st.subheader("Medical Relevance")
+    if "mesh_id" in df.columns:
+        sel_require_mesh = st.checkbox(
+            "Require MeSH assignment", value=True,
+            help="Only show articles that were successfully matched to an NLM MeSH descriptor. "
+                 "This is the most reliable way to exclude non-clinical articles (e.g. 'eye chart', 'hospital gown') "
+                 "that score high on pageviews but aren't medical topics."
+        )
+    else:
+        sel_require_mesh = False
     if has_tfidf:
-        st.divider()
-        st.subheader("Medical Relevance")
         min_med_rel = st.slider(
-            "Min medical relevance (1–10)", 1, 10, 1,
-            help="Filter to articles scoring at least this value. Higher = more purely clinical content."
+            "Min medical relevance score (1–10)", 1, 10, 3,
+            help="TF-IDF overlap with the NLM MeSH 2026 vocabulary. "
+                 "Score of 1 = minimal clinical language; 10 = densely clinical. "
+                 "Default of 3 filters out articles that happen to mention a few medical words "
+                 "but aren't genuinely about a clinical topic."
         )
     else:
         min_med_rel = 0
@@ -408,6 +420,18 @@ with st.sidebar:
                 st.rerun()
     else:
         sel_mesh_id = ""
+
+    # Protected article filter
+    st.divider()
+    st.subheader("Article Protection")
+    if "is_protected" in df.columns:
+        sel_exclude_protected = st.checkbox(
+            "Exclude protected articles", value=True,
+            help="Protected Wikipedia articles cannot be edited by new or unregistered users — exclude them so students only see articles they can actually edit."
+        )
+    else:
+        sel_exclude_protected = False
+        st.caption("⚠️ Protection status not yet in data — re-run the pipeline with `fetch_protection.py` to enable this filter.")
 
     # Equity filters
     if has_equity:
@@ -473,12 +497,16 @@ if sel_specialty and "specialty" in filtered.columns:
             lambda s: any(sp in s for sp in sel_specialty)
         )
     ]
+if sel_require_mesh and "mesh_id" in filtered.columns:
+    filtered = filtered[filtered["mesh_id"].notna()]
 if has_tfidf and min_med_rel > 1:
     filtered = filtered[filtered["medical_relevance"] >= min_med_rel]
 if sel_mesh_confidence and "mesh_confidence" in filtered.columns:
     filtered = filtered[filtered["mesh_confidence"].isin(sel_mesh_confidence)]
+if sel_exclude_protected and "is_protected" in filtered.columns:
+    filtered = filtered[~filtered["is_protected"].astype(bool)]
 if sel_rare and "is_rare_disease" in filtered.columns:
-    filtered = filtered[filtered["is_rare_disease"] == True]
+    filtered = filtered[filtered["is_rare_disease"].astype(bool)]
 if sel_reading is not None and "reading_level" in filtered.columns:
     filtered = filtered[
         filtered["reading_level"].isna() | (filtered["reading_level"] <= sel_reading)
@@ -488,10 +516,14 @@ mesh_id_mode = bool(sel_mesh_id.strip()) and "mesh_id" in filtered.columns
 if mesh_id_mode:
     filtered = filtered[filtered["mesh_id"].str.upper() == sel_mesh_id.strip().upper()]
 
-filtered = filtered.copy() if (search_results is not None or mesh_id_mode) else filtered.head(top_n).copy()
-
-# Heatmap click-through filter — applied on top of all other filters
+# Read click-through filters before applying top_n so they see the full set
 _hm = st.session_state.get("heatmap_filter")
+_rd = st.session_state.get("rare_filter")
+
+bypass_top_n = search_results is not None or mesh_id_mode or bool(_hm) or bool(_rd)
+filtered = filtered.copy() if bypass_top_n else filtered.head(top_n).copy()
+
+# Heatmap click-through filter
 if _hm:
     hm_quality, hm_importance = _hm
     filtered = filtered[
@@ -500,12 +532,18 @@ if _hm:
     ]
 
 # Rare disease bar click-through filter
-_rd = st.session_state.get("rare_filter")
 if _rd and "is_rare_disease" in filtered.columns:
     filtered = filtered[
-        (filtered["is_rare_disease"] == True) &
-        (filtered["quality_class"]   == _rd)
+        filtered["is_rare_disease"].astype(bool) &
+        (filtered["quality_class"] == _rd)
     ]
+
+# When any rare disease filter is active, sort by quality class (Stub first = most urgent)
+if (sel_rare or _rd) and "quality_class" in filtered.columns:
+    quality_rank = {q: i for i, q in enumerate(QUALITY_ORDER)}
+    filtered = filtered.copy()
+    filtered["_q_rank"] = filtered["quality_class"].map(quality_rank).fillna(99)
+    filtered = filtered.sort_values("_q_rank").drop(columns=["_q_rank"])
 
 # Quadrant filter — applied when user selects a quadrant in the Attention tab
 _sel_q = _Q_OPTIONS.get(st.session_state.get("quadrant_sel", "All quadrants"))
@@ -566,7 +604,7 @@ if _hm:
 
 _rd = st.session_state.get("rare_filter")
 if _rd:
-    n_rare_q = len(df[(df["is_rare_disease"] == True) & (df["quality_class"] == _rd)]) if "is_rare_disease" in df.columns else 0
+    n_rare_q = len(df[df["is_rare_disease"].astype(bool) & (df["quality_class"] == _rd)]) if "is_rare_disease" in df.columns else 0
     rc1, rc2 = st.columns([8, 1])
     rc1.info(f"🦓 **Rare disease filter:** {_rd} quality — {n_rare_q:,} rare disease articles in full dataset")
     if rc2.button("✕ Clear", key="clear_rare_filter"):
@@ -682,7 +720,8 @@ else:
         "unique_editors":     st.column_config.TextColumn("Editors", width="small",
             help="Number of unique registered editors who made at least one edit to this article in the past 12 months, sourced from the Wikipedia API (action=query, prop=revisions)."),
         "edit_type":          st.column_config.TextColumn("Recommended Action", width="medium"),
-        "difficulty":         st.column_config.TextColumn("Difficulty",         width="small"),
+        "difficulty":         st.column_config.TextColumn("Difficulty", width="small",
+            help="Estimated editing effort based on article length and current quality:\n\n• **Easy** — short Stub/Start articles needing basic expansion\n• **Medium** — developing articles requiring substantive additions\n• **Hard** — longer articles needing expert-level revision or restructuring"),
         "specialty":          st.column_config.TextColumn("Specialty",          width="medium"),
         "reading_level":      st.column_config.TextColumn("Reading Level", width="medium",
             help="Flesch-Kincaid Grade Level (FKGL) — estimates the U.S. school grade needed to understand the text. Computed from the article's Wikipedia lead section. 'Too short' = lead section under 30 words."),
@@ -1098,7 +1137,7 @@ with tab_equity:
                 "Stub and Start articles for rare diseases represent the steepest "
                 "information gaps — patients searching for these conditions find little."
             )
-            rare_df = df[df["is_rare_disease"] == True]
+            rare_df = df[df["is_rare_disease"].astype(bool)]
             if len(rare_df) > 0:
                 rare_q = (
                     rare_df["quality_class"]
