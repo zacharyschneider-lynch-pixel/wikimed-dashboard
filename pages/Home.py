@@ -1050,18 +1050,25 @@ with tab_equity:
                               "Grade level: %{customdata[0]:.1f}<br>"
                               "Pageviews (log): %{y:.2f}<extra></extra>"
             )
+            # Stagger annotation y-positions so labels don't pile up at the top.
+            # Paper coords: 1.0 = top, 0.0 = bottom.
             ref_lines = [
-                (6,  "6th grade",          "#bbb",    "top right"),
-                (8,  "8th — avg US adult", "#888",    "top left"),
-                (12, "12th grade (HS)",    "#238B45", "top right"),
-                (16, "College grad",       "#00441B", "top left"),
+                (6,  "6th grade",       "#aaaaaa", 0.99),
+                (8,  "avg US adult",    "#666666", 0.82),
+                (12, "12th grade (HS)", "#238B45", 0.65),
+                (16, "college grad",    "#00441B", 0.48),
             ]
-            for grade, label, color, pos in ref_lines:
+            for grade, label, color, ypos in ref_lines:
                 fig_rl.add_vline(
                     x=np.sqrt(grade), line_dash="dash", line_color=color, line_width=1.5,
-                    annotation_text=label, annotation_position=pos,
-                    annotation_font=dict(size=10, color=color),
-                    annotation_bgcolor="rgba(255,255,255,0.75)",
+                )
+                fig_rl.add_annotation(
+                    x=np.sqrt(grade), y=ypos, yref="paper",
+                    text=label, showarrow=False,
+                    xanchor="left", yanchor="top",
+                    font=dict(size=9, color=color),
+                    bgcolor="rgba(255,255,255,0.82)",
+                    borderpad=2,
                 )
             tick_grades = [4, 6, 8, 10, 12, 16, 20, 28]
             fig_rl.update_layout(
