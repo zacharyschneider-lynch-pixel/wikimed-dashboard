@@ -306,4 +306,4 @@ The match type is visible in the Cancer Dashboard table and can be filtered in t
 
 st.divider()
 st.caption("Data sources: Wikipedia API, WikiProject Medicine categories, NLM MeSH 2026, Wikipedia Clickstream (May 2026), PubMed efetch, BioPortal Annotator, NCBI eSearch, NLM MTI.")
-st.page_link("Dashboard.py", label="← Back to Dashboard")
+st.page_link("pages/Home.py", label="← Back to Dashboard")
