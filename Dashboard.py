@@ -84,10 +84,10 @@ _QUALITY_TABLE_STYLES = {
 }
 
 _IMPORTANCE_TABLE_STYLES = {
-    "Top":  "background-color:#AD1457; color:white; font-weight:600",
-    "High": "background-color:#6A1B9A; color:white",
-    "Mid":  "background-color:#AB47BC; color:white",
-    "Low":  "background-color:#F3E5F5; color:#4A148C",
+    "Top":  "background-color:#005A32; color:white; font-weight:600",
+    "High": "background-color:#238B45; color:white",
+    "Mid":  "background-color:#74C476; color:#003300",
+    "Low":  "background-color:#E5F5E0; color:#005A32",
 }
 
 def _edit_type_style(col):
