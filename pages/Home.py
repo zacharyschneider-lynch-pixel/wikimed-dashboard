@@ -421,18 +421,6 @@ with st.sidebar:
     else:
         sel_mesh_id = ""
 
-    # Protected article filter
-    st.divider()
-    st.subheader("Article Protection")
-    if "is_protected" in df.columns:
-        sel_exclude_protected = st.checkbox(
-            "Exclude protected articles", value=True,
-            help="Protected Wikipedia articles cannot be edited by new or unregistered users — exclude them so students only see articles they can actually edit."
-        )
-    else:
-        sel_exclude_protected = False
-        st.caption("⚠️ Protection status not yet in data — re-run the pipeline with `fetch_protection.py` to enable this filter.")
-
     # Equity filters
     if has_equity:
         st.divider()
@@ -503,8 +491,13 @@ if has_tfidf and min_med_rel > 1:
     filtered = filtered[filtered["medical_relevance"] >= min_med_rel]
 if sel_mesh_confidence and "mesh_confidence" in filtered.columns:
     filtered = filtered[filtered["mesh_confidence"].isin(sel_mesh_confidence)]
-if sel_exclude_protected and "is_protected" in filtered.columns:
-    filtered = filtered[~filtered["is_protected"].astype(bool)]
+# Silently exclude fully-protected articles (admin-only) — students can never edit these.
+# Semi-protected articles are kept but flagged with a 🔒 badge.
+if "is_fully_protected" in filtered.columns:
+    n_excluded = filtered["is_fully_protected"].astype(bool).sum()
+    filtered = filtered[~filtered["is_fully_protected"].astype(bool)]
+    if n_excluded:
+        st.sidebar.caption(f"🔒 {n_excluded:,} fully protected article{'s' if n_excluded != 1 else ''} hidden (admin-only, not editable by students)")
 if sel_rare and "is_rare_disease" in filtered.columns:
     filtered = filtered[filtered["is_rare_disease"].astype(bool)]
 if sel_reading is not None and "reading_level" in filtered.columns:
@@ -666,6 +659,11 @@ else:
         left_h.subheader(f"Top {n} Recommended Articles")
     right_h.page_link("pages/Methodology.py", label="📖 How are scores calculated?", use_container_width=True)
 
+    # Add semi-protected badge column if data is available
+    if "is_semi_protected" in filtered.columns:
+        filtered = filtered.copy()
+        filtered["protection"] = filtered["is_semi_protected"].astype(bool).map({True: "🔒 Semi", False: ""})
+
     table_cols = ["rank", "wiki_url", "impact_need_score"]
     if has_attention:
         table_cols.append("wiki_attention_score")
@@ -690,6 +688,8 @@ else:
         table_cols.insert(wiki_pos + 1, "found_via")
     if "rare_icon" in filtered.columns:
         table_cols.append("rare_icon")
+    if "protection" in filtered.columns:
+        table_cols.append("protection")
     table_cols += ["edit_url"]
 
     table_df = filtered[[c for c in table_cols if c in filtered.columns]].copy()
@@ -734,6 +734,8 @@ else:
             width="medium"
         ),
         "top_tfidf_terms":    st.column_config.TextColumn("Key Terms (TF-IDF)", width="large"),
+        "protection":         st.column_config.TextColumn("Protection", width="small",
+            help="🔒 Semi = semi-protected: requires an account ≥4 days old with ≥10 edits (autoconfirmed). Fully protected articles are excluded from this list entirely."),
         "edit_url":           st.column_config.LinkColumn("Edit",               width="small"),
         "found_via":          st.column_config.TextColumn("Match type",          width="medium"),
     }

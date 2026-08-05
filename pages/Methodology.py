@@ -305,5 +305,36 @@ The match type is visible in the Cancer Dashboard table and can be filtered in t
 """)
 
 st.divider()
+
+# ── Article Protection Filtering ───────────────────────────────────────────────
+st.header("🔒 Article Protection Filtering")
+st.markdown("""
+Wikipedia allows administrators to restrict who can edit an article. The dashboard accounts
+for protection status so students are only recommended articles they can actually edit.
+
+**Protection levels relevant to student editors:**
+
+| Level | Who can edit | Dashboard treatment |
+|-------|-------------|---------------------|
+| **None** | Anyone (including new accounts) | Shown normally |
+| **Semi-protected** | Autoconfirmed accounts only (≥4 days old, ≥10 edits) | Shown with 🔒 Semi badge |
+| **Fully protected** | Administrators only | **Excluded entirely** |
+| **Extended-confirmed** | Accounts with ≥30 days and ≥500 edits | Shown with 🔒 Semi badge |
+
+**Why exclude fully protected articles?** These articles — typically high-visibility topics subject
+to persistent vandalism or editorial disputes — cannot be edited by student accounts under any
+circumstances. Including them in recommendations would create frustrating dead-ends for students
+who click through to edit.
+
+**Why flag semi-protected articles rather than excluding them?** Most WikiEdu course timelines
+span 4–8 weeks. Students become autoconfirmed (≥4 days, ≥10 edits) within the first week of
+a course, so semi-protection is a temporary barrier rather than a permanent one. The badge
+gives instructors and students the information they need to sequence their work appropriately.
+
+**Data source:** Protection status is fetched from the [Wikipedia Action API](https://en.wikipedia.org/w/api.php)
+(`prop=info&inprop=protection`) and refreshed monthly alongside the main pipeline.
+""")
+
+st.divider()
 st.caption("Data sources: Wikipedia API, WikiProject Medicine categories, NLM MeSH 2026, Wikipedia Clickstream (May 2026), PubMed efetch, BioPortal Annotator, NCBI eSearch, NLM MTI.")
 st.page_link("pages/Home.py", label="← Back to Dashboard")
