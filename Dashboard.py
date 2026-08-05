@@ -54,7 +54,7 @@ IMPORTANCE_COLORS = {
 # Key = label shown in radio; value = (high_attention, high_need) bool pair, or None for "all".
 _Q_OPTIONS = {
     "All quadrants": None,
-    "Edit now": (True, True),
+    "High priority": (True, True),
     "Hidden gems": (False, True),
     "Well-covered": (True, False),
     "Low priority": (False, False),
@@ -580,7 +580,7 @@ if _rd:
         st.rerun()
 
 _active_q_label = st.session_state.get("quadrant_sel", "All quadrants")
-if _active_q_label != "All quadrants":
+if _active_q_label not in ("All quadrants", ""):
     qc1, qc2 = st.columns([8, 1])
     qc1.info(f"⚡ **Quadrant filter:** {_active_q_label}")
     if qc2.button("✕ Clear", key="clear_quadrant_filter"):
@@ -985,7 +985,7 @@ with tab_attention:
         fig_scatter.add_vline(x=50, line_dash="dot", line_color="#AAAAAA", line_width=1.5)
         fig_scatter.add_hline(y=50, line_dash="dot", line_color="#AAAAAA", line_width=1.5)
         for _txt, _x, _y, _xa, _ya in [
-            ("Edit now",    99, 98, "right", "top"),
+            ("High priority", 99, 98, "right", "top"),
             ("Hidden gems",  1, 98, "left",  "top"),
             ("Well-covered",99,  2, "right", "bottom"),
             ("Low priority", 1,  2, "left",  "bottom"),
