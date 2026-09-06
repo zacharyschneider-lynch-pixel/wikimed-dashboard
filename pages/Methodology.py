@@ -7,8 +7,7 @@ st.caption("WikiMed Article Dashboard — scoring methodology")
 # ── Impact-Need Score ─────────────────────────────────────────────────────────
 st.header("Impact-Need Score (0–100)")
 st.markdown("""
-The Impact-Need Score is the primary ranking signal. It identifies Wikipedia medical articles
-that have **high public reach but low current quality** — the best targets for WikiMed student editing.
+The Impact-Need Score is a calculated value used to rank Wikipedia articles most in need of editing. The ranking algorithm prioritizes articles that are rated low on Wikipedia's quality rating scale but have high public reach. As shown in the equation below, the score is based on the following components: pageviews, WikiProject Medicine importance ratings, article room for improvement (quality deficit), active editors, and Wikipedia clickstream data.
 
 **Formula:**
 
@@ -27,7 +26,7 @@ The raw composite is divided by the maximum observed value so the top-ranked art
 | **Search intent** | $P_{si}$ | 10% | Percentile rank of the fraction of inbound Wikipedia clicks arriving from active search (Google/Bing/etc.) vs. passive internal navigation — derived from May 2026 Wikipedia clickstream data |
 
 **Why these weights?**
-The 30/25/25/10/10 split reflects the core hypothesis: public reach and content quality are equally
+The 30/25/25/10/10 split reflects the underlying assumption that public reach and content quality are equally
 important for impact. Search intent provides a signal of genuine public demand that
 pageviews alone cannot distinguish (a trending news article vs. a chronically under-served health topic).
 """)

@@ -343,7 +343,7 @@ with st.sidebar:
     sel_edit = st.multiselect("Edit type needed", all_edit_types, default=[])
 
     if all_difficulty:
-        sel_difficulty = st.multiselect("Difficulty", all_difficulty, default=[])
+        sel_difficulty = st.multiselect("Article Scope", all_difficulty, default=[])
     else:
         sel_difficulty = []
 
@@ -376,14 +376,18 @@ with st.sidebar:
         sel_require_mesh = st.checkbox(
             "Require MeSH assignment", value=True,
             help="Only show articles matched to an NLM MeSH descriptor. "
-                 "Excludes keyword-only matches that may not be truly clinical.",
+                 "This reliably excludes non-clinical articles (e.g. 'chief medical officer') "
+                 "that are not genuine clinical medical topics.",
         )
     else:
         sel_require_mesh = False
     if has_tfidf:
         min_med_rel = st.slider(
             "Min medical relevance score (1–10)", 1, 10, 3,
-            help="TF-IDF overlap with the NLM MeSH 2026 vocabulary.",
+            help="Filters by how clinically focused an article's content is (1–10). Measures what fraction "
+                 "of the article's most distinctive terms match the NLM MeSH medical vocabulary: "
+                 "10 = nearly all terms are clinical; 1 = few medical terms. "
+                 "The default of 3 removes articles whose top terms are mostly non-clinical.",
         )
     else:
         min_med_rel = 0
@@ -423,7 +427,9 @@ with st.sidebar:
                                help="Show only articles flagged as rare diseases from Wikipedia categories")
         max_rl = int(df["reading_level"].dropna().max()) + 1
         sel_reading = st.slider("Max reading level (FK grade)", min_value=1, max_value=max_rl, value=max_rl,
-                                help="US adults read at ~8th grade on average.")
+                                help="Flesch-Kincaid Grade Level: 8 ≈ average U.S. adult, 12 ≈ high school graduate, "
+                                     "16 ≈ college graduate. Slide left to show only articles at or below a given "
+                                     "reading level. Computed from lead sections only.")
     else:
         sel_rare    = False
         sel_reading = None
@@ -609,9 +615,12 @@ else:
     table_df = filtered[[c for c in table_cols if c in filtered.columns]].copy()
 
     col_cfg = {
-        "rank":               st.column_config.NumberColumn("Rank", width="small"),
-        "rare_icon":          st.column_config.TextColumn("Rare Disease", width="small"),
-        "wiki_url":           st.column_config.LinkColumn("Article", display_text=r"wiki/(.+)", width="large"),
+        "rank":               st.column_config.NumberColumn("Rank", width="small",
+            help="Position in the ranked list, sorted by Impact-Need Score from highest (1) to lowest."),
+        "rare_icon":          st.column_config.TextColumn("Rare Disease", width="small",
+            help="🦓 indicates the article covers a rare disease — a condition affecting fewer than 1 in 2,000 people. Categorization is derived from Wikipedia's rare disease article categories."),
+        "wiki_url":           st.column_config.LinkColumn("Article", display_text=r"wiki/(.+)", width="large",
+            help="Title of the Wikipedia article. Click to open and read it on Wikipedia."),
         "hemonc_url":         st.column_config.LinkColumn(
             "HemOnc.org", display_text="↗", width="small",
             help="Open this topic on HemOnc.org. Best coverage for drugs and regimens — broad disease terms may not have a page. Requires a free HemOnc.org account.",
@@ -634,19 +643,23 @@ else:
             width="small"),
         "pageviews_12mo":     st.column_config.TextColumn("Pageviews (12mo)", width="medium"),
         "unique_editors":     st.column_config.TextColumn("Editors", width="small"),
-        "edit_type":          st.column_config.TextColumn("Recommended Action", width="medium"),
-        "difficulty":         st.column_config.TextColumn("Difficulty", width="small",
-            help="Estimated editing effort:\n\n• **Easy** — short Stub/Start articles\n• **Medium** — developing articles\n• **Hard** — expert-level revision or restructuring"),
-        "specialty":          st.column_config.TextColumn("Specialty", width="medium"),
+        "edit_type":          st.column_config.TextColumn("Recommended Action", width="medium",
+            help="The primary type of improvement this article is most likely to need, based on its quality class. All types of improvements may benefit any article regardless of quality rating."),
+        "difficulty":         st.column_config.TextColumn("Article Scope", width="small",
+            help="Estimated scope of available editing work, based on article length and quality class:\n\n• **Focused** — short articles where targeted additions have high impact\n• **Moderate** — developing articles with several areas to improve\n• **Extensive** — longer articles requiring substantive revision across multiple sections"),
+        "specialty":          st.column_config.TextColumn("Specialty", width="medium",
+            help="Medical specialty assigned based on WikiProject Medicine's tagging system, derived from article categories and WikiProject banners on the article's talk page."),
         "reading_level":      st.column_config.TextColumn("Reading Level", width="medium",
-            help="Flesch-Kincaid Grade Level. 'Too short' = lead section under 30 words."),
+            help="Flesch-Kincaid Grade Level (FKGL) — estimates the U.S. school grade needed to understand the text. Computed from the article's Wikipedia lead section; full article may differ. 'Too short' = lead section under 30 words. Average U.S. adult reads at ~8th grade."),
         "medical_relevance":  st.column_config.TextColumn(
             "Medical Relevance (1-10)",
-            help="TF-IDF keyword overlap with the NLM MeSH 2026 vocabulary.",
+            help="Estimates how clinically focused the article is (1–10). Calculated by checking how many of the article's most distinctive words match the NLM MeSH medical vocabulary. Scores of 8–10 indicate dense clinical content; scores of 1–3 suggest the top terms are not medically specific.",
             width="medium",
         ),
-        "top_tfidf_terms":    st.column_config.TextColumn("Key Terms (TF-IDF)", width="large"),
-        "mesh_id":            st.column_config.TextColumn("MeSH ID", width="small"),
+        "top_tfidf_terms":    st.column_config.TextColumn("Key Terms (TF-IDF)", width="large",
+            help="The 25 most distinctive words and phrases in this article compared to all other WikiProject Medicine articles (TF-IDF). These terms reflect what the article is uniquely about and are used to calculate the Medical Relevance score."),
+        "mesh_id":            st.column_config.TextColumn("MeSH ID", width="small",
+            help="NLM Medical Subject Headings descriptor ID (e.g. D009203). MeSH is the National Library of Medicine's controlled medical vocabulary — having a MeSH ID confirms the article corresponds to a recognized medical concept."),
         "mesh_preferred_name": st.column_config.TextColumn("MeSH Term", width="medium"),
         "mesh_confidence":    st.column_config.TextColumn("MeSH Confidence", width="small"),
         "match_type":         st.column_config.TextColumn("Cancer Match", width="small"),

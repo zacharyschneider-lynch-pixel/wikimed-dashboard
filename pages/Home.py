@@ -295,12 +295,14 @@ if st.session_state["show_onboarding"]:
         ob1, ob2 = st.columns([11, 1])
         with ob1:
             st.markdown(
-                "**New here?** This dashboard ranks Wikipedia's medical articles by how urgently "
-                "they need editing. The **Impact-Need Score** (0–100) combines public readership, "
-                "editorial quality gaps, and clinical importance — a score of 100 means the most "
-                "people are reading the weakest article. "
-                "Use the **sidebar filters** to narrow by quality class, importance, or specialty, "
-                "then click any article link to read it or the **Edit** link to start editing."
+                "**New here?** This dashboard ranks all ~53,000 WikiProject Medicine Wikipedia articles "
+                "by how urgently they need editing. The **Impact-Need Score** (0–100) combines public "
+                "readership, editorial quality gaps, and clinical importance — a score of 100 represents "
+                "the highest-priority article in the dataset. "
+                "Use the **sidebar** to filter by quality class, importance, edit type, article scope, "
+                "specialty, medical relevance, MeSH assignment, health equity, or reading level. "
+                "A separate **🎗️ Cancer Dashboard** (left navigation) applies the same tool to oncology "
+                "articles specifically. Click any article title to open and read it on Wikipedia."
             )
         with ob2:
             if st.button("✕", key="dismiss_onboarding", help="Dismiss"):
@@ -353,7 +355,7 @@ with st.sidebar:
     sel_edit = st.multiselect("Edit type needed", all_edit_types, default=[])
 
     if all_difficulty:
-        sel_difficulty = st.multiselect("Difficulty", all_difficulty, default=[])
+        sel_difficulty = st.multiselect("Article Scope", all_difficulty, default=[])
     else:
         sel_difficulty = []
 
@@ -375,18 +377,19 @@ with st.sidebar:
         sel_require_mesh = st.checkbox(
             "Require MeSH assignment", value=True,
             help="Only show articles that were successfully matched to an NLM MeSH descriptor. "
-                 "This is the most reliable way to exclude non-clinical articles (e.g. 'eye chart', 'hospital gown') "
-                 "that score high on pageviews but aren't medical topics."
+                 "This reliably excludes non-clinical articles (e.g. 'chief medical officer', 'hospital gown') "
+                 "that score high on pageviews but are not clinical medical topics."
         )
     else:
         sel_require_mesh = False
     if has_tfidf:
         min_med_rel = st.slider(
             "Min medical relevance score (1–10)", 1, 10, 3,
-            help="TF-IDF overlap with the NLM MeSH 2026 vocabulary. "
-                 "Score of 1 = minimal clinical language; 10 = densely clinical. "
-                 "Default of 3 filters out articles that happen to mention a few medical words "
-                 "but aren't genuinely about a clinical topic."
+            help="Filters by how clinically focused an article's content is. The score (1–10) measures what "
+                 "fraction of the article's most distinctive terms match the NLM MeSH medical vocabulary: "
+                 "10 = nearly all terms are clinical (e.g. a specific drug or disease), "
+                 "1 = few medical terms in the article's most characteristic language. "
+                 "The default of 3 removes articles whose top terms are mostly non-clinical."
         )
     else:
         min_med_rel = 0
@@ -432,7 +435,9 @@ with st.sidebar:
         max_rl = int(df["reading_level"].dropna().max()) + 1
         sel_reading = st.slider(
             "Max reading level (FK grade)", min_value=1, max_value=max_rl, value=max_rl,
-            help="US adults read at ~8th grade on average. Filter to articles at or below this level."
+            help="Flesch-Kincaid Grade Level: 8 ≈ average U.S. adult, 12 ≈ high school graduate, "
+                 "16 ≈ college graduate. Slide left to show only articles written at or below a given "
+                 "reading level. Scores are computed from lead sections only."
         )
     else:
         sel_rare    = False
@@ -548,36 +553,49 @@ if _sel_q is not None and has_attention and "wiki_attention_score" in filtered.c
     ]
 
 # ── Summary metric cards ─────────────────────────────────────────────────────
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3, c4, c5 = st.columns(5)
 n = len(filtered)
-c1.metric("Articles shown", f"{n:,}")
+_n_stub_start = df["quality_class"].isin(["Stub", "Start"]).sum()
+_pct_low = _n_stub_start / len(df) * 100 if len(df) else 0
+c1.metric(
+    "Articles shown", f"{n:,}",
+    help="Number of articles matching your current filter settings. The full dataset contains {:,} WikiProject Medicine articles.".format(len(df))
+)
 c2.metric(
+    "Stub or Start quality",
+    f"{_n_stub_start:,} ({_pct_low:.0f}%)",
+    help="Articles rated at the two lowest editorial quality tiers across the full ~53,000-article dataset — those with the most room for improvement."
+)
+c3.metric(
     "Avg impact-need score",
     f"{filtered['impact_need_score'].mean():.1f} / 100" if n else "—",
+    help="Weighted composite of pageviews (30%), importance (25%), quality deficit (25%), editor scarcity (10%), and search intent (10%). A score of 100 represents the highest-priority article in the dataset."
 )
 if has_attention:
-    c3.metric(
+    c4.metric(
         "Avg attention score",
         f"{filtered['wiki_attention_score'].mean():.1f} / 100" if n else "—",
+        help="Measures current public momentum: pageviews (45%), traffic velocity (20%), inbound Wikipedia links (20%), watchlist count (10%), active editors (5%). A score of 100 = most-trending article."
     )
 else:
-    c3.metric(
+    c4.metric(
         "Avg pageviews (12 mo)",
         f"{int(filtered['pageviews_12mo'].mean()):,}" if n else "—",
     )
-if has_tfidf and n:
-    c4.metric(
-        "Avg medical relevance",
-        f"{filtered['medical_relevance'].mean():.1f} / 10" if n else "—",
-        help="TF-IDF keyword overlap with MeSH vocabulary"
-    )
-elif has_equity and n:
-    c4.metric(
+if has_equity and n:
+    c5.metric(
         "Avg reading level",
         f"Grade {filtered['reading_level'].mean():.1f}" if filtered["reading_level"].notna().any() else "—",
+        help="Average Flesch-Kincaid Grade Level of the filtered articles, computed from their Wikipedia lead sections. The average U.S. adult reads at approximately 8th-grade level."
+    )
+elif has_tfidf and n:
+    c5.metric(
+        "Avg medical relevance",
+        f"{filtered['medical_relevance'].mean():.1f} / 10" if n else "—",
+        help="Average TF-IDF keyword overlap with the NLM MeSH 2026 medical vocabulary. Scores range from 1 (few clinical terms) to 10 (densely clinical)."
     )
 else:
-    c4.metric(
+    c5.metric(
         "Avg unique editors",
         f"{filtered['unique_editors'].mean():.1f}" if n else "—",
     )
@@ -656,7 +674,7 @@ else:
         left_h.subheader(f"Search results for \"{search_query}\"")
         left_h.caption(f"{n_title} title match{'es' if n_title != 1 else ''} · {n_mesh} related via MeSH")
     else:
-        left_h.subheader(f"Top {n} Recommended Articles")
+        left_h.subheader(f"Top {n} Recommended Articles by Impact-Need Score")
     right_h.page_link("pages/Methodology.py", label="📖 How are scores calculated?", use_container_width=True)
 
     # Add semi-protected badge column if data is available
@@ -695,21 +713,24 @@ else:
     table_df = filtered[[c for c in table_cols if c in filtered.columns]].copy()
 
     col_cfg = {
-        "rank":               st.column_config.NumberColumn("Rank",             width="small"),
-        "rare_icon":          st.column_config.TextColumn("Rare Disease",        width="small"),
-        "wiki_url":           st.column_config.LinkColumn("Article",            display_text=r"wiki/(.+)", width="large"),
+        "rank":               st.column_config.NumberColumn("Rank", width="small",
+            help="Position in the ranked list, sorted by Impact-Need Score from highest (1) to lowest."),
+        "rare_icon":          st.column_config.TextColumn("Rare Disease", width="small",
+            help="🦓 indicates the article covers a rare disease — a condition affecting fewer than 1 in 2,000 people. Categorization is derived from Wikipedia's rare disease article categories."),
+        "wiki_url":           st.column_config.LinkColumn("Article", display_text=r"wiki/(.+)", width="large",
+            help="Title of the Wikipedia article. Click to open and read it on Wikipedia."),
         "impact_need_score":  st.column_config.TextColumn(
             "Impact-Need Score (0-100)",
-            help="Weighted composite of pageviews (30%), importance (25%), quality deficit (25%), editor scarcity (10%), and search intent (10%). Top article = 100.",
+            help="Weighted composite of pageviews (30%), importance (25%), quality deficit (25%), editor scarcity (10%), and search intent (10%). A score of 100 represents the highest-priority article in the dataset.",
             width="medium"
         ),
         "wiki_attention_score": st.column_config.TextColumn(
             "Attention Score (0-100)",
-            help="Measures current momentum: pageviews (45%), traffic velocity (20%), inbound links (20%), watchers (10%), active editors (5%). Top article = 100.",
+            help="Measures current public momentum: pageviews (45%), traffic velocity (20%), inbound Wikipedia links (20%), watchlist count (10%), active editors (5%). A score of 100 = most-trending article.",
             width="medium"
         ),
         "quality_class":      st.column_config.TextColumn("Quality",
-            help="Editorial quality rating assigned by WikiProject Medicine volunteers: Stub → Start → C → B → GA → FA (Featured Article).",
+            help="Editorial quality rating assigned by WikiProject Medicine volunteers: Stub → Start → C → B → GA → FA (Featured Article). Ratings may not always reflect the most recent article state.",
             width="small"),
         "importance_label":   st.column_config.TextColumn("Importance",
             help="Topic importance rating assigned by WikiProject Medicine volunteers: Low → Mid → High → Top.",
@@ -718,22 +739,26 @@ else:
             help="Total page views over the past 12 months, sourced from the Wikimedia pageview API.",
             width="medium"),
         "unique_editors":     st.column_config.TextColumn("Editors", width="small",
-            help="Number of unique registered editors who made at least one edit to this article in the past 12 months, sourced from the Wikipedia API (action=query, prop=revisions)."),
-        "edit_type":          st.column_config.TextColumn("Recommended Action", width="medium"),
-        "difficulty":         st.column_config.TextColumn("Difficulty", width="small",
-            help="Estimated editing effort based on article length and current quality:\n\n• **Easy** — short Stub/Start articles needing basic expansion\n• **Medium** — developing articles requiring substantive additions\n• **Hard** — longer articles needing expert-level revision or restructuring"),
-        "specialty":          st.column_config.TextColumn("Specialty",          width="medium"),
+            help="Number of unique registered editors who made at least one edit to this article in the past 12 months, sourced from the Wikipedia API."),
+        "edit_type":          st.column_config.TextColumn("Recommended Action", width="medium",
+            help="The primary type of improvement this article is most likely to need, based on its quality class. Note that all types of improvements may benefit any article regardless of its quality rating."),
+        "difficulty":         st.column_config.TextColumn("Article Scope", width="small",
+            help="Estimated scope of available editing work, based on article length and quality class:\n\n• **Focused** — short articles where targeted additions have high impact\n• **Moderate** — developing articles with several areas to improve\n• **Extensive** — longer articles requiring substantive revision across multiple sections"),
+        "specialty":          st.column_config.TextColumn("Specialty", width="medium",
+            help="Medical specialty assigned based on WikiProject Medicine's tagging system, derived from article categories and WikiProject banners on the article's talk page."),
         "reading_level":      st.column_config.TextColumn("Reading Level", width="medium",
-            help="Flesch-Kincaid Grade Level (FKGL) — estimates the U.S. school grade needed to understand the text. Computed from the article's Wikipedia lead section. 'Too short' = lead section under 30 words."),
-        "mesh_id":            st.column_config.TextColumn("MeSH ID",            width="small"),
+            help="Flesch-Kincaid Grade Level (FKGL) — estimates the U.S. school grade needed to understand the text. Computed from the article's Wikipedia lead section; full article may differ. 'Too short' = lead section under 30 words. Average U.S. adult reads at ~8th grade."),
+        "mesh_id":            st.column_config.TextColumn("MeSH ID", width="small",
+            help="NLM Medical Subject Headings descriptor ID (e.g. D009203). MeSH is the National Library of Medicine's controlled medical vocabulary — having a MeSH ID confirms the article corresponds to a recognized medical concept and enables the MeSH Tree Search feature."),
         "mesh_preferred_name": st.column_config.TextColumn("MeSH Term",         width="medium"),
         "mesh_confidence":    st.column_config.TextColumn("MeSH Confidence",    width="small"),
         "medical_relevance":  st.column_config.TextColumn(
             "Medical Relevance (1-10)",
-            help="TF-IDF keyword overlap with the NLM MeSH 2026 vocabulary. Higher = more purely clinical content.",
+            help="Estimates how clinically focused the article is (1–10). Calculated by checking how many of the article's most distinctive words match the NLM MeSH medical vocabulary. Scores of 8–10 indicate dense clinical content (e.g. a specific drug or disease); scores of 1–3 suggest the article's top terms are not medically specific.",
             width="medium"
         ),
-        "top_tfidf_terms":    st.column_config.TextColumn("Key Terms (TF-IDF)", width="large"),
+        "top_tfidf_terms":    st.column_config.TextColumn("Key Terms (TF-IDF)", width="large",
+            help="The 25 most distinctive words and phrases in this article compared to all other WikiProject Medicine articles (TF-IDF). These terms reflect what the article is uniquely about and are used to calculate the Medical Relevance score."),
         "protection":         st.column_config.TextColumn("Protection", width="small",
             help="🔒 Semi = semi-protected: requires an account ≥4 days old with ≥10 edits (autoconfirmed). Fully protected articles are excluded from this list entirely."),
         "edit_url":           st.column_config.LinkColumn("Edit",               width="small"),
