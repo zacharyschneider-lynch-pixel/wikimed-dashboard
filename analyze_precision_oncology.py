@@ -138,6 +138,14 @@ def mark_po(df: pd.DataFrame, is_cancer: pd.Series):
     kw_hit = kw_raw & is_cancer & ~mesh_hit
 
     is_po = mesh_hit | kw_hit
+
+    # Drop biographies. The MeSH pipeline matches titles against descriptor names,
+    # so surnames collide with eponymous syndromes: seven people surnamed Li were
+    # assigned Li-Fraumeni Syndrome, and Joseph Merrick (neurofibromatosis) alone
+    # draws ~598,000 views a year, more than any genuine article in the subset.
+    if "is_biography" in df.columns:
+        is_po &= ~df["is_biography"].fillna(False).astype(bool)
+
     pillar = mesh.map(pillar_map)
     pillar = pillar.where(mesh_hit, other=np.where(kw_hit, "title_keyword", None))
     return is_po, pillar

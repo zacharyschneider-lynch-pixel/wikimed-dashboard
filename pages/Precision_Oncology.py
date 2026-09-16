@@ -183,6 +183,11 @@ def load_po_df():
     kw_hit = kw_raw & is_cancer & ~mesh_hit
 
     df["is_po"] = mesh_hit | kw_hit
+    # Drop biographies: the MeSH pipeline matches titles against descriptor names,
+    # so surnames collide with eponymous syndromes (seven people surnamed Li were
+    # assigned Li-Fraumeni Syndrome). Run fetch_is_biography.py to populate.
+    if "is_biography" in df.columns:
+        df["is_po"] &= ~df["is_biography"].fillna(False).astype(bool)
     pillar = mesh.map(pillar_map)
     df["po_pillar"] = pillar.where(mesh_hit, other=np.where(kw_hit, "title_keyword", None))
     df["pillar_label"] = df["po_pillar"].map(PILLAR_LABELS)

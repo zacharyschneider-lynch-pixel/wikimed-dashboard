@@ -93,7 +93,6 @@ Radioimmunotherapy,Start,Mid,61.2,14.5,0.0,0.0,D016499,precision_therapy,False
 CAR T cell,C,Low,61.0,12.7,87976.0,26.0,D000076962,targeted_agent,False
 ALK positive lung cancer,C,Low,60.6,14.7,3672.0,2.0,D008175,title_keyword,False
 Theranostics,C,Low,60.0,16.8,18501.0,9.0,D057285,precision_therapy,False
-Lydia Lynch,Start,Low,59.9,10.9,1300.0,3.0,D055847,hereditary_risk,False
 HER2,C,Low,59.9,13.4,37209.0,12.0,D018719,biomarker_diagnostic,False
 Tumor mutational burden,B,Mid,59.5,15.6,7451.0,8.0,D009154,title_keyword,False
 Active immunotherapy,Start,Low,59.5,19.3,720.0,1.0,D016233,precision_therapy,False
@@ -103,16 +102,12 @@ Flutamide,B,Mid,59.0,11.9,13992.0,9.0,D005485,endocrine_targeted,False
 Cancer immunotherapy,B,Mid,58.3,16.4,32883.0,21.0,D009369,title_keyword,False
 Neurofibromatosis type I,C,Low,58.1,13.4,133816.0,20.0,D009456,hereditary_risk,False
 Dasatinib,Start,Mid,58.0,11.1,0.0,0.0,D000069439,targeted_agent,False
-Catherine J. Wu,C,Low,57.9,14.4,2598.0,1.0,D019496,precision_therapy,False
-Li Zhaoping,Start,Low,57.3,14.1,4903.0,6.0,D016864,hereditary_risk,False
 Bannayan–Riley–Ruvalcaba syndrome,C,Low,57.2,14.6,5473.0,1.0,D006223,hereditary_risk,True
 Trastuzumab/hyaluronidase,Start,Mid,56.4,13.2,0.0,2.0,D000068878,targeted_agent,False
 Nafoxidine,Start,Low,55.9,16.4,901.0,1.0,D009256,endocrine_targeted,False
 Circulating tumor cell,C,Low,54.8,14.8,7672.0,14.0,D009360,title_keyword,False
-Bernard Fisher (scientist),C,Low,54.8,14.3,3697.0,3.0,D013629,endocrine_targeted,False
 Cancer biomarker,C,Low,54.7,16.0,3691.0,4.0,D014408,biomarker_diagnostic,False
 Nivolumab/relatlimab,Start,Mid,54.0,12.0,0.0,1.0,D000077594,targeted_agent,False
-Frances Gardner,Start,Low,54.0,11.7,751.0,0.0,D005736,hereditary_risk,False
 Individualized medicine,Start,Low,53.5,17.0,693.0,4.0,D057285,precision_therapy,False
 Vaccine therapy,Start,Low,53.1,18.3,564.0,3.0,D016233,precision_therapy,False
 Cancer pharmacogenomics,C,Low,51.8,16.0,1047.0,2.0,D009369,title_keyword,False
@@ -120,7 +115,6 @@ Precision diagnostics,C,Low,51.7,17.7,1833.0,5.0,D057285,precision_therapy,False
 MTOR inhibitors,B,Low,51.7,16.7,22769.0,5.0,D000091203,targeted_agent,False
 Education in personalized medicine,Start,Low,51.2,19.8,217.0,1.0,D057285,precision_therapy,False
 Aminoglutethimide,B,Low,50.4,14.5,6315.0,1.0,D000616,endocrine_targeted,False
-Li Lianda,Start,Low,49.4,15.7,249.0,2.0,D016864,hereditary_risk,False
 Rapcabtagene autoleucel,C,Low,49.4,,1805.0,11.0,D000076962,targeted_agent,False
 Niraparib/abiraterone acetate,C,Mid,48.0,19.3,0.0,2.0,D000069501,title_keyword,False
 Virotherapy,C,Low,48.0,15.0,4101.0,8.0,D050130,precision_therapy,False
@@ -128,21 +122,11 @@ Nivolumab/hyaluronidase,Start,Mid,47.8,12.6,0.0,5.0,D000077594,targeted_agent,Fa
 Birt–Hogg–Dubé syndrome,GA,Low,47.7,14.4,34448.0,3.0,D058249,hereditary_risk,True
 Cellular adoptive immunotherapy,C,Low,46.8,14.7,2626.0,6.0,D016219,precision_therapy,False
 Side effects of cyproterone acetate,B,Low,46.7,14.8,11358.0,7.0,D017373,endocrine_targeted,False
-Li Jieshou,C,Low,45.9,,252.0,0.0,D016864,hereditary_risk,False
 4-Acetamidobutanal,Start,,45.5,15.1,604.0,4.0,D066247,biomarker_diagnostic,False
-Norah Schuster,C,Low,44.8,15.6,568.0,3.0,D011125,hereditary_risk,False
 Targeted molecular therapy for neuroblastoma,C,Low,44.4,13.3,299.0,1.0,D058990,precision_therapy,False
-John Henry Wishart,C,Low,42.9,11.2,341.0,2.0,D016518,hereditary_risk,False
 AmadeoLab,C,Low,42.6,13.0,512.0,4.0,D018719,biomarker_diagnostic,False
-Joseph Merrick,GA,Low,42.6,9.9,598243.0,25.0,D009456,hereditary_risk,False
-Li Huanying,C,Low,41.8,11.6,384.0,3.0,D016864,hereditary_risk,False
-Ray Iles,C,Low,41.6,,518.0,1.0,D018997,biomarker_diagnostic,False
 Cancer vaccine targeting CD4+ T cells,Start,Low,40.9,11.3,3.0,0.0,D019496,precision_therapy,False
 Ethinylestradiol/cyproterone acetate,C,Mid,38.4,17.5,0.0,11.0,D017373,endocrine_targeted,False
 ALK+ large B-cell lymphoma,C,Low,38.4,5.2,5.0,2.0,D016393,title_keyword,False
 Circulating tumor DNA,Start,Low,37.4,15.8,0.0,7.0,D000074141,biomarker_diagnostic,False
 Individualized cancer immunotherapy,B,Low,36.9,16.2,710.0,4.0,D009369,title_keyword,False
-Li Sijin,Start,Low,32.9,17.2,81.0,4.0,D016864,hereditary_risk,False
-Denys Skoryi,B,Low,31.9,15.5,527.0,8.0,D030321,hereditary_risk,False
-Li Zhisui,C,Low,24.1,13.2,0.0,7.0,D016864,hereditary_risk,False
-Zihai Li,C,Low,23.4,18.0,0.0,7.0,D016864,hereditary_risk,False
