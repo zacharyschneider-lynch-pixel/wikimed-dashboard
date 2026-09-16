@@ -120,9 +120,14 @@ def mark_po(df: pd.DataFrame, is_cancer: pd.Series):
     """
     po = pd.read_csv("data/precision_oncology_mesh_ids.csv")
     pillar_map = dict(zip(po["mesh_id"].astype(str), po["pillar"].astype(str)))
+    onc_ids  = set(po.loc[po["scope"] == "oncologic", "mesh_id"].astype(str))
+    cond_ids = set(po.loc[po["scope"] == "conditional", "mesh_id"].astype(str))
 
     mesh = df["mesh_id"].astype(str)
-    mesh_hit = mesh.isin(pillar_map.keys())
+    # Generic molecular-methods descriptors count only when the article itself is
+    # cancer-related, so Genomics/Genetic Testing bring in oncology genomics
+    # without bringing in prenatal screening or behavioural epigenetics.
+    mesh_hit = mesh.isin(onc_ids) | (mesh.isin(cond_ids) & is_cancer)
 
     title_lower = df["title"].str.lower().fillna("")
     kw_raw = (

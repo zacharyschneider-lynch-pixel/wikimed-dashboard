@@ -43,18 +43,9 @@ PILLAR_TREES = {
         "D23.101.140",                  # Biomarkers, Tumor
         "D13.444.154.500",              # Circulating Tumor DNA
         "D13.444.308.425.500",          # Circulating Tumor DNA (alt tree)
-        "E01.370.225.562",              # Genetic Testing (incl. Pharmacogenomic Testing)
-        "E05.200.562",                  # Genetic Testing (alt tree)
-        "E05.393.435",                  # Genetic Testing (alt tree)
-        "E05.393.760.319",              # High-Throughput Nucleotide Sequencing
         "E01.370.225.500.384.100.396",  # Liquid Biopsy
         "E05.200.500.384.100.396",      # Liquid Biopsy (alt tree)
         "E05.242.384.100.396",          # Liquid Biopsy (alt tree)
-        "H01.158.273.343.750",          # Pharmacogenetics
-        "H01.158.703.052",              # Pharmacogenetics (alt tree)
-        "H02.628.479",                  # Pharmacogenetics (alt tree)
-        "H01.158.273.180.350",          # Genomics
-        "H01.158.273.343.350",          # Genomics (alt tree)
     ],
     "targeted_agent": [
         "D27.505.954.248.384",          # Antineoplastic Agents, Immunological
@@ -78,6 +69,27 @@ PILLAR_TREES = {
     "hereditary_risk": [
         "C04.700",                      # Neoplastic Syndromes, Hereditary
         "C16.320.700",                  # Neoplastic Syndromes, Hereditary (alt tree)
+    ],
+}
+
+# Generic molecular-methods subtrees. These underpin precision oncology but are
+# not oncologic in themselves: the same descriptors cover prenatal screening,
+# behavioural epigenetics and population genomics. Descriptors captured here are
+# written out with scope="conditional", and the consuming analysis admits them
+# only when the ARTICLE is independently cancer-related. Leaving them
+# unconditional pulled in Epigenetics, Genomics, Noninvasive prenatal testing,
+# Celera Corporation and Project Manhigh.
+CONDITIONAL_TREES = {
+    "biomarker_diagnostic": [
+        "E01.370.225.562",              # Genetic Testing (incl. Pharmacogenomic Testing)
+        "E05.200.562",                  # Genetic Testing (alt tree)
+        "E05.393.435",                  # Genetic Testing (alt tree)
+        "E05.393.760.319",              # High-Throughput Nucleotide Sequencing
+        "H01.158.273.343.750",          # Pharmacogenetics
+        "H01.158.703.052",              # Pharmacogenetics (alt tree)
+        "H02.628.479",                  # Pharmacogenetics (alt tree)
+        "H01.158.273.180.350",          # Genomics
+        "H01.158.273.343.350",          # Genomics (alt tree)
     ],
 }
 
@@ -140,6 +152,11 @@ PRECISION_THERAPY_UIS = {
 # they are not biomarker-directed therapy and do not belong in a PO subset.
 GLUCOCORTICOID_PA = {"D005938"}
 
+# Descriptors excluded outright. Noninvasive Prenatal Testing sits under the
+# Liquid Biopsy subtree because it shares the cell-free DNA method, but it is
+# obstetric rather than oncologic.
+EXCLUDE_UIS = {"D000081182"}   # Noninvasive Prenatal Testing
+
 # Pillar precedence when a descriptor matches more than one
 PILLAR_PRIORITY = [
     "targeted_agent",
@@ -156,13 +173,21 @@ def main() -> None:
 
     records = {}
 
-    def assign(did, name, pillar, source):
-        prior = records.get(did)
-        if prior is None:
-            records[did] = {"mesh_name": name, "pillar": pillar, "source": source}
+    def assign(did, name, pillar, source, scope="oncologic"):
+        if did in EXCLUDE_UIS:
             return
-        if PILLAR_PRIORITY.index(pillar) < PILLAR_PRIORITY.index(prior["pillar"]):
-            records[did] = {"mesh_name": name, "pillar": pillar, "source": source}
+        prior = records.get(did)
+        rec = {"mesh_name": name, "pillar": pillar, "source": source, "scope": scope}
+        if prior is None:
+            records[did] = rec
+            return
+        # An unconditional capture always beats a conditional one
+        if prior["scope"] == "conditional" and scope == "oncologic":
+            records[did] = rec
+            return
+        if prior["scope"] == scope and \
+           PILLAR_PRIORITY.index(pillar) < PILLAR_PRIORITY.index(prior["pillar"]):
+            records[did] = rec
 
     for desc in root.findall("DescriptorRecord"):
         did   = desc.findtext("DescriptorUI", "")
@@ -172,6 +197,10 @@ def main() -> None:
         for pillar, prefixes in PILLAR_TREES.items():
             if any(t == p or t.startswith(p + ".") for t in trees for p in prefixes):
                 assign(did, name, pillar, "mesh_tree")
+
+        for pillar, prefixes in CONDITIONAL_TREES.items():
+            if any(t == p or t.startswith(p + ".") for t in trees for p in prefixes):
+                assign(did, name, pillar, "mesh_tree", scope="conditional")
 
         if did in PRECISION_THERAPY_UIS:
             assign(did, name, "precision_therapy", "explicit_uid")
@@ -194,13 +223,13 @@ def main() -> None:
 
     out = (
         pd.DataFrame([{"mesh_id": k, **v} for k, v in records.items()])
-        .sort_values(["pillar", "mesh_id"])
+        .sort_values(["scope", "pillar", "mesh_id"])
         .reset_index(drop=True)
     )
     out.to_csv(OUT_PATH, index=False)
 
     print(f"\nWrote {len(out):,} precision oncology descriptors to {OUT_PATH}\n")
-    print(out.groupby(["pillar", "source"]).size().to_string())
+    print(out.groupby(["scope", "pillar", "source"]).size().to_string())
 
     # Sanity check: true positives must be captured, true negatives must not be
     print("\nSanity check - should be CAPTURED (precision oncology agents):")

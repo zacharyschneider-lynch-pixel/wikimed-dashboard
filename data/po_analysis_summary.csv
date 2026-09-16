@@ -1,9 +1,9 @@
 Stratum,N,Impact-Need median,Impact-Need IQR,% Stub/Start,FK grade median,FK grade IQR,% FK >12,Pageviews median,Editors median
 All WikiProject Medicine,53286,60.0,51.3-68.4,67.7,14.0,12.0-16.2,75.0,1700,2
 All cancer-related,1859,63.7,55.1-71.9,57.5,13.6,11.6-15.7,68.0,2600,2
-Precision oncology (all),186,62.8,54.2-71.5,46.2,14.6,12.6-16.4,80.0,5496,3
+Precision oncology (all),147,64.7,54.8-72.7,47.6,14.3,12.2-16.0,77.5,7451,4
 Precision oncology  AND  cancer,113,65.5,56.4-73.5,47.8,14.0,11.9-15.6,73.6,9004,3
-    - biomarker_diagnostic,57,61.3,52.7-66.6,43.9,15.3,13.2-16.7,87.3,2953,3
+    - biomarker_diagnostic,18,65.4,56.0-73.8,50.0,13.6,13.0-15.7,82.4,4021,4
     - targeted_agent,29,70.6,62.6-77.8,48.3,13.1,12.0-14.9,71.4,12171,5
     - endocrine_targeted,11,59.0,52.6-66.0,27.3,14.3,10.9-15.6,54.5,11358,9
     - precision_therapy,18,58.7,51.3-65.6,50.0,16.9,14.6-18.8,88.9,2174,3

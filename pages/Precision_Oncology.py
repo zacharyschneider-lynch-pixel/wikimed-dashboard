@@ -166,7 +166,11 @@ def load_po_df():
     # Precision oncology mask
     po_ids = pd.read_csv("data/precision_oncology_mesh_ids.csv")
     pillar_map = dict(zip(po_ids["mesh_id"].astype(str), po_ids["pillar"].astype(str)))
-    mesh_hit = mesh.isin(pillar_map.keys())
+    onc_ids  = set(po_ids.loc[po_ids["scope"] == "oncologic", "mesh_id"].astype(str))
+    cond_ids = set(po_ids.loc[po_ids["scope"] == "conditional", "mesh_id"].astype(str))
+    # Generic molecular-methods descriptors (Genomics, Genetic Testing,
+    # Pharmacogenetics) count only when the article is itself cancer-related.
+    mesh_hit = mesh.isin(onc_ids) | (mesh.isin(cond_ids) & is_cancer)
 
     title_lower = df["title"].str.lower().fillna("")
     kw_raw = (

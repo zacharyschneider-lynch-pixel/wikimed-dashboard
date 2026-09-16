@@ -8,7 +8,6 @@ Watson syndrome,Stub,Mid,84.6,17.5,11079.0,2.0,D009456,hereditary_risk,True
 Multiple endocrine neoplasia,C,Mid,83.2,13.3,39032.0,0.0,D009377,hereditary_risk,False
 Letrozole,Start,Mid,81.9,9.8,90035.0,10.0,D000077289,endocrine_targeted,False
 Carcinoembryonic antigen,Start,Mid,81.6,14.2,19600.0,5.0,D002272,biomarker_diagnostic,False
-Genetic screen,Start,Mid,81.0,15.6,4317.0,0.0,D005820,biomarker_diagnostic,False
 Sorafenib,Start,Mid,80.9,25.4,22350.0,8.0,D000077157,targeted_agent,False
 Ramucirumab,Start,Mid,80.3,12.9,7646.0,2.0,D000096662,title_keyword,False
 Axitinib,Start,Mid,80.1,13.0,11474.0,4.0,D000077784,targeted_agent,False
@@ -46,8 +45,6 @@ Anastrozole,C,Mid,72.1,9.3,51334.0,9.0,D000077384,endocrine_targeted,False
 Tuberous sclerosis,C,Mid,72.1,12.2,92474.0,10.0,D014402,hereditary_risk,True
 Neurofibromatosis,C,Mid,72.1,10.1,294921.0,8.0,D017253,hereditary_risk,False
 Multiple endocrine neoplasia type 2,Start,Low,71.6,11.1,20734.0,1.0,D018813,hereditary_risk,False
-Project Nightingale,Start,Low,71.4,13.0,7092.0,1.0,D060148,biomarker_diagnostic,False
-Genetic testing,B,High,71.3,17.2,61781.0,20.0,D005820,biomarker_diagnostic,False
 Hereditary nonpolyposis colorectal cancer,C,Mid,71.1,17.4,119476.0,15.0,D003123,hereditary_risk,False
 Cancer vaccine,C,Mid,70.9,11.0,40797.0,10.0,D019496,precision_therapy,False
 Gefitinib,C,Mid,70.6,11.2,15304.0,6.0,D000077156,targeted_agent,False
@@ -57,10 +54,8 @@ Panobinostat,C,Mid,69.4,11.9,4689.0,2.0,D000077767,targeted_agent,False
 WAGR syndrome,Start,Low,68.8,14.9,9559.0,2.0,D017624,hereditary_risk,True
 Fadrozole,Stub,Low,68.7,17.7,1403.0,1.0,D017316,endocrine_targeted,False
 Liquid biopsy,C,Mid,68.6,15.7,7349.0,5.0,D000073890,biomarker_diagnostic,False
-Transgenerational epigenetic inheritance,C,Mid,68.4,18.4,27144.0,15.0,D057890,biomarker_diagnostic,False
 Zongertinib,C,Mid,68.1,8.8,8917.0,11.0,D018719,biomarker_diagnostic,False
 National Wilms Tumor Study Group,Stub,Low,68.0,11.8,549.0,0.0,D009396,hereditary_risk,False
-Carrier testing,C,Mid,67.6,15.0,1421.0,1.0,D006580,biomarker_diagnostic,False
 OPCS-4,Start,Low,67.6,16.1,2953.0,2.0,D066247,biomarker_diagnostic,False
 Bortezomib,B,Mid,67.4,10.8,35114.0,3.0,D000069286,title_keyword,False
 Afatinib,C,Mid,67.4,10.4,12171.0,12.0,D000077716,targeted_agent,False
@@ -68,89 +63,61 @@ Bortezomib/dexamethasone,Stub,Mid,67.2,10.7,0.0,1.0,D000069286,title_keyword,Fal
 Nevoid basal-cell carcinoma syndrome,Start,Low,67.0,13.0,15012.0,2.0,D001478,hereditary_risk,True
 Targeted therapy,C,Mid,67.0,17.4,22951.0,6.0,D058990,precision_therapy,False
 Multiple endocrine neoplasia type 1,Start,Low,66.9,14.2,25836.0,4.0,D018761,hereditary_risk,False
-Nutritional genomics,Start,Low,66.6,12.9,5538.0,2.0,D054647,biomarker_diagnostic,False
-Noninvasive prenatal testing,Start,Low,66.4,13.8,14285.0,8.0,D000081182,biomarker_diagnostic,False
-Project Manhigh,Start,Low,66.4,11.9,12062.0,2.0,D060148,biomarker_diagnostic,False
 Oncogenesis (journal),Stub,Low,66.2,10.6,787.0,2.0,D063646,title_keyword,False
 Bevacizumab,B,Mid,66.1,12.9,72042.0,11.0,D000068258,targeted_agent,False
-Epigenetics,B,Mid,65.8,15.6,305083.0,22.0,D057890,biomarker_diagnostic,False
 Targeted therapy of lung cancer,C,Mid,65.5,21.6,1066.0,1.0,D008175,title_keyword,False
 Imatinib,B,Mid,65.5,12.3,77549.0,9.0,D000068877,targeted_agent,False
 Lynch Syndrome International,Stub,Low,65.5,14.5,886.0,0.0,D003123,hereditary_risk,False
 Trastuzumab,B,Mid,65.4,9.6,53946.0,9.0,D000068878,targeted_agent,False
 MUTYH-associated polyposis,Start,Low,65.2,16.1,2969.0,1.0,D011125,hereditary_risk,False
-Project Lifesaver,Start,Low,65.2,16.7,2053.0,2.0,D060148,biomarker_diagnostic,False
 Tumor suppressor gene,Start,Low,65.1,14.6,21785.0,10.0,D016147,title_keyword,False
 Denys–Drash syndrome,Start,Low,64.9,,5733.0,2.0,D030321,hereditary_risk,True
 Lhermitte–Duclos disease,Start,Low,64.7,11.6,5496.0,3.0,D006223,hereditary_risk,True
 Society for Immunotherapy of Cancer,Start,Low,64.6,25.8,998.0,0.0,,title_keyword,False
 CDK inhibitor,Start,Low,64.0,13.5,8858.0,7.0,D047428,targeted_agent,False
 Hereditary cancer syndrome,C,Mid,63.8,18.8,9004.0,6.0,D009386,hereditary_risk,False
-Celera Corporation,Start,Low,63.3,15.3,10139.0,3.0,D016045,biomarker_diagnostic,False
 Cyproterone acetate,B,Mid,63.3,11.9,76493.0,14.0,D017373,endocrine_targeted,False
 CA19-9,C,Low,63.1,10.9,16372.0,3.0,D018395,biomarker_diagnostic,False
 Familial adenomatous polyposis,B,Mid,62.9,15.4,43228.0,5.0,D011125,hereditary_risk,False
 Cowden syndrome,B,Mid,62.9,14.9,41756.0,6.0,D006223,hereditary_risk,True
-Personal genomics,B,High,62.9,16.9,7084.0,11.0,D023281,biomarker_diagnostic,False
 Erlotinib,B,Mid,62.6,10.6,16726.0,5.0,D000069347,targeted_agent,False
 Oncogene addiction,Start,Low,62.6,13.9,1056.0,1.0,D000074723,title_keyword,False
-Genomics England,Start,Low,62.5,11.9,5496.0,5.0,D023281,biomarker_diagnostic,False
 Tamoxifen,B,Mid,62.4,9.8,102912.0,17.0,D013629,endocrine_targeted,False
 Neurofibromatosis type II,B,Mid,62.4,13.2,46897.0,4.0,D016518,hereditary_risk,False
-Structural genomics,Start,Low,62.0,15.5,2418.0,5.0,D023281,biomarker_diagnostic,False
-Epigenetics of schizophrenia,C,Mid,61.8,18.6,2077.0,4.0,D057890,biomarker_diagnostic,False
 Alpha-fetoprotein,B,Mid,61.8,10.7,19628.0,7.0,D000509,biomarker_diagnostic,False
-Genomics,B,Mid,61.8,17.2,47422.0,9.0,D023281,biomarker_diagnostic,False
 Personalized medicine,B,Mid,61.5,20.0,28376.0,18.0,D057285,precision_therapy,False
 Hereditary multiple exostoses,C,Low,61.4,14.3,15982.0,3.0,D005097,hereditary_risk,True
-Garki Project,Stub,Low,61.4,17.4,310.0,1.0,D060148,biomarker_diagnostic,False
 Amsterdam criteria,B,Mid,61.4,18.0,5049.0,1.0,D003123,hereditary_risk,False
 Carcinoembryonic antigen peptide-1,Stub,Low,61.3,20.5,183.0,0.0,D002272,biomarker_diagnostic,False
 Radioimmunotherapy,Start,Mid,61.2,14.5,0.0,0.0,D016499,precision_therapy,False
-PharmGKB,C,Low,61.2,16.7,2786.0,1.0,D010597,biomarker_diagnostic,False
 CAR T cell,C,Low,61.0,12.7,87976.0,26.0,D000076962,targeted_agent,False
 ALK positive lung cancer,C,Low,60.6,14.7,3672.0,2.0,D008175,title_keyword,False
-Project Gesundheit,Stub,Low,60.3,9.8,253.0,1.0,D060148,biomarker_diagnostic,False
-HITS-CLIP,Start,Low,60.2,19.5,786.0,1.0,D000081204,biomarker_diagnostic,False
 Theranostics,C,Low,60.0,16.8,18501.0,9.0,D057285,precision_therapy,False
 Lydia Lynch,Start,Low,59.9,10.9,1300.0,3.0,D055847,hereditary_risk,False
 HER2,C,Low,59.9,13.4,37209.0,12.0,D018719,biomarker_diagnostic,False
-Clinical metagenomic sequencing,C,Low,59.8,19.2,2327.0,0.0,D056186,biomarker_diagnostic,False
 Tumor mutational burden,B,Mid,59.5,15.6,7451.0,8.0,D009154,title_keyword,False
 Active immunotherapy,Start,Low,59.5,19.3,720.0,1.0,D016233,precision_therapy,False
 Peutz–Jeghers syndrome,C,Low,59.4,16.5,40049.0,6.0,D010580,hereditary_risk,False
 Graham–Boyle–Troxell syndrome,Stub,Low,59.4,14.9,210.0,1.0,D006223,hereditary_risk,False
-Phase Genomics,Start,Low,59.3,17.6,531.0,0.0,D023281,biomarker_diagnostic,False
 Flutamide,B,Mid,59.0,11.9,13992.0,9.0,D005485,endocrine_targeted,False
-Behavioral epigenetics,C,Low,58.9,16.2,8259.0,2.0,D057890,biomarker_diagnostic,False
 Cancer immunotherapy,B,Mid,58.3,16.4,32883.0,21.0,D009369,title_keyword,False
 Neurofibromatosis type I,C,Low,58.1,13.4,133816.0,20.0,D009456,hereditary_risk,False
 Dasatinib,Start,Mid,58.0,11.1,0.0,0.0,D000069439,targeted_agent,False
 Catherine J. Wu,C,Low,57.9,14.4,2598.0,1.0,D019496,precision_therapy,False
-Pharmacogenomics,B,Mid,57.8,17.4,17100.0,9.0,D010597,biomarker_diagnostic,False
-Epigenomics,B,Mid,57.4,16.0,5127.0,5.0,D057890,biomarker_diagnostic,False
 Li Zhaoping,Start,Low,57.3,14.1,4903.0,6.0,D016864,hereditary_risk,False
 Bannayan–Riley–Ruvalcaba syndrome,C,Low,57.2,14.6,5473.0,1.0,D006223,hereditary_risk,True
-Pseudodeficiency alleles,C,Low,56.6,15.2,1047.0,0.0,D005820,biomarker_diagnostic,False
 Trastuzumab/hyaluronidase,Start,Mid,56.4,13.2,0.0,2.0,D000068878,targeted_agent,False
 Nafoxidine,Start,Low,55.9,16.4,901.0,1.0,D009256,endocrine_targeted,False
 Circulating tumor cell,C,Low,54.8,14.8,7672.0,14.0,D009360,title_keyword,False
 Bernard Fisher (scientist),C,Low,54.8,14.3,3697.0,3.0,D013629,endocrine_targeted,False
 Cancer biomarker,C,Low,54.7,16.0,3691.0,4.0,D014408,biomarker_diagnostic,False
-Epigenetic therapy,C,Low,54.4,20.4,3417.0,8.0,D057890,biomarker_diagnostic,False
-Project Rozana,C,Low,54.2,12.3,1457.0,2.0,D060148,biomarker_diagnostic,False
 Nivolumab/relatlimab,Start,Mid,54.0,12.0,0.0,1.0,D000077594,targeted_agent,False
 Frances Gardner,Start,Low,54.0,11.7,751.0,0.0,D005736,hereditary_risk,False
 Individualized medicine,Start,Low,53.5,17.0,693.0,4.0,D057285,precision_therapy,False
 Vaccine therapy,Start,Low,53.1,18.3,564.0,3.0,D016233,precision_therapy,False
-ZAMBART Project,Start,Low,52.7,14.7,537.0,3.0,D060148,biomarker_diagnostic,False
-Tute Genomics,Start,Low,52.4,12.6,519.0,3.0,D023281,biomarker_diagnostic,False
-Epigenetics of depression,C,,51.9,15.8,5676.0,3.0,D057890,biomarker_diagnostic,False
 Cancer pharmacogenomics,C,Low,51.8,16.0,1047.0,2.0,D009369,title_keyword,False
-Instituto Nacional de Medicina Genómica,C,Low,51.7,15.1,780.0,1.0,D023281,biomarker_diagnostic,False
 Precision diagnostics,C,Low,51.7,17.7,1833.0,5.0,D057285,precision_therapy,False
 MTOR inhibitors,B,Low,51.7,16.7,22769.0,5.0,D000091203,targeted_agent,False
-Melanie Bahlo,Start,Low,51.6,,465.0,3.0,D023281,biomarker_diagnostic,False
 Education in personalized medicine,Start,Low,51.2,19.8,217.0,1.0,D057285,precision_therapy,False
 Aminoglutethimide,B,Low,50.4,14.5,6315.0,1.0,D000616,endocrine_targeted,False
 Li Lianda,Start,Low,49.4,15.7,249.0,2.0,D016864,hereditary_risk,False
@@ -161,13 +128,10 @@ Nivolumab/hyaluronidase,Start,Mid,47.8,12.6,0.0,5.0,D000077594,targeted_agent,Fa
 Birt–Hogg–Dubé syndrome,GA,Low,47.7,14.4,34448.0,3.0,D058249,hereditary_risk,True
 Cellular adoptive immunotherapy,C,Low,46.8,14.7,2626.0,6.0,D016219,precision_therapy,False
 Side effects of cyproterone acetate,B,Low,46.7,14.8,11358.0,7.0,D017373,endocrine_targeted,False
-Personalized onco-genomics,C,Low,46.1,17.3,784.0,4.0,D023281,biomarker_diagnostic,False
 Li Jieshou,C,Low,45.9,,252.0,0.0,D016864,hereditary_risk,False
-Structural Genomics Consortium,C,Low,45.7,14.5,1837.0,11.0,D023281,biomarker_diagnostic,False
 4-Acetamidobutanal,Start,,45.5,15.1,604.0,4.0,D066247,biomarker_diagnostic,False
 Norah Schuster,C,Low,44.8,15.6,568.0,3.0,D011125,hereditary_risk,False
 Targeted molecular therapy for neuroblastoma,C,Low,44.4,13.3,299.0,1.0,D058990,precision_therapy,False
-2x2 Project,C,Low,43.4,16.7,366.0,2.0,D060148,biomarker_diagnostic,False
 John Henry Wishart,C,Low,42.9,11.2,341.0,2.0,D016518,hereditary_risk,False
 AmadeoLab,C,Low,42.6,13.0,512.0,4.0,D018719,biomarker_diagnostic,False
 Joseph Merrick,GA,Low,42.6,9.9,598243.0,25.0,D009456,hereditary_risk,False
@@ -178,9 +142,6 @@ Ethinylestradiol/cyproterone acetate,C,Mid,38.4,17.5,0.0,11.0,D017373,endocrine_
 ALK+ large B-cell lymphoma,C,Low,38.4,5.2,5.0,2.0,D016393,title_keyword,False
 Circulating tumor DNA,Start,Low,37.4,15.8,0.0,7.0,D000074141,biomarker_diagnostic,False
 Individualized cancer immunotherapy,B,Low,36.9,16.2,710.0,4.0,D009369,title_keyword,False
-Ophelia Project,C,Low,36.2,13.3,640.0,3.0,D060148,biomarker_diagnostic,False
-Neuroproteomics,B,Low,35.8,10.0,529.0,3.0,D040901,biomarker_diagnostic,False
-Marc Hellerstein,C,Low,33.7,15.3,98.0,6.0,D023281,biomarker_diagnostic,False
 Li Sijin,Start,Low,32.9,17.2,81.0,4.0,D016864,hereditary_risk,False
 Denys Skoryi,B,Low,31.9,15.5,527.0,8.0,D030321,hereditary_risk,False
 Li Zhisui,C,Low,24.1,13.2,0.0,7.0,D016864,hereditary_risk,False
