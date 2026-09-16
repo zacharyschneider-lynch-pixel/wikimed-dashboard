@@ -3,7 +3,7 @@ from docx import Document
 from docx.shared import Pt, RGBColor, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
-OUT = r"C:\Users\zachs\OneDrive\Desktop\Wiki Dashboard Project\WIN Abstract_Precision Oncology_Zach Schneider-Lynch_v2.docx"
+OUT = r"C:\Users\zachs\OneDrive\Desktop\Wiki Dashboard Project\WIN Abstract_Precision Oncology_Zach Schneider-Lynch.docx"
 
 TITLE_SHORT = ("WikiMed Article Recommender: Quantifying Reach and Readability Gaps "
                "in Public Precision Oncology Information")
@@ -11,14 +11,14 @@ TITLE_FULL = ("WikiMed Article Recommender: An Open-Source Dashboard Quantifying
               "and Readability Gaps in Publicly Accessible Precision Oncology Information")
 
 VERSION_A = [
-    ("Background:", "Wikipedia is among the most accessed health information sources and depends entirely upon volunteer editors, and is often the only free explanation of a biomarker report or targeted agent available outside academic cancer centres. General cancer content was shown over a decade ago to read at college level (Flesch-Kincaid grade 14.1 versus 9.6 for the NCI Physician Data Query database), but the precision oncology (PO) corpus has never been separately characterised, even as biomarker-driven care enters routine practice. We developed a customized algorithm and dashboard to address this unmet need."),
+    ("Background:", "Wikipedia is the most accessed online health information resource and depends entirely upon volunteer editors, and is often the only free explanation of a biomarker report or targeted agent available outside academic cancer centres. General cancer content was shown over a decade ago to read at college level (Flesch-Kincaid grade 14.1 versus 9.6 for the NCI Physician Data Query database), but the precision oncology (PO) corpus has never been separately characterised, even as biomarker-driven care enters routine practice. We developed a customized algorithm and dashboard to address this unmet need."),
     ("Methods:", "An open-source web application was developed featuring dedicated Cancer and Precision Oncology dashboards. Medical Subject Headings (MeSH) descriptors were assigned to WikiProject Medicine-flagged articles through a custom seven-layer pipeline. PO articles were isolated using 128 MeSH descriptors spanning tumour biomarkers, molecular diagnostics, targeted and immunological agents, endocrine therapy, and hereditary cancer risk. Articles were scored using a normalized Impact-Need Score (0-100) combining pageview reach, importance labels, quality deficit, editor scarcity, and clickstream-derived search intent, with readability by Flesch-Kincaid (FK) grade."),
     ("Results:", "Among >53,000 WikiProject Medicine-tracked articles, 1,859 were cancer-specific and 131 PO-specific. PO articles drew a median 9,559 annual pageviews versus 2,432 for other cancer articles (p<0.001), yet were written at a higher median FK grade of 14.4 (IQR 12.3\u201316.1) versus 13.6 (p=0.020). Only 1 of 128 (0.8%) was readable at or below the eighth-grade level of the average US adult, while 78.9% exceeded twelfth grade. Median Impact-Need Score was 66.1 (IQR 59.4\u201374.0) versus 63.5 (p=0.008); 49.6% were Stub or Start quality, with one Good Article and none Featured."),
     ("Conclusions:", "Wikipedia is an ideal forum for widespread and unfettered information sharing. By repurposing open data standards such as MeSH, our tool provides a scalable, transparent pathway for directing volunteer editors toward the highest-impact gaps in publicly accessible precision oncology information. The concepts that increasingly determine treatment selection are among the most read and least readable cancer content on Wikipedia, a barrier falling hardest on those furthest from specialist care and propagating into the large language models now trained on this corpus. The dashboard is available at wikimed-dashboard.com under CC BY-NC-SA 4.0, open-source and auto-updated monthly."),
 ]
 
 VERSION_B = [
-    ("Background:", "Wikipedia is among the most accessed health information sources and depends entirely upon volunteer editors, with roughly half of US physicians reporting consulting it in practice. For patients and clinicians outside academic cancer centres it is frequently the first freely available explanation of a biomarker report, a targeted agent, or an inherited cancer risk. General cancer content on Wikipedia was shown over a decade ago to read at college level (Flesch-Kincaid grade 14.1, versus 9.6 for the NCI Physician Data Query database), but the precision oncology (PO) corpus specifically has never been separately characterised, even as biomarker-driven care enters routine practice. We developed a customized algorithm and dashboard to address this unmet need."),
+    ("Background:", "Wikipedia is the most accessed online health information resource and depends entirely upon volunteer editors. For patients and clinicians outside academic cancer centres it is frequently the first freely available explanation of a biomarker report, a targeted agent, or an inherited cancer risk. General cancer content on Wikipedia was shown over a decade ago to read at college level (Flesch-Kincaid grade 14.1, versus 9.6 for the NCI Physician Data Query database), but the precision oncology (PO) corpus specifically has never been separately characterised, even as biomarker-driven care enters routine practice. We developed a customized algorithm and dashboard to address this unmet need."),
     ("Methods:", "An open-source web application was developed featuring dedicated Cancer and Precision Oncology dashboards. Medical Subject Headings (MeSH) descriptors were assigned to WikiProject Medicine-flagged articles through a custom seven-layer pipeline, and cancer-specific articles identified by filtering assigned descriptors against MeSH subtrees. PO articles were isolated using 128 descriptors spanning tumour biomarkers, molecular diagnostics, targeted and immunological antineoplastic agents, biomarker-directed endocrine therapy, and hereditary cancer predisposition, with drug capture requiring both an antineoplastic action and a molecularly targeted mechanism. Each article was scored using a normalized Impact-Need Score (0-100) combining pageview reach, editorial importance labels, quality deficit, editor scarcity, and clickstream-derived search intent. Readability was estimated by Flesch-Kincaid (FK) grade level, and PO articles compared against the remaining cancer corpus (Mann-Whitney U)."),
     ("Results:", "Among >53,000 WikiProject Medicine-tracked articles, 1,859 cancer-specific articles were identified, of which 131 were PO-specific. PO articles drew a median 9,559 annual pageviews versus 2,432 for other cancer articles (p<0.001; 2.96 million views in total), yet were written at a significantly higher median FK grade level of 14.4 (IQR 12.3\u201316.1) versus 13.6 (p=0.020). Only 1 of 128 PO articles (0.8%) was readable at or below the eighth-grade level of the average US adult, while 78.9% exceeded twelfth-grade level. Median Impact-Need Score was 66.1 (IQR 59.4\u201374.0) versus 63.5 (p=0.008); 49.6% were rated Stub or Start quality, with one Good Article and none Featured. Rare cancers showed the widest gap, drawing a median 15,497 annual views with 90.9% written above twelfth-grade level. The cancer-wide median of 13.6 closely matches the grade 14.1 reported for Wikipedia cancer content in 2011, indicating no readability improvement over fifteen years."),
     ("Conclusions:", "Wikipedia is an ideal forum for widespread and unfettered information sharing. By repurposing open data standards such as MeSH, our tool provides a scalable, transparent pathway for directing medical volunteer editors toward the highest-impact gaps in publicly accessible precision oncology information. The molecular concepts that increasingly determine treatment selection are among the most read and least readable cancer content on Wikipedia \u2014 a barrier that falls hardest on those already furthest from specialist care, and one that propagates into the large language models now trained on this corpus. The dashboard is available for public use at wikimed-dashboard.com, licensed CC BY-NC-SA 4.0, with all code, MeSH mapping files, and pipelines open-source on GitHub and auto-updated monthly. A pre-post survey study across seven partner medical schools is planned."),
@@ -65,30 +65,44 @@ LIMITS = [
 
 
 REFS = [
+    ("Smith DA. Situating Wikipedia as a health information resource in various contexts: "
+     "A scoping review. PLoS One. 2020;15(2):e0228786. doi:10.1371/journal.pone.0228786. PMC7028268.",
+     "VERIFIED against full text. Supports the opening sentence directly: “English language "
+     "medical content has received more unique pageviews than any other health information resource "
+     "online,” and “accessed frequently, as much as or more than other free online health "
+     "information sources, such as Medline Plus.” Also reports Wikipedia pages ranking highly in "
+     "Google results, with ~93% of clicks arriving from Google."),
     ("Rajagopalan MS, Khanna VK, Leiter Y, Stott M, Showalter TN, Dicker AP, Lawrence YR. "
      "Patient-oriented cancer information on the internet: a comparison of Wikipedia and a "
      "professionally maintained database. J Oncol Pract. 2011;7(5):319-323. "
      "doi:10.1200/JOP.2010.000209. PMID 22211130.",
-     "VERIFIED against the PMC full text. Supports the grade 14.1 vs 9.6 figures, 10 cancer types "
-     "(5 common, 5 uncommon), and comparable accuracy (1 error in 80 statements). This is the "
-     "study that makes an unqualified novelty claim untenable — cite it as prior work."),
-    ("Smith DA. Situating Wikipedia as a health information resource in various contexts: "
-     "A scoping review. PLoS One. 2020;15(2):e0228786. PMC7028268.",
-     "Supports Wikipedia as a widely used health information resource across patient, student and "
-     "clinician populations. Verify the exact volume/pages before submission."),
-    ("IMS Institute for Healthcare Informatics. Engaging patients through social media. 2014.",
-     "Source of the “leading single source of healthcare information” characterisation and the "
-     "~50% physician usage figure. Industry report rather than peer-reviewed — if a reviewer "
-     "objects, the Smith scoping review carries the same point."),
+     "VERIFIED against PMC full text. Supports the grade 14.1 vs 9.6 comparison, 10 cancer types "
+     "(5 common, 5 uncommon), and comparable accuracy (1 error in 80 statements). Cite as prior "
+     "work — an unqualified novelty claim is untenable against it, which is why the claim is "
+     "narrowed to the precision oncology corpus."),
     ("Kutner M, Greenberg E, Jin Y, Paulsen C. The Health Literacy of America’s Adults: Results "
      "From the 2003 National Assessment of Adult Literacy (NCES 2006-483). US Department of "
      "Education, National Center for Education Statistics; 2006.",
-     "Underpins the eighth-grade benchmark for the average US adult."),
+     "Underpins the eighth-grade benchmark for the average US adult used in Results."),
     ("American Medical Association / National Institutes of Health patient education readability "
-     "guidance (commonly cited as ≤ 6th grade; NIH guidance is sometimes cited as 6th–8th).",
-     "A STRONGER benchmark than the NAAL average, because it is a normative standard rather than "
-     "a population mean — and the gap it implies is larger. Trace to the primary AMA/NIH document "
-     "before citing, as secondary sources disagree on the exact grade."),
+     "guidance (commonly cited as ≤ 6th grade; NIH guidance sometimes cited as 6th–8th).",
+     "A STRONGER benchmark than the NAAL population average: it is a normative standard, and the "
+     "gap it implies is larger. Trace to the primary AMA/NIH document before citing — secondary "
+     "sources disagree on the exact grade."),
+]
+
+NOT_USED = [
+    ("IMS Institute for Healthcare Informatics. Engaging patients through social media. 2014.",
+     "Source of the widely repeated “~50% of US physicians consult Wikipedia” figure. It is an "
+     "industry report rather than peer-reviewed, and Smith (2020) states outright that “the "
+     "evidence for professional use is more limited.” The physician clause was removed from the "
+     "Background rather than rest on this."),
+    ("Rössler B, Holldack H, Schebesta K. Influence of Wikipedia and other web resources on "
+     "acute and critical care decisions: a web-based survey. Intensive Care Med Exp. "
+     "2015;3(Suppl 1):A867.",
+     "Reports 77% of interns, 74% of residents and 65% of consultants using Wikipedia — but it is "
+     "a conference meeting abstract rather than a full paper, n=372, anaesthesia and critical care "
+     "only, and Austrian/Australian rather than US. Not generalisable to the claim."),
 ]
 
 
@@ -204,6 +218,19 @@ def main():
         p = doc.add_paragraph()
         p.paragraph_format.space_after = Pt(2)
         p.add_run(f"{i}. ").bold = True
+        p.add_run(cite)
+        q = doc.add_paragraph()
+        q.paragraph_format.left_indent = Inches(0.3)
+        q.paragraph_format.space_after = Pt(10)
+        r = q.add_run(note)
+        r.italic = True
+        r.font.size = Pt(9.5)
+        r.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
+
+    heading("Considered and deliberately not used")
+    for cite, note in NOT_USED:
+        p = doc.add_paragraph()
+        p.paragraph_format.space_after = Pt(2)
         p.add_run(cite)
         q = doc.add_paragraph()
         q.paragraph_format.left_indent = Inches(0.3)
