@@ -1,0 +1,130 @@
+mesh_id,mesh_name,pillar,source
+D000071185,Pharmacogenomic Testing,biomarker_diagnostic,mesh_tree
+D000071696,Proteogenomics,biomarker_diagnostic,mesh_tree
+D000073718,Pancreatitis-Associated Proteins,biomarker_diagnostic,mesh_tree
+D000073890,Liquid Biopsy,biomarker_diagnostic,mesh_tree
+D000074141,Circulating Tumor DNA,biomarker_diagnostic,mesh_tree
+D000080506,Sialyl Lewis X Antigen,biomarker_diagnostic,mesh_tree
+D000081182,Noninvasive Prenatal Testing,biomarker_diagnostic,mesh_tree
+D000081204,Chromatin Immunoprecipitation Sequencing,biomarker_diagnostic,mesh_tree
+D000081246,RNA-Seq,biomarker_diagnostic,mesh_tree
+D000085843,Imaging Genomics,biomarker_diagnostic,mesh_tree
+D000085844,Radiation Genomics,biomarker_diagnostic,mesh_tree
+D000094506,Ribosome Profiling,biomarker_diagnostic,mesh_tree
+D000097826,Social Genomics,biomarker_diagnostic,mesh_tree
+D000099129,Epitranscriptomics,biomarker_diagnostic,mesh_tree
+D000509,alpha-Fetoproteins,biomarker_diagnostic,mesh_tree
+D002272,Carcinoembryonic Antigen,biomarker_diagnostic,mesh_tree
+D005820,Genetic Testing,biomarker_diagnostic,mesh_tree
+D006580,Genetic Carrier Screening,biomarker_diagnostic,mesh_tree
+D006729,"Hormones, Ectopic",biomarker_diagnostic,mesh_tree
+D009647,Normetanephrine,biomarker_diagnostic,mesh_tree
+D010597,Pharmacogenetics,biomarker_diagnostic,mesh_tree
+D014408,"Biomarkers, Tumor",biomarker_diagnostic,mesh_tree
+D015260,Neprilysin,biomarker_diagnostic,mesh_tree
+D015295,"Antigens, Tumor-Associated, Carbohydrate",biomarker_diagnostic,mesh_tree
+D016045,Human Genome Project,biomarker_diagnostic,mesh_tree
+D016256,Lewis X Antigen,biomarker_diagnostic,mesh_tree
+D016708,Synaptophysin,biomarker_diagnostic,mesh_tree
+D017430,Prostate-Specific Antigen,biomarker_diagnostic,mesh_tree
+D017730,Ki-1 Antigen,biomarker_diagnostic,mesh_tree
+D018394,CA-125 Antigen,biomarker_diagnostic,mesh_tree
+D018395,CA-19-9 Antigen,biomarker_diagnostic,mesh_tree
+D018396,Mucin-1,biomarker_diagnostic,mesh_tree
+D018719,Erb-b2 Receptor Tyrosine Kinases,biomarker_diagnostic,mesh_tree
+D018809,Proliferating Cell Nuclear Antigen,biomarker_diagnostic,mesh_tree
+D018997,"Chorionic Gonadotropin, beta Subunit, Human",biomarker_diagnostic,mesh_tree
+D019394,Ki-67 Antigen,biomarker_diagnostic,mesh_tree
+D019396,Tissue Polypeptide Antigen,biomarker_diagnostic,mesh_tree
+D020840,Tissue Kallikreins,biomarker_diagnostic,mesh_tree
+D020893,"Receptor, ErbB-3",biomarker_diagnostic,mesh_tree
+D023281,Genomics,biomarker_diagnostic,mesh_tree
+D040901,Proteomics,biomarker_diagnostic,mesh_tree
+D054647,Nutrigenomics,biomarker_diagnostic,mesh_tree
+D054794,Glycomics,biomarker_diagnostic,mesh_tree
+D055514,Nephroblastoma Overexpressed Protein,biomarker_diagnostic,mesh_tree
+D056186,Metagenomics,biomarker_diagnostic,mesh_tree
+D057890,Epigenomics,biomarker_diagnostic,mesh_tree
+D059014,High-Throughput Nucleotide Sequencing,biomarker_diagnostic,mesh_tree
+D060148,HapMap Project,biomarker_diagnostic,mesh_tree
+D060785,Mammaglobin A,biomarker_diagnostic,mesh_tree
+D066247,"Receptor, ErbB-4",biomarker_diagnostic,mesh_tree
+D000077289,Letrozole,endocrine_targeted,pharm_action
+D000077384,Anastrozole,endocrine_targeted,pharm_action
+D000616,Aminoglutethimide,endocrine_targeted,pharm_action
+D005485,Flutamide,endocrine_targeted,pharm_action
+D009256,Nafoxidine,endocrine_targeted,pharm_action
+D013629,Tamoxifen,endocrine_targeted,pharm_action
+D017316,Fadrozole,endocrine_targeted,pharm_action
+D017373,Cyproterone Acetate,endocrine_targeted,pharm_action
+D018931,"Antineoplastic Agents, Hormonal",endocrine_targeted,mesh_tree
+D001478,Basal Cell Nevus Syndrome,hereditary_risk,mesh_tree
+D003123,"Colorectal Neoplasms, Hereditary Nonpolyposis",hereditary_risk,mesh_tree
+D004416,Dysplastic Nevus Syndrome,hereditary_risk,mesh_tree
+D005097,"Exostoses, Multiple Hereditary",hereditary_risk,mesh_tree
+D005736,Gardner Syndrome,hereditary_risk,mesh_tree
+D006223,"Hamartoma Syndrome, Multiple",hereditary_risk,mesh_tree
+D009377,Multiple Endocrine Neoplasia,hereditary_risk,mesh_tree
+D009386,"Neoplastic Syndromes, Hereditary",hereditary_risk,mesh_tree
+D009396,Wilms Tumor,hereditary_risk,mesh_tree
+D009456,Neurofibromatosis 1,hereditary_risk,mesh_tree
+D010580,Peutz-Jeghers Syndrome,hereditary_risk,mesh_tree
+D011125,Adenomatous Polyposis Coli,hereditary_risk,mesh_tree
+D014402,Tuberous Sclerosis,hereditary_risk,mesh_tree
+D016518,Neurofibromatosis 2,hereditary_risk,mesh_tree
+D016864,Li-Fraumeni Syndrome,hereditary_risk,mesh_tree
+D017253,Neurofibromatoses,hereditary_risk,mesh_tree
+D017624,WAGR Syndrome,hereditary_risk,mesh_tree
+D018761,Multiple Endocrine Neoplasia Type 1,hereditary_risk,mesh_tree
+D018813,Multiple Endocrine Neoplasia Type 2a,hereditary_risk,mesh_tree
+D018814,Multiple Endocrine Neoplasia Type 2b,hereditary_risk,mesh_tree
+D030321,Denys-Drash Syndrome,hereditary_risk,mesh_tree
+D055653,Muir-Torre Syndrome,hereditary_risk,mesh_tree
+D055847,Lynch Syndrome II,hereditary_risk,mesh_tree
+D058249,Birt-Hogg-Dube Syndrome,hereditary_risk,mesh_tree
+D061325,Hereditary Breast and Ovarian Cancer Syndrome,hereditary_risk,mesh_tree
+D007167,Immunotherapy,precision_therapy,explicit_uid
+D016219,"Immunotherapy, Adoptive",precision_therapy,explicit_uid
+D016233,"Immunotherapy, Active",precision_therapy,explicit_uid
+D016499,Radioimmunotherapy,precision_therapy,explicit_uid
+D019264,Adoptive Transfer,precision_therapy,explicit_uid
+D019496,Cancer Vaccines,precision_therapy,explicit_uid
+D050130,Oncolytic Virotherapy,precision_therapy,explicit_uid
+D057285,Precision Medicine,precision_therapy,mesh_tree
+D058990,Molecular Targeted Therapy,precision_therapy,mesh_tree
+D000068258,Bevacizumab,targeted_agent,pharm_action
+D000068818,Cetuximab,targeted_agent,pharm_action
+D000068877,Imatinib Mesylate,targeted_agent,pharm_action
+D000068878,Trastuzumab,targeted_agent,pharm_action
+D000069283,Rituximab,targeted_agent,pharm_action
+D000069347,Erlotinib Hydrochloride,targeted_agent,pharm_action
+D000069439,Dasatinib,targeted_agent,pharm_action
+D000074322,"Antineoplastic Agents, Immunological",targeted_agent,mesh_tree
+D000074323,Alemtuzumab,targeted_agent,pharm_action
+D000074324,Ipilimumab,targeted_agent,pharm_action
+D000075242,Janus Kinase Inhibitors,targeted_agent,mesh_tree
+D000076962,"Receptors, Chimeric Antigen",targeted_agent,mesh_tree
+D000077156,Gefitinib,targeted_agent,pharm_action
+D000077157,Sorafenib,targeted_agent,pharm_action
+D000077210,Sunitinib,targeted_agent,pharm_action
+D000077337,Vorinostat,targeted_agent,pharm_action
+D000077341,Lapatinib,targeted_agent,pharm_action
+D000077484,Vemurafenib,targeted_agent,pharm_action
+D000077544,Panitumumab,targeted_agent,pharm_action
+D000077546,Roscovitine,targeted_agent,pharm_action
+D000077547,Crizotinib,targeted_agent,pharm_action
+D000077594,Nivolumab,targeted_agent,pharm_action
+D000077609,O-(Chloroacetylcarbamoyl)fumagillol,targeted_agent,pharm_action
+D000077716,Afatinib,targeted_agent,pharm_action
+D000077767,Panobinostat,targeted_agent,pharm_action
+D000077784,Axitinib,targeted_agent,pharm_action
+D000079963,Brentuximab Vedotin,targeted_agent,pharm_action
+D000079982,Gemtuzumab,targeted_agent,pharm_action
+D000080044,Ado-Trastuzumab Emtansine,targeted_agent,pharm_action
+D000080045,Inotuzumab Ozogamicin,targeted_agent,pharm_action
+D000082082,Immune Checkpoint Inhibitors,targeted_agent,mesh_tree
+D000091203,MTOR Inhibitors,targeted_agent,mesh_tree
+D000092004,Tyrosine Kinase Inhibitors,targeted_agent,mesh_tree
+D043168,Angiostatins,targeted_agent,pharm_action
+D043169,Endostatins,targeted_agent,pharm_action
+D047428,Protein Kinase Inhibitors,targeted_agent,mesh_tree

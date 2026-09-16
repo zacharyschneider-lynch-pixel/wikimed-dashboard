@@ -7,8 +7,9 @@ st.set_page_config(
 )
 
 pg = st.navigation([
-    st.Page("pages/Home.py",             title="WikiMed Dashboard", icon="🔬", default=True),
-    st.Page("pages/Cancer_Dashboard.py", title="Cancer Dashboard",  icon="🎗️"),
-    st.Page("pages/Methodology.py",      title="Methodology",       icon="📖"),
+    st.Page("pages/Home.py",              title="WikiMed Dashboard",  icon="🔬", default=True),
+    st.Page("pages/Cancer_Dashboard.py",  title="Cancer Dashboard",   icon="🎗️"),
+    st.Page("pages/Precision_Oncology.py", title="Precision Oncology", icon="🧬"),
+    st.Page("pages/Methodology.py",       title="Methodology",        icon="📖"),
 ])
 pg.run()
