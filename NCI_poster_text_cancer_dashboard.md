@@ -122,8 +122,8 @@ Numbering matches the [n] markers in the Introduction. Items marked VERIFIED wer
 
 Paste each caption beneath its figure. Figure 1 belongs in Methods; Figures 2-5 and Table 1 belong in Results, in the order the text references them. Image files are in `poster_figures/`.
 
-**Figure 1.** Data pipeline. Five Wikipedia and Wikimedia API phases, three supplemental signal pipelines, and a seven-layer MeSH descriptor cascade feed three composite scores. The Cancer Dashboard filters the scored corpus to oncology content and refreshes monthly via GitHub Actions.
-  *METHODS - `fig1_pipeline.png`*
+**Figure 1.** MeSH descriptor assignment cascade. Seven layers run in order of data reliability, each processing only the articles the layers above it could not resolve, from human-curated Wikidata properties through to NLM Medical Text Indexer inference. The cascade assigned a descriptor to 32,430 of 53,286 WikiProject Medicine articles (60.9%). The strip below shows those assignments by match confidence, which scores the quality of the match itself and is independent of which layer produced it.
+  *METHODS - `fig1_mesh_cascade.png`*
 
 **Figure 2.** Cancer-related articles identified (n = 1,859). MeSH C04 (Neoplasms) subtree membership accounted for 1,266 articles (68%); antineoplastic agent descriptors reached through MeSH PharmacologicalAction links for 168 (9%); and a title-keyword fallback for the 425 articles (23%) lacking a usable MeSH assignment.
   *RESULTS - `fig2_identification.png`*

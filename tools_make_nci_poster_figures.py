@@ -105,77 +105,131 @@ def save(fig, name, attempts=6):
                 raise
             time.sleep(0.75)
 
-def fig_pipeline():
-    """Figure 1 - data pipeline schematic, drawn to match the other poster figures."""
-    from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+def fig_mesh_cascade():
+    """Figure 1 - the seven-layer MeSH descriptor assignment cascade.
 
-    COLW, GAP = 2.45, 0.55
-    STAGES = [
-        ("DATA SOURCES", BLUES3[0], [
-            ("Wikipedia API", "category, talk, info,\nrevision namespaces"),
-            ("Wikimedia REST API", "12-month and 3-month\npageview totals"),
-            ("Wikimedia Clickstream", "May 2026 referral dataset"),
-            ("NLM MeSH 2026", "descriptor file, C04 subtree,\nPharmacologicalAction links"),
-        ]),
-        ("SIGNAL PIPELINES", "#2171B5", [
-            ("Article metadata", "quality class, importance,\nwatchers, length, editors"),
-            ("Attention signals", "inbound links, traffic velocity"),
-            ("Search intent", "external search vs\ninternal navigation"),
-            ("TF-IDF × MeSH", "top 25 terms per lead section"),
-            ("MeSH cascade", "seven layers, ordered by\ndata reliability"),
-        ]),
-        ("SCORING", "#4292C6", [
-            ("Impact-Need Score", "0–100: reach 30%, importance 25%,\nquality deficit 25%,\nscarcity 10%, search intent 10%"),
-            ("Wiki Attention Score", "0–100: current momentum"),
-            ("Medical Relevance", "1–10: TF-IDF × MeSH overlap"),
-        ]),
-        ("APPLICATION", "#08519C", [
-            ("Cancer filter", "MeSH C04 + antineoplastic\nPharmacologicalAction + keyword\n→ 1,859 articles"),
-            ("Cancer Dashboard", "Streamlit Community Cloud\nwikimed-dashboard.com"),
-            ("Monthly refresh", "GitHub Actions re-fetches\nand recomputes all scores"),
-        ]),
+    Layer descriptions follow pages/Methodology.py, which is the authoritative
+    description of the deployed pipeline. Each layer only sees articles the
+    layers above it could not resolve, so the cascade is ordered by how
+    trustworthy the method is rather than by how much coverage it adds.
+    """
+    from matplotlib.patches import FancyBboxPatch, Circle, FancyArrowPatch
+
+    # Tier palette validated for CVD: 0 FAIL, worst adjacent separation 14.7.
+    TIER = {
+        "Exact":  ("#08306B", "white"),
+        "High":   ("#2171B5", "white"),
+        "Medium": ("#6BAED6", INK),
+        "Lower":  ("#C6DBEF", INK),
+    }
+    LAYERS = [
+        (1, "Wikidata structured data", "Exact",
+         "SPARQL query for property P486 (MeSH Descriptor ID). Human-curated\nand verified; the gold-standard source."),
+        (2, "Wikipedia infobox wikitext", "Exact",
+         "Parse MeshID=, mesh_heading= and mesh= fields from medical infoboxes.\nCatches articles tagged locally but not yet linked in Wikidata."),
+        (3, "MeSH full synonym matching", "High",
+         "Match the title against every entry term across all descriptors in the\nNLM 2026 XML. 'Heart Attack', 'MI' and 'Myocardial Infarct' all resolve to D009203."),
+        (4, "PubMed citation consensus", "High",
+         "Harvest MeSH tags NLM indexers already applied to the papers an article\ncites. Major-topic citation = 2 points, minor-topic = 1; top scorer wins."),
+        (5, "BioPortal NLP annotator", "Medium",
+         "Submit the lead paragraph to the NCBO Annotator filtered to MeSH.\nAccepted when matched text overlaps the title above 30% token similarity."),
+        (6, "NCBI MeSH eSearch", "Medium",
+         "Query the NCBI MeSH database by title via E-utilities. Returned UIDs are\nconverted to D-numbers and validated against the local MeSH XML."),
+        (7, "NLM Medical Text Indexer", "Lower",
+         "The system that suggests MeSH terms for PubMed submissions. Two passes:\ntitle alone, then title plus first sentence if confidence is low."),
     ]
 
-    fig, ax = plt.subplots(figsize=(13.2, 5.6))
-    ax.set_xlim(0, len(STAGES) * (COLW + GAP))
-    ax.set_ylim(0, 10)
+    fig, ax = plt.subplots(figsize=(11.0, 8.4))
+    ax.set_xlim(0, 11.0)
+    ax.set_ylim(0, 9.6)
     ax.axis("off")
 
-    for si, (stage, accent, boxes) in enumerate(STAGES):
-        x = si * (COLW + GAP)
-        ax.text(x + COLW / 2, 9.55, stage, ha="center", va="center",
-                fontsize=12, weight="bold", color=accent)
-        ax.plot([x + 0.05, x + COLW - 0.05], [9.22, 9.22], color=accent, lw=2.2,
-                solid_capstyle="round")
+    ax.text(0.0, 9.42, "MeSH descriptor assignment cascade", fontsize=15,
+            weight="bold", color=INK, va="top")
+    ax.text(0.0, 9.02,
+            "Each layer processes only the articles the layers above it could not resolve. "
+            "Ordered by data reliability, not by coverage.",
+            fontsize=10.5, color=INK_MUTED, va="top")
 
-        n = len(boxes)
-        top, bottom = 8.85, 0.35
-        bh = (top - bottom) / n - 0.3
-        for bi, (title, detail) in enumerate(boxes):
-            y = top - bi * (bh + 0.3) - bh
-            ax.add_patch(FancyBboxPatch(
-                (x + 0.05, y), COLW - 0.1, bh,
-                boxstyle="round,pad=0.015,rounding_size=0.09",
-                facecolor="#F6F8FA", edgecolor=GRID, linewidth=1.0, zorder=2))
-            ax.add_patch(FancyBboxPatch(
-                (x + 0.05, y), 0.075, bh,
-                boxstyle="round,pad=0,rounding_size=0.02",
-                facecolor=accent, edgecolor="none", zorder=3))
-            ax.text(x + 0.22, y + bh - 0.26, title, ha="left", va="top",
-                    fontsize=11.2, weight="bold", color=INK, zorder=4)
-            ax.text(x + 0.22, y + bh - 0.55, detail, ha="left", va="top",
-                    fontsize=8.9, color=INK_MUTED, linespacing=1.45, zorder=4)
+    top, rowh, gap = 8.52, 0.92, 0.12
+    for i, (num, name, tier, detail) in enumerate(LAYERS):
+        y = top - i * (rowh + gap) - rowh
+        fill, fg = TIER[tier]
 
-        if si < len(STAGES) - 1:
+        ax.add_patch(FancyBboxPatch(
+            (0.78, y), 10.1, rowh,
+            boxstyle="round,pad=0.015,rounding_size=0.07",
+            facecolor="#F6F8FA", edgecolor=GRID, linewidth=1.0, zorder=2))
+        ax.add_patch(FancyBboxPatch(
+            (0.78, y), 0.07, rowh,
+            boxstyle="round,pad=0,rounding_size=0.02",
+            facecolor=fill, edgecolor="none", zorder=3))
+
+        # layer number badge on the cascade spine
+        ax.add_patch(Circle((0.40, y + rowh / 2), 0.235,
+                            facecolor=fill, edgecolor=SURFACE, lw=2.0, zorder=5))
+        ax.text(0.40, y + rowh / 2, str(num), ha="center", va="center",
+                fontsize=12.5, weight="bold", color=fg, zorder=6)
+
+        ax.text(1.03, y + rowh - 0.22, name, ha="left", va="top",
+                fontsize=12.2, weight="bold", color=INK, zorder=4)
+        ax.text(1.03, y + rowh - 0.50, detail, ha="left", va="top",
+                fontsize=9.3, color=INK_MUTED, linespacing=1.4, zorder=4)
+
+        # confidence chip
+        cw = 1.12
+        ax.add_patch(FancyBboxPatch(
+            (10.88 - cw - 0.12, y + rowh / 2 - 0.17), cw, 0.34,
+            boxstyle="round,pad=0.02,rounding_size=0.08",
+            facecolor=fill, edgecolor="none", zorder=4))
+        ax.text(10.88 - cw / 2 - 0.12, y + rowh / 2, tier, ha="center",
+                va="center", fontsize=10.2, weight="bold", color=fg, zorder=5)
+
+        if i < len(LAYERS) - 1:
             ax.add_patch(FancyArrowPatch(
-                (x + COLW + 0.06, 4.6), (x + COLW + GAP - 0.06, 4.6),
-                arrowstyle="-|>", mutation_scale=17,
-                color="#9AA5B1", lw=1.8, zorder=5))
+                (0.40, y - 0.015), (0.40, y - gap + 0.015),
+                arrowstyle="-|>", mutation_scale=11,
+                color="#9AA5B1", lw=1.6, zorder=4))
 
-    fig.tight_layout(pad=0.4)
-    save(fig, "fig1_pipeline.png")
+    # ── outcome strip ────────────────────────────────────────────────────────
+    try:
+        v = pd.read_csv("data/mesh_validation_metrics.csv")
+        conf = v["mesh_confidence"].value_counts()
+        order = [c for c in ["High", "Medium", "Low", "Broad"] if c in conf.index]
+        total_assigned = int(conf.sum())
+    except Exception:
+        order, conf, total_assigned = [], None, 0
+
+    ybar = 0.38
+    ax.text(0.78, ybar + 0.74,
+            f"Result: {total_assigned:,} of 53,286 articles assigned a descriptor (60.9%)",
+            fontsize=11.5, weight="bold", color=INK, va="top")
+    ax.text(0.78, ybar + 0.46,
+            "Resulting assignments by match confidence, which scores the quality of the "
+            "match itself and is independent of which layer produced it",
+            fontsize=9.2, color=INK_MUTED, va="top")
+
+    if order:
+        STRIP = {"High": "#08306B", "Medium": "#2171B5", "Low": "#6BAED6", "Broad": "#C6DBEF"}
+        x = 0.78
+        width_total = 10.1
+        for c in order:
+            w = conf[c] / total_assigned * width_total
+            ax.add_patch(FancyBboxPatch(
+                (x, ybar - 0.30), max(w - 0.03, 0.02), 0.30,
+                boxstyle="round,pad=0,rounding_size=0.03",
+                facecolor=STRIP[c], edgecolor="none", zorder=3))
+            if w > 1.1:
+                ax.text(x + w / 2, ybar - 0.15,
+                        f"{c}  {conf[c]:,}", ha="center", va="center",
+                        fontsize=9.6, weight="bold", zorder=4,
+                        color=("white" if c in ("High", "Medium") else INK))
+            x += w
+
+    fig.tight_layout(pad=0.3)
+    save(fig, "fig1_mesh_cascade.png")
     plt.close(fig)
-    print("  fig1_pipeline.png         4 stages")
+    print(f"  fig1_mesh_cascade.png     7 layers, {total_assigned:,} assignments")
 
 
 def fig_identification(can):
@@ -334,7 +388,7 @@ def table_top(can):
 def main():
     df, can = load()
     print(f"Corpus {len(df):,} | cancer subset {len(can):,}\n")
-    fig_pipeline()
+    fig_mesh_cascade()
     fig_identification(can)
     fig_scatter(can)
     fig_priority_matrix(can)

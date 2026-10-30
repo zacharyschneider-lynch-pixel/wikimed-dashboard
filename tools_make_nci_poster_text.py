@@ -1,5 +1,6 @@
 """Generate the NCI Data to Discovery poster text as a .docx (and .md)."""
 import io
+import time
 import os
 from docx import Document
 from docx.shared import Pt, RGBColor, Inches
@@ -188,11 +189,13 @@ REFERENCES = [
 ]
 
 CAPTIONS = [
-    ("METHODS", "Figure 1", "fig1_pipeline.png",
-     "Data pipeline. Five Wikipedia and Wikimedia API phases, three supplemental signal "
-     "pipelines, and a seven-layer MeSH descriptor cascade feed three composite scores. The "
-     "Cancer Dashboard filters the scored corpus to oncology content and refreshes monthly via "
-     "GitHub Actions."),
+    ("METHODS", "Figure 1", "fig1_mesh_cascade.png",
+     "MeSH descriptor assignment cascade. Seven layers run in order of data reliability, each "
+     "processing only the articles the layers above it could not resolve, from human-curated "
+     "Wikidata properties through to NLM Medical Text Indexer inference. The cascade assigned "
+     "a descriptor to 32,430 of 53,286 WikiProject Medicine articles (60.9%). The strip below "
+     "shows those assignments by match confidence, which scores the quality of the match "
+     "itself and is independent of which layer produced it."),
     ("RESULTS", "Figure 2", "fig2_identification.png",
      "Cancer-related articles identified (n = 1,859). MeSH C04 (Neoplasms) subtree membership "
      "accounted for 1,266 articles (68%); antineoplastic agent descriptors reached through MeSH "
@@ -248,6 +251,26 @@ NOTES = [
      "Figure 4 (worst-case CVD separation 18.7). GA and FA together account for only 17 of 1,859 "
      "articles, so nothing material is lost."),
 ]
+
+
+
+def save_docx(doc, path, attempts=6):
+    """Write the document, retrying through OneDrive sync locks.
+
+    A Word window holding the file will not release it, so after the retries
+    are exhausted say so plainly rather than surfacing a bare PermissionError.
+    """
+    for i in range(attempts):
+        try:
+            doc.save(path)
+            return
+        except PermissionError:
+            if i == attempts - 1:
+                raise SystemExit(
+                    "Cannot write " + path
+                    + " -- the file is open in Word. Close it and re-run."
+                )
+            time.sleep(0.8)
 
 
 def build_docx():
@@ -352,7 +375,7 @@ def build_docx():
         p.add_run(lead).bold = True
         p.add_run(rest)
 
-    doc.save(OUT)
+    save_docx(doc, OUT)
     print("Saved:", OUT)
 
 
