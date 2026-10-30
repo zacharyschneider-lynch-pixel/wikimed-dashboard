@@ -35,28 +35,25 @@ SECTIONS = [
     ("INTRODUCTION", [
         "Wikipedia is among the most consulted health information resources in the world. Its "
         "medical content drew an estimated 6.5 billion page views in 2013 across all language "
-        "editions, exceeding the traffic of the NIH, WebMD, Mayo Clinic, NHS, WHO, and UpToDate "
-        "on comparable measures [1]. It is equally prominent at the point of search, appearing "
-        "among the first ten results for 71-85% of health queries tested across major search "
-        "engines, ahead of MedlinePlus and NHS Direct Online, and ranking highest of all for "
-        "rare diseases [2]. A scoping review across patient, student, and clinician populations "
-        "found it consistently prominent as a health information resource [3].",
-        "That content is written entirely by volunteers, and its quality is uneven. Audits have "
-        "repeatedly found Wikipedia's medical articles substantively accurate but difficult to "
-        "read. A comparison of ten cancer topics against the National Cancer Institute's "
-        "Physician Data Query database found errors rare in both sources, but Wikipedia written "
-        "at Flesch-Kincaid grade 14.1 against PDQ's 9.6 [4]. Comparable audits exist for drug "
-        "information [5] and for the growth of medical content over time [6].",
-        "WikiProject Medicine (WPM) volunteers assign each article two ratings: editorial "
-        "quality (Stub to Featured Article) and clinical importance (Low to Top) [7]. These "
-        "labels provide a rough signal of need, but browsing category trees does not scale "
-        "across 53,286 articles, and the articles with the largest gap between readership and "
-        "quality are not visible from category pages.",
-        "Prior work has therefore characterised Wikipedia's medical content retrospectively and "
-        "within bounded disease areas. What has been missing is a prospective, corpus-wide tool "
-        "that ranks articles by where editorial effort would reach the most readers. We "
-        "developed a customized algorithm and dashboard to address this unmet need, with a "
-        "dedicated Cancer Dashboard as the first domain-specific application.",
+        "editions, exceeding the NIH, WebMD, Mayo Clinic, NHS, WHO and UpToDate on comparable "
+        "measures [1,3]. It appears among the first ten results for 71-85% of health queries "
+        "tested across major search engines, ahead of MedlinePlus and NHS Direct Online, and "
+        "ranks highest of all for rare diseases [2].",
+        "That content is written entirely by volunteers, and its quality is uneven. Audits find "
+        "Wikipedia's medical articles substantively accurate but difficult to read: across ten "
+        "cancer topics, errors were rare against the National Cancer Institute's Physician Data "
+        "Query database, but Wikipedia read at Flesch-Kincaid grade 14.1 against PDQ's 9.6 [4]. "
+        "Comparable audits exist for drug information [5] and for content growth over time [6].",
+        "WikiProject Medicine (WPM) volunteers rate each article for editorial quality (Stub to "
+        "Featured Article) and clinical importance (Low to Top) [7]. These labels signal need "
+        "roughly, but browsing category trees does not scale across 53,286 articles, and the "
+        "articles with the largest gap between readership and quality are not visible from "
+        "category pages.",
+        "Prior work has characterised this content retrospectively and within bounded disease "
+        "areas. Missing is a prospective, corpus-wide tool ranking articles by where editorial "
+        "effort would reach the most readers. We developed a customized algorithm and dashboard "
+        "to address this unmet need, with a dedicated Cancer Dashboard as the first "
+        "domain-specific application.",
     ]),
     ("METHODS", [
         "__Article metadata.__ Five sequential Wikipedia and Wikimedia API phases supplied "
@@ -104,46 +101,43 @@ SECTIONS = [
     ]),
     ("DISCUSSION", [
         "The Impact-Need Score surfaces the intersection of public reach and editorial gap, not "
-        "the worst-quality articles alone. The cancer results show why that distinction matters. "
-        "WikiProject Medicine volunteers have already brought most high-importance cancer "
-        "articles to B class or better [7], so a prioritization strategy resting on importance "
-        "labels alone would direct student effort toward the articles needing the least work. "
-        "The articles with the largest remaining gap are individually rated Low or Mid "
-        "importance but collectively reach millions of readers each year, a pattern visible only "
-        "when readership is measured directly rather than inferred from editorial labels. "
-        "Wikipedia's search visibility is already known to be highest for rare and less common "
-        "conditions [2], which is consistent with a long tail carrying more traffic than its "
-        "importance labels imply.",
+        "the worst-quality articles alone, and the cancer results show why that matters. WPM "
+        "volunteers have already brought most high-importance cancer articles to B class or "
+        "better [7], so prioritising on importance labels alone would send students to the "
+        "articles needing least work. The largest remaining gaps are rated Low or Mid importance "
+        "yet collectively reach millions of readers a year, a pattern visible only when "
+        "readership is measured directly. Wikipedia's search visibility is already known to be "
+        "highest for rare and less common conditions [2], consistent with a long tail carrying "
+        "more traffic than its labels imply.",
         "Readability is a parallel and largely independent gap. The median cancer article sits "
         "at Flesch-Kincaid grade 13.6 [9], above the eighth-grade level at which the average US "
-        "adult reads [11] and well above the sixth-grade ceiling commonly recommended for "
+        "adult reads [11] and above the sixth-grade ceiling commonly recommended for "
         "patient-facing material [12]. This closely matches the grade 14.1 reported for "
-        "Wikipedia cancer content against the National Cancer Institute's Physician Data Query "
-        "database in 2011 [4], indicating that readability has not materially improved in the "
-        "fifteen years since. Raising an article from Stub to C class does not by itself make it "
-        "more accessible.",
+        "Wikipedia cancer content in 2011 [4], indicating readability has not materially "
+        "improved in the fifteen years since. Raising an article from Stub to C class does not "
+        "by itself make it more accessible.",
         "__Limitations.__ Quality and importance ratings are volunteer-assigned and may lag "
-        "actual article content [7]. The MeSH C04 subtree includes benign neoplasms [8], so the "
-        "corpus is neoplasm-related rather than strictly malignant. Readability is computed from "
-        "lead sections rather than full articles. The scoring weights are theoretically "
-        "motivated and have not yet been validated against editing outcomes.",
+        "article content [7]. The MeSH C04 subtree includes benign neoplasms [8], so the corpus "
+        "is neoplasm-related rather than strictly malignant. Readability is computed from lead "
+        "sections rather than full articles. Scoring weights are theoretically motivated and "
+        "not yet validated against editing outcomes.",
     ]),
     ("CONCLUSIONS", [
-        "* Identified 1,859 cancer-related articles from 53,286 WikiProject Medicine articles "
-        "using the MeSH C04 subtree, antineoplastic PharmacologicalAction links, and a keyword "
-        "fallback, achieving 89% MeSH coverage across the subset",
-        "* Derived a normalized Impact-Need Score combining readership, clinical importance, "
-        "quality deficit, editor scarcity, and clickstream search intent",
+        "* Identified 1,859 cancer-related articles from 53,286 WPM articles using the MeSH C04 "
+        "subtree, antineoplastic PharmacologicalAction links, and a keyword fallback, with 89% "
+        "MeSH coverage across the subset",
         "* Found the editorial gap concentrated not in high-importance articles, 66% of which "
         "are already B class or better, but in a 1,060-article long tail drawing 5.67 million "
         "annual views",
         "* Measured a median reading grade of 13.6, with 68% of cancer articles written above "
         "grade 12 and 1.4% readable by the average US adult",
-        "* Deployed a public dashboard with automated monthly refresh at wikimed-dashboard.com, "
-        "licensed CC BY-NC-SA 4.0, with all code and pipelines open-source on GitHub",
-        "* A pre-post survey study across seven partner medical schools to gauge utility, "
-        "usability, and usefulness is planned",
+        "* Deployed a public dashboard with automated monthly refresh, licensed CC BY-NC-SA 4.0, "
+        "with all code and pipelines open-source on GitHub",
+        "* __Try it: wikimed-dashboard.com__",
+        "* A pre-post survey across seven partner medical schools to gauge utility, usability, "
+        "and usefulness is planned",
     ]),
+
 ]
 
 REFERENCES = [
