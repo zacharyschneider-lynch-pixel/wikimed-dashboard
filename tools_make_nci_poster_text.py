@@ -79,7 +79,7 @@ SECTIONS = [
         "Readability was estimated by Flesch-Kincaid (FK) grade level from article lead sections.",
         "__Dashboard.__ Built in Python (Streamlit, Plotly, pandas) and deployed on Streamlit "
         "Community Cloud, with a monthly GitHub Actions workflow re-fetching signals and "
-        "recomputing all scores automatically.",
+        "recomputing all scores automatically. [Figure 1]",
     ]),
     ("RESULTS", [
         "__Corpus and identification.__ Of 53,286 WPM articles, 1,859 were identified as "
@@ -88,13 +88,13 @@ SECTIONS = [
         "MeSH coverage reached 89% across the cancer subset. [Figure 2]",
         "__Editorial need.__ Median Impact-Need Score was 63.7 (IQR 55.1-71.9). 57.5% of cancer "
         "articles were rated Stub or Start quality, compared with 67.7% corpus-wide; 17 of 1,859 "
-        "(0.9%) had reached Good or Featured Article status. [Figure 4]",
+        "(0.9%) had reached Good or Featured Article status. [Figure 3]",
         "__Where the gap sits.__ Clinical importance and editorial quality are already partly "
         "aligned. Of the 65 articles rated High or Top importance, 43 (66%) were B class or "
         "better and only 4 were Stub or Start. The editorial gap instead sits in the long tail: "
         "1,060 Stub or Start articles rated Low or Mid importance, which together drew 5.67 "
         "million views over 12 months, 14% of all cancer article readership, at a median of "
-        "1,365 views each. [Figure 3]",
+        "1,365 views each. [Figure 4]",
         "__Readability.__ Median FK grade level was 13.6 (IQR 11.6-15.7). 68.0% of cancer "
         "articles were written above grade 12, and 1.4% at or below the eighth-grade level of "
         "the average US adult. [Figure 5]",
@@ -187,30 +187,37 @@ REFERENCES = [
      "Methods: source of the search-intent component of the Impact-Need Score."),
 ]
 
-FIGURES = [
-    ("Figure 1. Data pipeline.",
-     "Reuse the schematic from the WIN poster. Wikipedia and Wikimedia REST APIs feed article "
-     "metadata, attention signals, clickstream, TF-IDF, and the seven-layer MeSH cascade into "
-     "the scoring engine and dashboard. No new figure needed."),
-    ("Figure 2. Cancer article identification (fig2_identification.png).",
-     "Horizontal bar, three methods. Shows how the 1,859 articles were found and makes the "
-     "MeSH-first methodology legible at a glance. Counts and percentages are labelled directly "
-     "so the figure reads without reference to the axis."),
-    ("Figure 3. Priority matrix (fig3_priority_matrix.png).",
-     "Quality x importance heatmap with counts in cells. This is the figure that carries the "
-     "poster's main finding: the mass sits in the Low/Mid importance, Stub/Start cells, not in "
-     "the Top/High row. Pair it with the long-tail readership number in the caption."),
-    ("Figure 4. Editorial need against current readership (fig4_impact_vs_attention.png).",
-     "Scatter of Impact-Need against Wiki Attention, coloured by quality. The upper right "
-     "quadrant is the recommendation target: heavily read articles with a large quality gap."),
-    ("Figure 5. Readability distribution (fig5_readability.png).",
-     "Histogram of Flesch-Kincaid grade with grade 8 and grade 12 reference lines. Carries the "
-     "accessibility finding on its own, and needs no accompanying text beyond the caption."),
-    ("Table 1. Highest-priority cancer articles (table1_top_articles.csv).",
-     "Restricted to High and Top importance. The unrestricted top ten is dominated by benign "
-     "dermatologic entities (trichoadenoma, nevus spilus, acanthoma) because MeSH C04 includes "
-     "benign neoplasms, which reads oddly on a cancer poster. The restricted table shows "
-     "recognisable malignancies instead."),
+CAPTIONS = [
+    ("METHODS", "Figure 1", "fig1_pipeline.png",
+     "Data pipeline. Five Wikipedia and Wikimedia API phases, three supplemental signal "
+     "pipelines, and a seven-layer MeSH descriptor cascade feed three composite scores. The "
+     "Cancer Dashboard filters the scored corpus to oncology content and refreshes monthly via "
+     "GitHub Actions."),
+    ("RESULTS", "Figure 2", "fig2_identification.png",
+     "Cancer-related articles identified (n = 1,859). MeSH C04 (Neoplasms) subtree membership "
+     "accounted for 1,266 articles (68%); antineoplastic agent descriptors reached through MeSH "
+     "PharmacologicalAction links for 168 (9%); and a title-keyword fallback for the 425 "
+     "articles (23%) lacking a usable MeSH assignment."),
+    ("RESULTS", "Figure 3", "fig3_impact_vs_attention.png",
+     "Editorial need against current readership. Each point is one cancer article, positioned "
+     "by Impact-Need Score and Wiki Attention Score and coloured by editorial quality. The "
+     "upper right quadrant, heavily read articles carrying a large quality gap, is the "
+     "recommendation target. Quality is collapsed to three classes for legibility; Good and "
+     "Featured Articles together account for 17 of 1,859 articles."),
+    ("RESULTS", "Figure 4", "fig4_priority_matrix.png",
+     "Priority matrix. Cancer articles by editorial quality and clinical importance. Articles "
+     "rated High or Top importance are already predominantly B class or better (43 of 65), so "
+     "importance labels alone would direct effort toward the articles needing least work. The "
+     "editorial gap sits in the Low and Mid importance rows, where 1,060 Stub or Start articles "
+     "drew 5.67 million views over 12 months."),
+    ("RESULTS", "Figure 5", "fig5_readability.png",
+     "Readability distribution. Flesch-Kincaid grade level for the 1,683 cancer articles with "
+     "lead sections long enough to score. Median grade was 13.6 (IQR 11.6-15.7); 68.0% exceeded "
+     "grade 12, and 1.4% fell at or below the eighth-grade level of the average US adult."),
+    ("RESULTS", "Table 1", "table1_top_articles.csv",
+     "Highest-priority cancer articles by Impact-Need Score, restricted to those rated High or "
+     "Top clinical importance. The unrestricted ranking is dominated by benign dermatologic "
+     "neoplasms, which fall within MeSH C04 but read as out of scope on a cancer poster."),
 ]
 
 NOTES = [
@@ -302,20 +309,41 @@ def build_docx():
         for t in paras:
             body(t)
 
-    doc.add_page_break()
-    head("Suggested figures", 13, before=0)
-    muted("Five figures and one table. Figure 1 is reusable from the WIN poster; the rest are "
-          "generated at 300 dpi by tools_make_nci_poster_figures.py.")
-    for cap, note in FIGURES:
+    head("REFERENCES")
+    muted("Numbering matches the [n] markers in the Introduction. Items marked VERIFIED were "
+          "confirmed against full text while drafting.")
+    for n, (cite, note) in enumerate(REFERENCES, 1):
         p = doc.add_paragraph()
-        p.paragraph_format.space_after = Pt(2)
-        p.add_run(cap).bold = True
+        p.paragraph_format.space_after = Pt(1)
+        p.add_run(str(n) + ". ").bold = True
+        rc = p.add_run(cite)
+        rc.font.size = Pt(10)
         q = doc.add_paragraph()
         q.paragraph_format.left_indent = Inches(0.28)
-        q.paragraph_format.space_after = Pt(9)
-        r = q.add_run(note)
-        r.font.size = Pt(10)
-        r.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
+        q.paragraph_format.space_after = Pt(8)
+        rn = q.add_run(note)
+        rn.italic = True
+        rn.font.size = Pt(9)
+        rn.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
+
+    doc.add_page_break()
+    head("FIGURE CAPTIONS", 13, before=0)
+    muted("Paste each caption beneath its figure. Figure 1 belongs in Methods; Figures 2-5 and "
+          "Table 1 belong in Results, in the order the text references them. Image files are in "
+          "poster_figures/.")
+    for section, num, fname, cap in CAPTIONS:
+        p = doc.add_paragraph()
+        p.paragraph_format.space_before = Pt(9)
+        p.paragraph_format.space_after = Pt(1)
+        p.add_run(num + ". ").bold = True
+        p.add_run(cap)
+        q = doc.add_paragraph()
+        q.paragraph_format.left_indent = Inches(0.28)
+        q.paragraph_format.space_after = Pt(6)
+        r = q.add_run(section + "  -  " + fname)
+        r.italic = True
+        r.font.size = Pt(9)
+        r.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
 
     head("Decisions made, and why")
     for lead, rest in NOTES:
@@ -338,10 +366,27 @@ def build_md():
         for t in paras:
             L.append(t.replace("__", "**") + "\n")
         L.append("")
-    L.append("---\n## Suggested figures\n")
-    for cap, note in FIGURES:
-        L.append(f"**{cap}**")
-        L.append(f"  {note}\n")
+    L.append("---")
+    L.append("## REFERENCES")
+    L.append("")
+    L.append("Numbering matches the [n] markers in the Introduction. Items marked "
+             "VERIFIED were confirmed against full text while drafting.")
+    L.append("")
+    for n, (cite, note) in enumerate(REFERENCES, 1):
+        L.append(str(n) + ". " + cite)
+        L.append("   - *" + note + "*")
+        L.append("")
+    L.append("---")
+    L.append("## FIGURE CAPTIONS")
+    L.append("")
+    L.append("Paste each caption beneath its figure. Figure 1 belongs in Methods; "
+             "Figures 2-5 and Table 1 belong in Results, in the order the text "
+             "references them. Image files are in `poster_figures/`.")
+    L.append("")
+    for section, num, fname, cap in CAPTIONS:
+        L.append("**" + num + ".** " + cap)
+        L.append("  *" + section + " - `" + fname + "`*")
+        L.append("")
     L.append("## Decisions made, and why\n")
     for lead, rest in NOTES:
         L.append(f"- **{lead.strip()}** {rest}")

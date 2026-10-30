@@ -224,9 +224,9 @@ def fig_priority_matrix(can):
     ax.set_title("Priority matrix: cancer articles by quality and importance",
                  fontsize=14, color=INK, pad=10, loc="left", weight="bold")
     fig.tight_layout()
-    fig.savefig(f"{OUT}/fig3_priority_matrix.png", dpi=300, bbox_inches="tight")
+    fig.savefig(f"{OUT}/fig4_priority_matrix.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
-    print(f"  fig3_priority_matrix.png  max cell={vmax:,}")
+    print(f"  fig4_priority_matrix.png  max cell={vmax:,}")
 
 
 def fig_scatter(can):
@@ -255,9 +255,9 @@ def fig_scatter(can):
     ax.set_title("Editorial need against current readership",
                  fontsize=14, color=INK, pad=10, loc="left", weight="bold")
     fig.tight_layout()
-    fig.savefig(f"{OUT}/fig4_impact_vs_attention.png", dpi=300, bbox_inches="tight")
+    fig.savefig(f"{OUT}/fig3_impact_vs_attention.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
-    print(f"  fig4_impact_vs_attention.png  n={len(s):,}")
+    print(f"  fig3_impact_vs_attention.png  n={len(s):,}")
 
 
 def fig_readability(can):
@@ -279,7 +279,7 @@ def fig_readability(can):
         (12, "high school graduate\n(grade 12)", "#8A4B08", "left", 0.45),
     ]:
         ax.axvline(g, color=col, ls="--", lw=1.6, zorder=4)
-        ax.text(g + dx, label_y, lab, fontsize=11, weight="medium",
+        ax.text(g + dx, label_y, lab, fontsize=11,
                 color=col, va="top", ha=ha, linespacing=1.35, zorder=6,
                 bbox=dict(facecolor=SURFACE, edgecolor="none",
                           boxstyle="round,pad=0.25", alpha=0.92))
@@ -319,8 +319,8 @@ def main():
     print(f"Corpus {len(df):,} | cancer subset {len(can):,}\n")
     fig_pipeline()
     fig_identification(can)
-    fig_priority_matrix(can)
     fig_scatter(can)
+    fig_priority_matrix(can)
     fig_readability(can)
     table_top(can)
     print(f"\nWrote figures to {OUT}/")

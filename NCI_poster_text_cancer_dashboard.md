@@ -23,11 +23,13 @@ Wikipedia is among the most accessed health information sources and depends enti
 
 ## INTRODUCTION
 
-Wikipedia is a primary health information source for patients, caregivers, and clinicians, and for many is the first text read after a cancer diagnosis. The quality of that text matters.
+Wikipedia is among the most consulted health information resources in the world. Its medical content drew an estimated 6.5 billion page views in 2013 across all language editions, exceeding the traffic of the NIH, WebMD, Mayo Clinic, NHS, WHO, and UpToDate on comparable measures [1]. It is equally prominent at the point of search, appearing among the first ten results for 71-85% of health queries tested across major search engines, ahead of MedlinePlus and NHS Direct Online, and ranking highest of all for rare diseases [2]. A scoping review across patient, student, and clinician populations found it consistently prominent as a health information resource [3].
 
-WikiProject Medicine (WPM) volunteers assign health-related articles two ratings: editorial quality (Stub to Featured Article) and clinical importance (Low to Top). These labels provide a rough signal of need, but browsing category trees to find editing opportunities does not scale, and the articles with the largest gap between readership and quality are not visible from category pages.
+That content is written entirely by volunteers, and its quality is uneven. Audits have repeatedly found Wikipedia's medical articles substantively accurate but difficult to read. A comparison of ten cancer topics against the National Cancer Institute's Physician Data Query database found errors rare in both sources, but Wikipedia written at Flesch-Kincaid grade 14.1 against PDQ's 9.6 [4]. Comparable audits exist for drug information [5] and for the growth of medical content over time [6].
 
-Cancer-related articles comprise a substantial, high-priority subset of the medical corpus. Prior work on Wikipedia medical content has focused largely on quality audits within specific disease areas, not on building scalable tools for prospective, data-driven editorial prioritization. We developed a customized algorithm and dashboard to address this unmet need.
+WikiProject Medicine (WPM) volunteers assign each article two ratings: editorial quality (Stub to Featured Article) and clinical importance (Low to Top) [7]. These labels provide a rough signal of need, but browsing category trees does not scale across 53,286 articles, and the articles with the largest gap between readership and quality are not visible from category pages.
+
+Prior work has therefore characterised Wikipedia's medical content retrospectively and within bounded disease areas. What has been missing is a prospective, corpus-wide tool that ranks articles by where editorial effort would reach the most readers. We developed a customized algorithm and dashboard to address this unmet need, with a dedicated Cancer Dashboard as the first domain-specific application.
 
 
 ## METHODS
@@ -42,16 +44,16 @@ Cancer-related articles comprise a substantial, high-priority subset of the medi
 
 **Scoring.** A normalized Impact-Need Score (0-100) combined pageview reach (30%), importance (25%), quality deficit (25%), editor scarcity (10%), and search intent (10%). All components were percentile-ranked within the full corpus before weighting. Readability was estimated by Flesch-Kincaid (FK) grade level from article lead sections.
 
-**Dashboard.** Built in Python (Streamlit, Plotly, pandas) and deployed on Streamlit Community Cloud, with a monthly GitHub Actions workflow re-fetching signals and recomputing all scores automatically.
+**Dashboard.** Built in Python (Streamlit, Plotly, pandas) and deployed on Streamlit Community Cloud, with a monthly GitHub Actions workflow re-fetching signals and recomputing all scores automatically. [Figure 1]
 
 
 ## RESULTS
 
 **Corpus and identification.** Of 53,286 WPM articles, 1,859 were identified as cancer-related: 1,266 (68%) through the MeSH C04 subtree, 168 (9%) through antineoplastic agent descriptors, and 425 (23%) through the title-keyword fallback. MeSH coverage reached 89% across the cancer subset. [Figure 2]
 
-**Editorial need.** Median Impact-Need Score was 63.7 (IQR 55.1-71.9). 57.5% of cancer articles were rated Stub or Start quality, compared with 67.7% corpus-wide; 17 of 1,859 (0.9%) had reached Good or Featured Article status. [Figure 4]
+**Editorial need.** Median Impact-Need Score was 63.7 (IQR 55.1-71.9). 57.5% of cancer articles were rated Stub or Start quality, compared with 67.7% corpus-wide; 17 of 1,859 (0.9%) had reached Good or Featured Article status. [Figure 3]
 
-**Where the gap sits.** Clinical importance and editorial quality are already partly aligned. Of the 65 articles rated High or Top importance, 43 (66%) were B class or better and only 4 were Stub or Start. The editorial gap instead sits in the long tail: 1,060 Stub or Start articles rated Low or Mid importance, which together drew 5.67 million views over 12 months, 14% of all cancer article readership, at a median of 1,365 views each. [Figure 3]
+**Where the gap sits.** Clinical importance and editorial quality are already partly aligned. Of the 65 articles rated High or Top importance, 43 (66%) were B class or better and only 4 were Stub or Start. The editorial gap instead sits in the long tail: 1,060 Stub or Start articles rated Low or Mid importance, which together drew 5.67 million views over 12 months, 14% of all cancer article readership, at a median of 1,365 views each. [Figure 4]
 
 **Readability.** Median FK grade level was 13.6 (IQR 11.6-15.7). 68.0% of cancer articles were written above grade 12, and 1.4% at or below the eighth-grade level of the average US adult. [Figure 5]
 
@@ -81,25 +83,62 @@ Readability is a parallel and largely independent gap. A cancer article at grade
 
 
 ---
-## Suggested figures
+## REFERENCES
 
-**Figure 1. Data pipeline.**
-  Reuse the schematic from the WIN poster. Wikipedia and Wikimedia REST APIs feed article metadata, attention signals, clickstream, TF-IDF, and the seven-layer MeSH cascade into the scoring engine and dashboard. No new figure needed.
+Numbering matches the [n] markers in the Introduction. Items marked VERIFIED were confirmed against full text while drafting.
 
-**Figure 2. Cancer article identification (fig2_identification.png).**
-  Horizontal bar, three methods. Shows how the 1,859 articles were found and makes the MeSH-first methodology legible at a glance. Counts and percentages are labelled directly so the figure reads without reference to the axis.
+1. Heilman JM, West AG. Wikipedia and medicine: quantifying readership, editors, and the significance of natural language. J Med Internet Res. 2015;17(3):e62. doi:10.2196/jmir.4069
+   - *VERIFIED against PMC full text. Supports the 6.5 billion page view figure and the comparison set (NIH, WebMD, Mayo Clinic, NHS, WHO, UpToDate). Analysed all language editions. Note the traffic data is from 2013; the authors hedge ('appears to be the most utilized').*
 
-**Figure 3. Priority matrix (fig3_priority_matrix.png).**
-  Quality x importance heatmap with counts in cells. This is the figure that carries the poster's main finding: the mass sits in the Low/Mid importance, Stub/Start cells, not in the Top/High row. Pair it with the long-tail readership number in the caption.
+2. Laurent MR, Vickers TJ. Seeking health information online: does Wikipedia matter? J Am Med Inform Assoc. 2009;16(4):471-479. doi:10.1197/jamia.M3059
+   - *VERIFIED. Supports the 71-85% top-ten search ranking, outperforming MedlinePlus and NHS Direct Online, and the rare-disease finding, which sets up the long-tail result in Results. CORRECTION: the WIN poster lists this DOI as 10.1197/jamia.M2823, which is wrong. The correct DOI is 10.1197/jamia.M3059.*
 
-**Figure 4. Editorial need against current readership (fig4_impact_vs_attention.png).**
-  Scatter of Impact-Need against Wiki Attention, coloured by quality. The upper right quadrant is the recommendation target: heavily read articles with a large quality gap.
+3. Smith DA. Situating Wikipedia as a health information resource in various contexts: a scoping review. PLoS One. 2020;15(2):e0228786. doi:10.1371/journal.pone.0228786
+   - *VERIFIED against full text. Cited only for prominence across populations. The review states that evidence for professional (clinician) use is 'more limited', so the poster makes no claim about a specific share of physicians using Wikipedia.*
 
-**Figure 5. Readability distribution (fig5_readability.png).**
-  Histogram of Flesch-Kincaid grade with grade 8 and grade 12 reference lines. Carries the accessibility finding on its own, and needs no accompanying text beyond the caption.
+4. Rajagopalan MS, Khanna VK, Leiter Y, Stott M, Showalter TN, Dicker AP, Lawrence YR. Patient-oriented cancer information on the internet: a comparison of Wikipedia and a professionally maintained database. J Oncol Pract. 2011;7(5):319-323. doi:10.1200/JOP.2010.000209
+   - *VERIFIED against PMC full text. Ten cancer types (five common, five uncommon); 1 error in 80 statements; Wikipedia FK 14.1 vs PDQ 9.6. Our cancer-wide median of 13.6 closely matches their 14.1, which independently corroborates the readability result across a fifteen-year gap. Worth saying aloud at the poster.*
 
-**Table 1. Highest-priority cancer articles (table1_top_articles.csv).**
-  Restricted to High and Top importance. The unrestricted top ten is dominated by benign dermatologic entities (trichoadenoma, nevus spilus, acanthoma) because MeSH C04 includes benign neoplasms, which reads oddly on a cancer poster. The restricted table shows recognisable malignancies instead.
+5. Kraenbring J, Monzon Penza T, Gutmann J, et al. Accuracy and completeness of drug information in Wikipedia: a comparison with standard textbooks of pharmacology. PLoS One. 2014;9(9):e106930. doi:10.1371/journal.pone.0106930
+   - *Carried over from the WIN poster reference list. Cited as an example of a bounded-domain audit. Not independently re-verified here.*
+
+6. Shafee T, Masukume G, Kipersztok L, Das D, Haggstrom M, Heilman J. Evolution of Wikipedia's medical content: past, present and future. J Epidemiol Community Health. 2017;71(11):1122-1129. doi:10.1136/jech-2016-208601
+   - *Carried over from the WIN poster reference list. Cited for growth of medical content over time. Not independently re-verified here.*
+
+7. Wikipedia. WikiProject Medicine. https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine
+   - *Source for the two rating scales (quality, importance) and the tagged corpus.*
+
+8. National Library of Medicine. Medical Subject Headings (MeSH). Bethesda, MD: NLM; 2026. https://www.nlm.nih.gov/mesh/
+   - *Methods: the 2026 descriptor file used for the cascade, the C04 subtree, and PharmacologicalAction links.*
+
+9. Kincaid JP, Fishburne RP Jr, Rogers RL, Chissom BS. Derivation of new readability formulas for Navy Enlisted Personnel. Research Branch Report 8-75. Memphis, TN: Naval Technical Training, US Naval Air Station; 1975.
+   - *Methods: the Flesch-Kincaid grade level formula.*
+
+10. Wikimedia Foundation. Wikipedia clickstream data. May 2026. https://dumps.wikimedia.org/other/clickstream/
+   - *Methods: source of the search-intent component of the Impact-Need Score.*
+
+---
+## FIGURE CAPTIONS
+
+Paste each caption beneath its figure. Figure 1 belongs in Methods; Figures 2-5 and Table 1 belong in Results, in the order the text references them. Image files are in `poster_figures/`.
+
+**Figure 1.** Data pipeline. Five Wikipedia and Wikimedia API phases, three supplemental signal pipelines, and a seven-layer MeSH descriptor cascade feed three composite scores. The Cancer Dashboard filters the scored corpus to oncology content and refreshes monthly via GitHub Actions.
+  *METHODS - `fig1_pipeline.png`*
+
+**Figure 2.** Cancer-related articles identified (n = 1,859). MeSH C04 (Neoplasms) subtree membership accounted for 1,266 articles (68%); antineoplastic agent descriptors reached through MeSH PharmacologicalAction links for 168 (9%); and a title-keyword fallback for the 425 articles (23%) lacking a usable MeSH assignment.
+  *RESULTS - `fig2_identification.png`*
+
+**Figure 3.** Editorial need against current readership. Each point is one cancer article, positioned by Impact-Need Score and Wiki Attention Score and coloured by editorial quality. The upper right quadrant, heavily read articles carrying a large quality gap, is the recommendation target. Quality is collapsed to three classes for legibility; Good and Featured Articles together account for 17 of 1,859 articles.
+  *RESULTS - `fig3_impact_vs_attention.png`*
+
+**Figure 4.** Priority matrix. Cancer articles by editorial quality and clinical importance. Articles rated High or Top importance are already predominantly B class or better (43 of 65), so importance labels alone would direct effort toward the articles needing least work. The editorial gap sits in the Low and Mid importance rows, where 1,060 Stub or Start articles drew 5.67 million views over 12 months.
+  *RESULTS - `fig4_priority_matrix.png`*
+
+**Figure 5.** Readability distribution. Flesch-Kincaid grade level for the 1,683 cancer articles with lead sections long enough to score. Median grade was 13.6 (IQR 11.6-15.7); 68.0% exceeded grade 12, and 1.4% fell at or below the eighth-grade level of the average US adult.
+  *RESULTS - `fig5_readability.png`*
+
+**Table 1.** Highest-priority cancer articles by Impact-Need Score, restricted to those rated High or Top clinical importance. The unrestricted ranking is dominated by benign dermatologic neoplasms, which fall within MeSH C04 but read as out of scope on a cancer poster.
+  *RESULTS - `table1_top_articles.csv`*
 
 ## Decisions made, and why
 
