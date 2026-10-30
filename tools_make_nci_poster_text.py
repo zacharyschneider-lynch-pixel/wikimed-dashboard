@@ -193,9 +193,8 @@ CAPTIONS = [
      "MeSH descriptor assignment cascade. Seven layers run in order of data reliability, each "
      "processing only the articles the layers above it could not resolve, from human-curated "
      "Wikidata properties through to NLM Medical Text Indexer inference. The cascade assigned "
-     "a descriptor to 32,430 of 53,286 WikiProject Medicine articles (60.9%). The strip below "
-     "shows those assignments by match confidence, which scores the quality of the match "
-     "itself and is independent of which layer produced it."),
+     "a descriptor to 32,430 of 53,286 WikiProject Medicine articles (60.9%) and to 89% of the "
+     "cancer subset analysed here."),
     ("RESULTS", "Figure 2", "fig2_identification.png",
      "Cancer-related articles identified (n = 1,859). MeSH C04 (Neoplasms) subtree membership "
      "accounted for 1,266 articles (68%); antineoplastic agent descriptors reached through MeSH "

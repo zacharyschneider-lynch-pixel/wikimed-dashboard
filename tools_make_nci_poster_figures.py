@@ -108,128 +108,93 @@ def save(fig, name, attempts=6):
 def fig_mesh_cascade():
     """Figure 1 - the seven-layer MeSH descriptor assignment cascade.
 
-    Layer descriptions follow pages/Methodology.py, which is the authoritative
-    description of the deployed pipeline. Each layer only sees articles the
-    layers above it could not resolve, so the cascade is ordered by how
-    trustworthy the method is rather than by how much coverage it adds.
+    Drawn as a figure-table rather than a stack of UI cards: hairline rules,
+    unfilled rows and small tier swatches read as a journal figure, where heavy
+    rounded fills read as a dashboard screenshot. Layer descriptions follow
+    pages/Methodology.py, the authoritative account of the deployed pipeline.
     """
-    from matplotlib.patches import FancyBboxPatch, Circle, FancyArrowPatch
+    from matplotlib.patches import Rectangle
 
     # Tier palette validated for CVD: 0 FAIL, worst adjacent separation 14.7.
-    TIER = {
-        "Exact":  ("#08306B", "white"),
-        "High":   ("#2171B5", "white"),
-        "Medium": ("#6BAED6", INK),
-        "Lower":  ("#C6DBEF", INK),
-    }
+    TIER = {"Exact": "#08306B", "High": "#2171B5",
+            "Medium": "#6BAED6", "Lower": "#C6DBEF"}
     LAYERS = [
-        (1, "Wikidata structured data", "Exact",
-         "SPARQL query for property P486 (MeSH Descriptor ID). Human-curated\nand verified; the gold-standard source."),
-        (2, "Wikipedia infobox wikitext", "Exact",
-         "Parse MeshID=, mesh_heading= and mesh= fields from medical infoboxes.\nCatches articles tagged locally but not yet linked in Wikidata."),
-        (3, "MeSH full synonym matching", "High",
-         "Match the title against every entry term across all descriptors in the\nNLM 2026 XML. 'Heart Attack', 'MI' and 'Myocardial Infarct' all resolve to D009203."),
-        (4, "PubMed citation consensus", "High",
-         "Harvest MeSH tags NLM indexers already applied to the papers an article\ncites. Major-topic citation = 2 points, minor-topic = 1; top scorer wins."),
-        (5, "BioPortal NLP annotator", "Medium",
-         "Submit the lead paragraph to the NCBO Annotator filtered to MeSH.\nAccepted when matched text overlaps the title above 30% token similarity."),
-        (6, "NCBI MeSH eSearch", "Medium",
-         "Query the NCBI MeSH database by title via E-utilities. Returned UIDs are\nconverted to D-numbers and validated against the local MeSH XML."),
-        (7, "NLM Medical Text Indexer", "Lower",
-         "The system that suggests MeSH terms for PubMed submissions. Two passes:\ntitle alone, then title plus first sentence if confidence is low."),
+        (1, "Wikidata structured data", "Wikidata SPARQL", "Exact",
+         "Property P486 (MeSH Descriptor ID); human-curated and verified"),
+        (2, "Wikipedia infobox wikitext", "Article wikitext", "Exact",
+         "Parse MeshID=, mesh_heading= and mesh= fields from medical infoboxes"),
+        (3, "MeSH full synonym matching", "NLM MeSH 2026 XML", "High",
+         "Title matched against every entry term across all descriptors"),
+        (4, "PubMed citation consensus", "PubMed efetch", "High",
+         "MeSH tags from cited papers, weighted major topic 2 points, minor 1"),
+        (5, "BioPortal NLP annotator", "NCBO BioPortal", "Medium",
+         "Lead paragraph annotated; accepted above 30% token similarity to title"),
+        (6, "NCBI MeSH eSearch", "NCBI E-utilities", "Medium",
+         "Title queried against the NCBI MeSH index, validated against local XML"),
+        (7, "NLM Medical Text Indexer", "NLM MTI", "Lower",
+         "Two passes: title alone, then title plus first sentence if uncertain"),
     ]
 
-    fig, ax = plt.subplots(figsize=(11.0, 8.4))
-    ax.set_xlim(0, 11.0)
-    ax.set_ylim(0, 9.6)
+    W = 14.0
+    fig, ax = plt.subplots(figsize=(W, 5.0))
+    ax.set_xlim(0, W)
+    ax.set_ylim(1.35, 9.0)
     ax.axis("off")
 
-    ax.text(0.0, 9.42, "MeSH descriptor assignment cascade", fontsize=15,
-            weight="bold", color=INK, va="top")
-    ax.text(0.0, 9.02,
-            "Each layer processes only the articles the layers above it could not resolve. "
-            "Ordered by data reliability, not by coverage.",
-            fontsize=10.5, color=INK_MUTED, va="top")
+    X_NUM, X_METHOD, X_SRC, X_APPR, X_CONF = 0.30, 0.78, 4.30, 6.50, 12.30
 
-    top, rowh, gap = 8.52, 0.92, 0.12
-    for i, (num, name, tier, detail) in enumerate(LAYERS):
-        y = top - i * (rowh + gap) - rowh
-        fill, fg = TIER[tier]
+    ax.text(0, 8.72, "MeSH descriptor assignment cascade",
+            fontsize=15.5, weight="bold", color=INK, va="top")
+    ax.text(0, 8.32,
+            "Seven layers applied in order of data reliability. Each layer processes only the "
+            "articles the layers above it could not resolve.",
+            fontsize=10.3, color=INK_MUTED, va="top")
 
-        ax.add_patch(FancyBboxPatch(
-            (0.78, y), 10.1, rowh,
-            boxstyle="round,pad=0.015,rounding_size=0.07",
-            facecolor="#F6F8FA", edgecolor=GRID, linewidth=1.0, zorder=2))
-        ax.add_patch(FancyBboxPatch(
-            (0.78, y), 0.07, rowh,
-            boxstyle="round,pad=0,rounding_size=0.02",
-            facecolor=fill, edgecolor="none", zorder=3))
+    # column header
+    yh = 7.62
+    for x, lab in [(X_NUM, ""), (X_METHOD, "METHOD"), (X_SRC, "SOURCE"),
+                   (X_APPR, "APPROACH"), (X_CONF, "CONFIDENCE")]:
+        if lab:
+            ax.text(x, yh, lab, fontsize=8.6, weight="bold", color=INK_MUTED,
+                    va="bottom", ha="left")
+    ax.plot([0, W], [yh - 0.12, yh - 0.12], color=INK, lw=1.1,
+            solid_capstyle="butt", zorder=3)
 
-        # layer number badge on the cascade spine
-        ax.add_patch(Circle((0.40, y + rowh / 2), 0.235,
-                            facecolor=fill, edgecolor=SURFACE, lw=2.0, zorder=5))
-        ax.text(0.40, y + rowh / 2, str(num), ha="center", va="center",
-                fontsize=12.5, weight="bold", color=fg, zorder=6)
+    rowh = 0.86
+    top = yh - 0.12
+    for i, (num, method, source, tier, approach) in enumerate(LAYERS):
+        yc = top - i * rowh - rowh / 2
+        accent = TIER[tier]
 
-        ax.text(1.03, y + rowh - 0.22, name, ha="left", va="top",
-                fontsize=12.2, weight="bold", color=INK, zorder=4)
-        ax.text(1.03, y + rowh - 0.50, detail, ha="left", va="top",
-                fontsize=9.3, color=INK_MUTED, linespacing=1.4, zorder=4)
-
-        # confidence chip
-        cw = 1.12
-        ax.add_patch(FancyBboxPatch(
-            (10.88 - cw - 0.12, y + rowh / 2 - 0.17), cw, 0.34,
-            boxstyle="round,pad=0.02,rounding_size=0.08",
-            facecolor=fill, edgecolor="none", zorder=4))
-        ax.text(10.88 - cw / 2 - 0.12, y + rowh / 2, tier, ha="center",
-                va="center", fontsize=10.2, weight="bold", color=fg, zorder=5)
-
+        # cascade spine
         if i < len(LAYERS) - 1:
-            ax.add_patch(FancyArrowPatch(
-                (0.40, y - 0.015), (0.40, y - gap + 0.015),
-                arrowstyle="-|>", mutation_scale=11,
-                color="#9AA5B1", lw=1.6, zorder=4))
+            ax.plot([X_NUM + 0.09, X_NUM + 0.09], [yc - 0.17, yc - rowh + 0.17],
+                    color="#C4CCD4", lw=1.0, zorder=2)
+        ax.add_patch(plt.Circle((X_NUM + 0.09, yc), 0.145, facecolor=accent,
+                                edgecolor="none", zorder=4))
+        ax.text(X_NUM + 0.09, yc, str(num), ha="center", va="center",
+                fontsize=9.2, weight="bold", zorder=5,
+                color=("white" if tier in ("Exact", "High") else INK))
 
-    # ── outcome strip ────────────────────────────────────────────────────────
-    try:
-        v = pd.read_csv("data/mesh_validation_metrics.csv")
-        conf = v["mesh_confidence"].value_counts()
-        order = [c for c in ["High", "Medium", "Low", "Broad"] if c in conf.index]
-        total_assigned = int(conf.sum())
-    except Exception:
-        order, conf, total_assigned = [], None, 0
+        ax.text(X_METHOD, yc, method, fontsize=11.4, weight="bold",
+                color=INK, va="center", ha="left")
+        ax.text(X_SRC, yc, source, fontsize=10.2, color=INK_MUTED,
+                va="center", ha="left")
+        ax.text(X_APPR, yc, approach, fontsize=10.2, color=INK_MUTED,
+                va="center", ha="left")
 
-    ybar = 0.38
-    ax.text(0.78, ybar + 0.74,
-            f"Result: {total_assigned:,} of 53,286 articles assigned a descriptor (60.9%)",
-            fontsize=11.5, weight="bold", color=INK, va="top")
-    ax.text(0.78, ybar + 0.46,
-            "Resulting assignments by match confidence, which scores the quality of the "
-            "match itself and is independent of which layer produced it",
-            fontsize=9.2, color=INK_MUTED, va="top")
+        ax.add_patch(Rectangle((X_CONF, yc - 0.085), 0.17, 0.17,
+                               facecolor=accent, edgecolor="none", zorder=4))
+        ax.text(X_CONF + 0.30, yc, tier, fontsize=10.4, color=INK,
+                va="center", ha="left")
 
-    if order:
-        STRIP = {"High": "#08306B", "Medium": "#2171B5", "Low": "#6BAED6", "Broad": "#C6DBEF"}
-        x = 0.78
-        width_total = 10.1
-        for c in order:
-            w = conf[c] / total_assigned * width_total
-            ax.add_patch(FancyBboxPatch(
-                (x, ybar - 0.30), max(w - 0.03, 0.02), 0.30,
-                boxstyle="round,pad=0,rounding_size=0.03",
-                facecolor=STRIP[c], edgecolor="none", zorder=3))
-            if w > 1.1:
-                ax.text(x + w / 2, ybar - 0.15,
-                        f"{c}  {conf[c]:,}", ha="center", va="center",
-                        fontsize=9.6, weight="bold", zorder=4,
-                        color=("white" if c in ("High", "Medium") else INK))
-            x += w
+        ax.plot([0, W], [yc - rowh / 2, yc - rowh / 2],
+                color=GRID, lw=0.7, solid_capstyle="butt", zorder=1)
 
-    fig.tight_layout(pad=0.3)
+    fig.tight_layout(pad=0.35)
     save(fig, "fig1_mesh_cascade.png")
     plt.close(fig)
-    print(f"  fig1_mesh_cascade.png     7 layers, {total_assigned:,} assignments")
+    print(f"  fig1_mesh_cascade.png     7 layers, {W}in wide")
 
 
 def fig_identification(can):
