@@ -32,19 +32,30 @@ SECTIONS = [
         "4.0, with all code and pipelines open-source and auto-updated monthly.",
     ]),
     ("INTRODUCTION", [
-        "Wikipedia is a primary health information source for patients, caregivers, and "
-        "clinicians, and for many is the first text read after a cancer diagnosis. The quality "
-        "of that text matters.",
-        "WikiProject Medicine (WPM) volunteers assign health-related articles two ratings: "
-        "editorial quality (Stub to Featured Article) and clinical importance (Low to Top). "
-        "These labels provide a rough signal of need, but browsing category trees to find "
-        "editing opportunities does not scale, and the articles with the largest gap between "
-        "readership and quality are not visible from category pages.",
-        "Cancer-related articles comprise a substantial, high-priority subset of the medical "
-        "corpus. Prior work on Wikipedia medical content has focused largely on quality audits "
-        "within specific disease areas, not on building scalable tools for prospective, "
-        "data-driven editorial prioritization. We developed a customized algorithm and "
-        "dashboard to address this unmet need.",
+        "Wikipedia is among the most consulted health information resources in the world. Its "
+        "medical content drew an estimated 6.5 billion page views in 2013 across all language "
+        "editions, exceeding the traffic of the NIH, WebMD, Mayo Clinic, NHS, WHO, and UpToDate "
+        "on comparable measures [1]. It is equally prominent at the point of search, appearing "
+        "among the first ten results for 71-85% of health queries tested across major search "
+        "engines, ahead of MedlinePlus and NHS Direct Online, and ranking highest of all for "
+        "rare diseases [2]. A scoping review across patient, student, and clinician populations "
+        "found it consistently prominent as a health information resource [3].",
+        "That content is written entirely by volunteers, and its quality is uneven. Audits have "
+        "repeatedly found Wikipedia's medical articles substantively accurate but difficult to "
+        "read. A comparison of ten cancer topics against the National Cancer Institute's "
+        "Physician Data Query database found errors rare in both sources, but Wikipedia written "
+        "at Flesch-Kincaid grade 14.1 against PDQ's 9.6 [4]. Comparable audits exist for drug "
+        "information [5] and for the growth of medical content over time [6].",
+        "WikiProject Medicine (WPM) volunteers assign each article two ratings: editorial "
+        "quality (Stub to Featured Article) and clinical importance (Low to Top) [7]. These "
+        "labels provide a rough signal of need, but browsing category trees does not scale "
+        "across 53,286 articles, and the articles with the largest gap between readership and "
+        "quality are not visible from category pages.",
+        "Prior work has therefore characterised Wikipedia's medical content retrospectively and "
+        "within bounded disease areas. What has been missing is a prospective, corpus-wide tool "
+        "that ranks articles by where editorial effort would reach the most readers. We "
+        "developed a customized algorithm and dashboard to address this unmet need, with a "
+        "dedicated Cancer Dashboard as the first domain-specific application.",
     ]),
     ("METHODS", [
         "__Article metadata.__ Five sequential Wikipedia and Wikimedia API phases supplied "
@@ -122,6 +133,58 @@ SECTIONS = [
         "* A pre-post survey study across seven partner medical schools to gauge utility, "
         "usability, and usefulness is planned",
     ]),
+]
+
+REFERENCES = [
+    ("Heilman JM, West AG. Wikipedia and medicine: quantifying readership, editors, and the "
+     "significance of natural language. J Med Internet Res. 2015;17(3):e62. doi:10.2196/jmir.4069",
+     "VERIFIED against PMC full text. Supports the 6.5 billion page view figure and the "
+     "comparison set (NIH, WebMD, Mayo Clinic, NHS, WHO, UpToDate). Analysed all language "
+     "editions. Note the traffic data is from 2013; the authors hedge ('appears to be the most "
+     "utilized')."),
+    ("Laurent MR, Vickers TJ. Seeking health information online: does Wikipedia matter? "
+     "J Am Med Inform Assoc. 2009;16(4):471-479. doi:10.1197/jamia.M3059",
+     "VERIFIED. Supports the 71-85% top-ten search ranking, outperforming MedlinePlus and NHS "
+     "Direct Online, and the rare-disease finding, which sets up the long-tail result in "
+     "Results. CORRECTION: the WIN poster lists this DOI as 10.1197/jamia.M2823, which is "
+     "wrong. The correct DOI is 10.1197/jamia.M3059."),
+    ("Smith DA. Situating Wikipedia as a health information resource in various contexts: a "
+     "scoping review. PLoS One. 2020;15(2):e0228786. doi:10.1371/journal.pone.0228786",
+     "VERIFIED against full text. Cited only for prominence across populations. The review "
+     "states that evidence for professional (clinician) use is 'more limited', so the poster "
+     "makes no claim about a specific share of physicians using Wikipedia."),
+    ("Rajagopalan MS, Khanna VK, Leiter Y, Stott M, Showalter TN, Dicker AP, Lawrence YR. "
+     "Patient-oriented cancer information on the internet: a comparison of Wikipedia and a "
+     "professionally maintained database. J Oncol Pract. 2011;7(5):319-323. "
+     "doi:10.1200/JOP.2010.000209",
+     "VERIFIED against PMC full text. Ten cancer types (five common, five uncommon); 1 error in "
+     "80 statements; Wikipedia FK 14.1 vs PDQ 9.6. Our cancer-wide median of 13.6 closely "
+     "matches their 14.1, which independently corroborates the readability result across a "
+     "fifteen-year gap. Worth saying aloud at the poster."),
+    ("Kraenbring J, Monzon Penza T, Gutmann J, et al. Accuracy and completeness of drug "
+     "information in Wikipedia: a comparison with standard textbooks of pharmacology. PLoS One. "
+     "2014;9(9):e106930. doi:10.1371/journal.pone.0106930",
+     "Carried over from the WIN poster reference list. Cited as an example of a bounded-domain "
+     "audit. Not independently re-verified here."),
+    ("Shafee T, Masukume G, Kipersztok L, Das D, Haggstrom M, Heilman J. Evolution of "
+     "Wikipedia's medical content: past, present and future. J Epidemiol Community Health. "
+     "2017;71(11):1122-1129. doi:10.1136/jech-2016-208601",
+     "Carried over from the WIN poster reference list. Cited for growth of medical content over "
+     "time. Not independently re-verified here."),
+    ("Wikipedia. WikiProject Medicine. "
+     "https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine",
+     "Source for the two rating scales (quality, importance) and the tagged corpus."),
+    ("National Library of Medicine. Medical Subject Headings (MeSH). Bethesda, MD: NLM; 2026. "
+     "https://www.nlm.nih.gov/mesh/",
+     "Methods: the 2026 descriptor file used for the cascade, the C04 subtree, and "
+     "PharmacologicalAction links."),
+    ("Kincaid JP, Fishburne RP Jr, Rogers RL, Chissom BS. Derivation of new readability "
+     "formulas for Navy Enlisted Personnel. Research Branch Report 8-75. Memphis, TN: Naval "
+     "Technical Training, US Naval Air Station; 1975.",
+     "Methods: the Flesch-Kincaid grade level formula."),
+    ("Wikimedia Foundation. Wikipedia clickstream data. May 2026. "
+     "https://dumps.wikimedia.org/other/clickstream/",
+     "Methods: source of the search-intent component of the Impact-Need Score."),
 ]
 
 FIGURES = [

@@ -91,6 +91,79 @@ def despine(ax, keep=("left", "bottom")):
         ax.spines[side].set_visible(side in keep)
 
 
+def fig_pipeline():
+    """Figure 1 - data pipeline schematic, drawn to match the other poster figures."""
+    from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+
+    COLW, GAP = 2.45, 0.55
+    STAGES = [
+        ("DATA SOURCES", BLUES3[0], [
+            ("Wikipedia API", "category, talk, info,\nrevision namespaces"),
+            ("Wikimedia REST API", "12-month and 3-month\npageview totals"),
+            ("Wikimedia Clickstream", "May 2026 referral dataset"),
+            ("NLM MeSH 2026", "descriptor file, C04 subtree,\nPharmacologicalAction links"),
+        ]),
+        ("SIGNAL PIPELINES", "#2171B5", [
+            ("Article metadata", "quality class, importance,\nwatchers, length, editors"),
+            ("Attention signals", "inbound links, traffic velocity"),
+            ("Search intent", "external search vs\ninternal navigation"),
+            ("TF-IDF × MeSH", "top 25 terms per lead section"),
+            ("MeSH cascade", "seven layers, ordered by\ndata reliability"),
+        ]),
+        ("SCORING", "#4292C6", [
+            ("Impact-Need Score", "0–100: reach 30%, importance 25%,\nquality deficit 25%,\nscarcity 10%, search intent 10%"),
+            ("Wiki Attention Score", "0–100: current momentum"),
+            ("Medical Relevance", "1–10: TF-IDF × MeSH overlap"),
+        ]),
+        ("APPLICATION", "#08519C", [
+            ("Cancer filter", "MeSH C04 + antineoplastic\nPharmacologicalAction + keyword\n→ 1,859 articles"),
+            ("Cancer Dashboard", "Streamlit Community Cloud\nwikimed-dashboard.com"),
+            ("Monthly refresh", "GitHub Actions re-fetches\nand recomputes all scores"),
+        ]),
+    ]
+
+    fig, ax = plt.subplots(figsize=(13.2, 5.6))
+    ax.set_xlim(0, len(STAGES) * (COLW + GAP))
+    ax.set_ylim(0, 10)
+    ax.axis("off")
+
+    for si, (stage, accent, boxes) in enumerate(STAGES):
+        x = si * (COLW + GAP)
+        ax.text(x + COLW / 2, 9.55, stage, ha="center", va="center",
+                fontsize=12, weight="bold", color=accent)
+        ax.plot([x + 0.05, x + COLW - 0.05], [9.22, 9.22], color=accent, lw=2.2,
+                solid_capstyle="round")
+
+        n = len(boxes)
+        top, bottom = 8.85, 0.35
+        bh = (top - bottom) / n - 0.3
+        for bi, (title, detail) in enumerate(boxes):
+            y = top - bi * (bh + 0.3) - bh
+            ax.add_patch(FancyBboxPatch(
+                (x + 0.05, y), COLW - 0.1, bh,
+                boxstyle="round,pad=0.015,rounding_size=0.09",
+                facecolor="#F6F8FA", edgecolor=GRID, linewidth=1.0, zorder=2))
+            ax.add_patch(FancyBboxPatch(
+                (x + 0.05, y), 0.075, bh,
+                boxstyle="round,pad=0,rounding_size=0.02",
+                facecolor=accent, edgecolor="none", zorder=3))
+            ax.text(x + 0.22, y + bh - 0.26, title, ha="left", va="top",
+                    fontsize=11.2, weight="bold", color=INK, zorder=4)
+            ax.text(x + 0.22, y + bh - 0.55, detail, ha="left", va="top",
+                    fontsize=8.9, color=INK_MUTED, linespacing=1.45, zorder=4)
+
+        if si < len(STAGES) - 1:
+            ax.add_patch(FancyArrowPatch(
+                (x + COLW + 0.06, 4.6), (x + COLW + GAP - 0.06, 4.6),
+                arrowstyle="-|>", mutation_scale=17,
+                color="#9AA5B1", lw=1.8, zorder=5))
+
+    fig.tight_layout(pad=0.4)
+    fig.savefig(f"{OUT}/fig1_pipeline.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print("  fig1_pipeline.png         4 stages")
+
+
 def fig_identification(can):
     """Composition of the cancer corpus by identification method."""
     counts = can["match_type"].value_counts().reindex(
@@ -101,11 +174,13 @@ def fig_identification(can):
     ypos = np.arange(len(counts))[::-1]
     for y, (lab, v), col in zip(ypos, counts.items(), BLUES3):
         ax.barh(y, v, height=0.62, color=col, zorder=3)
-        ax.text(v + total * 0.012, y, f"{v:,}  ({v/total*100:.0f}%)",
+        ax.text(v + counts.max() * 0.022, y, f"{v:,}  ({v/total*100:.0f}%)",
                 va="center", ha="left", fontsize=12.5, color=INK)
     ax.set_yticks(ypos)
     ax.set_yticklabels(counts.index, fontsize=12.5, color=INK)
-    ax.set_xlim(0, total * 0.82)
+    # Headroom is set off the longest bar, not the corpus total, so the direct
+    # labels have room; otherwise "1,266 (68%)" runs off the right edge.
+    ax.set_xlim(0, counts.max() * 1.45)
     ax.set_xlabel("Articles", fontsize=12, color=INK_MUTED)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
     ax.xaxis.grid(True, color=GRID, lw=0.7, zorder=0)
@@ -234,6 +309,7 @@ def table_top(can):
 def main():
     df, can = load()
     print(f"Corpus {len(df):,} | cancer subset {len(can):,}\n")
+    fig_pipeline()
     fig_identification(can)
     fig_priority_matrix(can)
     fig_scatter(can)
