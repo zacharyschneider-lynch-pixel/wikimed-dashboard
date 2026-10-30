@@ -1,0 +1,295 @@
+"""Generate the NCI Data to Discovery poster text as a .docx (and .md)."""
+import io
+import os
+from docx import Document
+from docx.shared import Pt, RGBColor, Inches
+
+BASE = r"C:\Users\zachs\OneDrive\Desktop\Wiki Dashboard Project"
+OUT = BASE + r"\NCI Poster Text_Cancer Dashboard_Zach Schneider-Lynch.docx"
+OUT_MD = BASE + r"\NCI_poster_text_cancer_dashboard.md"
+
+TITLE = ("WikiMed Article Recommender: An Open-Source Dashboard for Data-Driven "
+         "Prioritization of Cancer-Related Wikipedia Article Editing")
+AUTHORS = "Zach Schneider-Lynch, Ed.M.; Jeremy Warner, MD, MS, FAMIA, FASCO"
+AFFIL = ("Warren Alpert Medical School of Brown University; "
+         "Center for Clinical Cancer Informatics and Data Science (CCIDS)")
+
+SECTIONS = [
+    ("ABSTRACT", [
+        "Wikipedia is among the most accessed health information sources and depends entirely "
+        "upon volunteer editors. Medical trainees have contributed meaningful edits through "
+        "WikiMed electives and edit-a-thons but have lacked data-driven tools to identify "
+        "articles with the greatest reach and the greatest need for improvement. We developed "
+        "an open-source web application featuring a dedicated Cancer Dashboard. Medical Subject "
+        "Headings (MeSH) descriptors were assigned to WikiProject Medicine-flagged articles "
+        "through a custom pipeline, and cancer-specific articles identified by filtering those "
+        "descriptors against MeSH subtrees. Each article was scored using a normalized "
+        "Impact-Need Score (0-100) combining pageview reach, editorial importance labels, "
+        "quality deficit, editor scarcity, and clickstream-derived search intent. Among 1,859 "
+        "cancer-related articles, the median Impact-Need Score was 63.7 (IQR 55.1-71.9), 57.5% "
+        "were rated Stub or Start quality, and the median Flesch-Kincaid reading grade was 13.6 "
+        "(IQR 11.6-15.7). The dashboard is available at wikimed-dashboard.com under CC BY-NC-SA "
+        "4.0, with all code and pipelines open-source and auto-updated monthly.",
+    ]),
+    ("INTRODUCTION", [
+        "Wikipedia is a primary health information source for patients, caregivers, and "
+        "clinicians, and for many is the first text read after a cancer diagnosis. The quality "
+        "of that text matters.",
+        "WikiProject Medicine (WPM) volunteers assign health-related articles two ratings: "
+        "editorial quality (Stub to Featured Article) and clinical importance (Low to Top). "
+        "These labels provide a rough signal of need, but browsing category trees to find "
+        "editing opportunities does not scale, and the articles with the largest gap between "
+        "readership and quality are not visible from category pages.",
+        "Cancer-related articles comprise a substantial, high-priority subset of the medical "
+        "corpus. Prior work on Wikipedia medical content has focused largely on quality audits "
+        "within specific disease areas, not on building scalable tools for prospective, "
+        "data-driven editorial prioritization. We developed a customized algorithm and "
+        "dashboard to address this unmet need.",
+    ]),
+    ("METHODS", [
+        "__Article metadata.__ Five sequential Wikipedia and Wikimedia API phases supplied "
+        "quality class, importance label, watcher count, article length, 12-month pageviews, "
+        "and unique editor counts for all 53,286 WPM articles.",
+        "__Supplemental signals.__ Separate pipelines added inbound link counts, 3-month "
+        "pageview totals for traffic velocity, and search-intent fractions derived from the May "
+        "2026 Wikimedia clickstream dataset. TF-IDF scores computed from article lead sections "
+        "were matched against the 2026 NLM MeSH vocabulary to produce a Medical Relevance Score "
+        "(1-10).",
+        "__MeSH assignment.__ A seven-layer cascade assigned MeSH descriptors, ordered by data "
+        "reliability rather than coverage, with match confidence retained as metadata.",
+        "__Cancer identification.__ Assigned descriptors were filtered against the MeSH C04 "
+        "(Neoplasms) subtree and against antineoplastic agent descriptors reached through MeSH "
+        "PharmacologicalAction links, which capture drugs classified by chemical structure "
+        "rather than clinical use. A title-keyword fallback covered articles without a MeSH "
+        "assignment.",
+        "__Scoring.__ A normalized Impact-Need Score (0-100) combined pageview reach (30%), "
+        "importance (25%), quality deficit (25%), editor scarcity (10%), and search intent "
+        "(10%). All components were percentile-ranked within the full corpus before weighting. "
+        "Readability was estimated by Flesch-Kincaid (FK) grade level from article lead sections.",
+        "__Dashboard.__ Built in Python (Streamlit, Plotly, pandas) and deployed on Streamlit "
+        "Community Cloud, with a monthly GitHub Actions workflow re-fetching signals and "
+        "recomputing all scores automatically.",
+    ]),
+    ("RESULTS", [
+        "__Corpus and identification.__ Of 53,286 WPM articles, 1,859 were identified as "
+        "cancer-related: 1,266 (68%) through the MeSH C04 subtree, 168 (9%) through "
+        "antineoplastic agent descriptors, and 425 (23%) through the title-keyword fallback. "
+        "MeSH coverage reached 89% across the cancer subset. [Figure 2]",
+        "__Editorial need.__ Median Impact-Need Score was 63.7 (IQR 55.1-71.9). 57.5% of cancer "
+        "articles were rated Stub or Start quality, compared with 67.7% corpus-wide; 17 of 1,859 "
+        "(0.9%) had reached Good or Featured Article status. [Figure 4]",
+        "__Where the gap sits.__ Clinical importance and editorial quality are already partly "
+        "aligned. Of the 65 articles rated High or Top importance, 43 (66%) were B class or "
+        "better and only 4 were Stub or Start. The editorial gap instead sits in the long tail: "
+        "1,060 Stub or Start articles rated Low or Mid importance, which together drew 5.67 "
+        "million views over 12 months, 14% of all cancer article readership, at a median of "
+        "1,365 views each. [Figure 3]",
+        "__Readability.__ Median FK grade level was 13.6 (IQR 11.6-15.7). 68.0% of cancer "
+        "articles were written above grade 12, and 1.4% at or below the eighth-grade level of "
+        "the average US adult. [Figure 5]",
+    ]),
+    ("DISCUSSION", [
+        "The Impact-Need Score surfaces the intersection of public reach and editorial gap, not "
+        "the worst-quality articles alone. The cancer results show why that distinction matters. "
+        "WikiProject Medicine volunteers have already brought most high-importance cancer "
+        "articles to B class or better, so a prioritization strategy resting on importance "
+        "labels alone would direct student effort toward the articles needing the least work. "
+        "The articles with the largest remaining gap are individually rated Low or Mid "
+        "importance but collectively reach millions of readers each year, a pattern visible only "
+        "when readership is measured directly rather than inferred from editorial labels.",
+        "Readability is a parallel and largely independent gap. A cancer article at grade 13.6 "
+        "sits above the level most adults read comfortably regardless of its quality class, and "
+        "raising an article from Stub to C does not by itself make it more accessible.",
+        "__Limitations.__ Quality and importance ratings are volunteer-assigned and may lag "
+        "actual article content. The MeSH C04 subtree includes benign neoplasms, so the corpus "
+        "is neoplasm-related rather than strictly malignant. Readability is computed from lead "
+        "sections rather than full articles. The scoring weights are theoretically motivated and "
+        "have not yet been validated against editing outcomes.",
+    ]),
+    ("CONCLUSIONS", [
+        "* Identified 1,859 cancer-related articles from 53,286 WikiProject Medicine articles "
+        "using the MeSH C04 subtree, antineoplastic PharmacologicalAction links, and a keyword "
+        "fallback, achieving 89% MeSH coverage across the subset",
+        "* Derived a normalized Impact-Need Score combining readership, clinical importance, "
+        "quality deficit, editor scarcity, and clickstream search intent",
+        "* Found the editorial gap concentrated not in high-importance articles, 66% of which "
+        "are already B class or better, but in a 1,060-article long tail drawing 5.67 million "
+        "annual views",
+        "* Measured a median reading grade of 13.6, with 68% of cancer articles written above "
+        "grade 12 and 1.4% readable by the average US adult",
+        "* Deployed a public dashboard with automated monthly refresh at wikimed-dashboard.com, "
+        "licensed CC BY-NC-SA 4.0, with all code and pipelines open-source on GitHub",
+        "* A pre-post survey study across seven partner medical schools to gauge utility, "
+        "usability, and usefulness is planned",
+    ]),
+]
+
+FIGURES = [
+    ("Figure 1. Data pipeline.",
+     "Reuse the schematic from the WIN poster. Wikipedia and Wikimedia REST APIs feed article "
+     "metadata, attention signals, clickstream, TF-IDF, and the seven-layer MeSH cascade into "
+     "the scoring engine and dashboard. No new figure needed."),
+    ("Figure 2. Cancer article identification (fig2_identification.png).",
+     "Horizontal bar, three methods. Shows how the 1,859 articles were found and makes the "
+     "MeSH-first methodology legible at a glance. Counts and percentages are labelled directly "
+     "so the figure reads without reference to the axis."),
+    ("Figure 3. Priority matrix (fig3_priority_matrix.png).",
+     "Quality x importance heatmap with counts in cells. This is the figure that carries the "
+     "poster's main finding: the mass sits in the Low/Mid importance, Stub/Start cells, not in "
+     "the Top/High row. Pair it with the long-tail readership number in the caption."),
+    ("Figure 4. Editorial need against current readership (fig4_impact_vs_attention.png).",
+     "Scatter of Impact-Need against Wiki Attention, coloured by quality. The upper right "
+     "quadrant is the recommendation target: heavily read articles with a large quality gap."),
+    ("Figure 5. Readability distribution (fig5_readability.png).",
+     "Histogram of Flesch-Kincaid grade with grade 8 and grade 12 reference lines. Carries the "
+     "accessibility finding on its own, and needs no accompanying text beyond the caption."),
+    ("Table 1. Highest-priority cancer articles (table1_top_articles.csv).",
+     "Restricted to High and Top importance. The unrestricted top ten is dominated by benign "
+     "dermatologic entities (trichoadenoma, nevus spilus, acanthoma) because MeSH C04 includes "
+     "benign neoplasms, which reads oddly on a cancer poster. The restricted table shows "
+     "recognisable malignancies instead."),
+]
+
+NOTES = [
+    ("MeSH coverage is reported as 89% (cancer subset), not 82% (corpus). ",
+     "The submitted abstract states 82% corpus-wide coverage. The data does not support that "
+     "figure: actual corpus coverage is 60.9% (32,430 / 53,286), and has been since the initial "
+     "commit. The 43,700 figure on the WIN poster is exactly 82% x 53,286, derived from the "
+     "percentage rather than counted. Cancer-subset coverage of 89% is accurate, higher, and "
+     "more relevant to this poster, so it is used here. The dashboard Methodology page also "
+     "states ~82% and needs the same correction."),
+    ("The priority-matrix finding differs from the WIN poster framing. ",
+     "The WIN poster describes top-left cells (high importance x low quality) as the biggest "
+     "unmet need. For the cancer subset that is not what the data shows: only 4 of 65 High/Top "
+     "importance articles are Stub or Start. Presenting the long-tail finding instead is both "
+     "accurate and a stronger informatics result, since it is only visible by measuring "
+     "readership directly."),
+    ("Biographies remain in the cancer corpus. ",
+     "Henrietta Lacks (802,455 views) and Joseph Merrick (598,243) are among the ten most-read "
+     "articles in the cancer subset, and Belatacept, a transplant immunosuppressant, ranks "
+     "second by Impact-Need. The MeSH pipeline matches titles against descriptor names, so "
+     "surnames collide with eponymous syndromes. A detector exists (fetch_is_biography.py) but "
+     "has only been run against 147 precision-oncology articles. Running it corpus-wide before "
+     "the meeting would clean the live dashboard behind the poster's URL."),
+    ("Figure palettes were validated for colour-vision deficiency. ",
+     "The dashboard's six-class quality ramp fails adjacent-pair separation under normal vision "
+     "on two pairs (Start/C = 12.8, GA/FA = 13.5, against a floor of 15), and six near-blues are "
+     "unreadable at poster viewing distance. Quality is collapsed to three validated classes in "
+     "Figure 4 (worst-case CVD separation 18.7). GA and FA together account for only 17 of 1,859 "
+     "articles, so nothing material is lost."),
+]
+
+
+def build_docx():
+    doc = Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(11)
+    st.paragraph_format.space_after = Pt(8)
+    st.paragraph_format.line_spacing = 1.12
+    for s in doc.sections:
+        s.left_margin = s.right_margin = Inches(0.9)
+        s.top_margin = s.bottom_margin = Inches(0.9)
+
+    def head(text, size=13, before=15):
+        p = doc.add_paragraph()
+        p.paragraph_format.space_before = Pt(before)
+        p.paragraph_format.space_after = Pt(4)
+        r = p.add_run(text)
+        r.bold = True
+        r.font.size = Pt(size)
+
+    def muted(text, size=9.5):
+        p = doc.add_paragraph()
+        r = p.add_run(text)
+        r.italic = True
+        r.font.size = Pt(size)
+        r.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
+
+    def body(text):
+        """Supports __bold lead-ins__ and * bullets."""
+        if text.startswith("* "):
+            p = doc.add_paragraph(style="List Bullet")
+            p.paragraph_format.space_after = Pt(5)
+            p.add_run(text[2:])
+            return
+        p = doc.add_paragraph()
+        parts = text.split("__")
+        for i, seg in enumerate(parts):
+            if not seg:
+                continue
+            r = p.add_run(seg)
+            r.bold = (i % 2 == 1)
+
+    p = doc.add_paragraph()
+    p.paragraph_format.space_after = Pt(2)
+    r = p.add_run("NCI Data to Discovery Symposium - Poster Text")
+    r.bold = True
+    r.font.size = Pt(15)
+    muted("Cancer Dashboard. Figures in poster_figures/. Generated by "
+          "tools_make_nci_poster_text.py; edit that script rather than this file.")
+
+    head("Title", 12, before=10)
+    body(TITLE)
+    body(AUTHORS)
+    muted(AFFIL, 10)
+
+    for name, paras in SECTIONS:
+        head(name)
+        for t in paras:
+            body(t)
+
+    doc.add_page_break()
+    head("Suggested figures", 13, before=0)
+    muted("Five figures and one table. Figure 1 is reusable from the WIN poster; the rest are "
+          "generated at 300 dpi by tools_make_nci_poster_figures.py.")
+    for cap, note in FIGURES:
+        p = doc.add_paragraph()
+        p.paragraph_format.space_after = Pt(2)
+        p.add_run(cap).bold = True
+        q = doc.add_paragraph()
+        q.paragraph_format.left_indent = Inches(0.28)
+        q.paragraph_format.space_after = Pt(9)
+        r = q.add_run(note)
+        r.font.size = Pt(10)
+        r.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
+
+    head("Decisions made, and why")
+    for lead, rest in NOTES:
+        p = doc.add_paragraph(style="List Bullet")
+        p.paragraph_format.space_after = Pt(7)
+        p.add_run(lead).bold = True
+        p.add_run(rest)
+
+    doc.save(OUT)
+    print("Saved:", OUT)
+
+
+def build_md():
+    L = ["# NCI Data to Discovery Symposium - Poster Text\n",
+         "Cancer Dashboard. Figures in `poster_figures/`.\n",
+         "> Generated by `tools_make_nci_poster_text.py`; edit that script, not this file.\n",
+         "---\n", "## Title\n", TITLE + "\n", AUTHORS + "\n", f"*{AFFIL}*\n", "---\n"]
+    for name, paras in SECTIONS:
+        L.append(f"## {name}\n")
+        for t in paras:
+            L.append(t.replace("__", "**") + "\n")
+        L.append("")
+    L.append("---\n## Suggested figures\n")
+    for cap, note in FIGURES:
+        L.append(f"**{cap}**")
+        L.append(f"  {note}\n")
+    L.append("## Decisions made, and why\n")
+    for lead, rest in NOTES:
+        L.append(f"- **{lead.strip()}** {rest}")
+    io.open(OUT_MD, "w", encoding="utf-8").write("\n".join(L))
+    print("Saved:", OUT_MD)
+    wc = sum(len(t.split()) for _, ps in SECTIONS for t in ps)
+    print(f"  poster body: {wc} words across {len(SECTIONS)} sections")
+    for name, ps in SECTIONS:
+        print(f"    {name:<14}{sum(len(t.split()) for t in ps):>4} words")
+
+
+if __name__ == "__main__":
+    build_docx()
+    build_md()
