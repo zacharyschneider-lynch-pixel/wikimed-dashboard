@@ -314,20 +314,22 @@ def build_docx():
         r.font.size = Pt(size)
         r.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
 
+    def emit(p, text):
+        """Add text to a paragraph, bolding anything wrapped in __double underscores__."""
+        for i, seg in enumerate(text.split("__")):
+            if not seg:
+                continue
+            r = p.add_run(seg)
+            r.bold = (i % 2 == 1)
+
     def body(text):
         """Supports __bold lead-ins__ and * bullets."""
         if text.startswith("* "):
             p = doc.add_paragraph(style="List Bullet")
             p.paragraph_format.space_after = Pt(5)
-            p.add_run(text[2:])
+            emit(p, text[2:])
             return
-        p = doc.add_paragraph()
-        parts = text.split("__")
-        for i, seg in enumerate(parts):
-            if not seg:
-                continue
-            r = p.add_run(seg)
-            r.bold = (i % 2 == 1)
+        emit(doc.add_paragraph(), text)
 
     p = doc.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
