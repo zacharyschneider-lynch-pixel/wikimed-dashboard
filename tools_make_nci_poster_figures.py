@@ -11,6 +11,7 @@ here: #B2182B / #E08214 / #2166AC, worst-case CVD separation 18.7.
 Outputs 300 dpi PNGs to poster_figures/.
 """
 import os
+import time
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -91,6 +92,19 @@ def despine(ax, keep=("left", "bottom")):
         ax.spines[side].set_visible(side in keep)
 
 
+
+def save(fig, name, attempts=6):
+    """Write a figure, retrying through transient OneDrive sync locks."""
+    path = f"{OUT}/{name}"
+    for i in range(attempts):
+        try:
+            fig.savefig(path, dpi=300, bbox_inches="tight")
+            return
+        except OSError:
+            if i == attempts - 1:
+                raise
+            time.sleep(0.75)
+
 def fig_pipeline():
     """Figure 1 - data pipeline schematic, drawn to match the other poster figures."""
     from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
@@ -159,7 +173,7 @@ def fig_pipeline():
                 color="#9AA5B1", lw=1.8, zorder=5))
 
     fig.tight_layout(pad=0.4)
-    fig.savefig(f"{OUT}/fig1_pipeline.png", dpi=300, bbox_inches="tight")
+    save(fig, "fig1_pipeline.png")
     plt.close(fig)
     print("  fig1_pipeline.png         4 stages")
 
@@ -190,7 +204,7 @@ def fig_identification(can):
     ax.set_title(f"Cancer-related articles identified (n = {total:,})",
                  fontsize=14, color=INK, pad=10, loc="left", weight="bold")
     fig.tight_layout()
-    fig.savefig(f"{OUT}/fig2_identification.png", dpi=300, bbox_inches="tight")
+    save(fig, "fig2_identification.png")
     plt.close(fig)
     print(f"  fig2_identification.png   n={total:,}")
 
@@ -224,7 +238,7 @@ def fig_priority_matrix(can):
     ax.set_title("Priority matrix: cancer articles by quality and importance",
                  fontsize=14, color=INK, pad=10, loc="left", weight="bold")
     fig.tight_layout()
-    fig.savefig(f"{OUT}/fig4_priority_matrix.png", dpi=300, bbox_inches="tight")
+    save(fig, "fig4_priority_matrix.png")
     plt.close(fig)
     print(f"  fig4_priority_matrix.png  max cell={vmax:,}")
 
@@ -232,7 +246,10 @@ def fig_priority_matrix(can):
 def fig_scatter(can):
     """Impact-Need against current attention, identity = collapsed quality."""
     s = can.dropna(subset=["wiki_attention_score", "impact_need_score", "q3"])
-    fig, ax = plt.subplots(figsize=(7.2, 5.4))
+    # Landscape rather than near-square. Both axes are 0-100 but they measure
+    # different things, so equal aspect buys nothing and a wider frame spreads
+    # the dense 40-80 band enough to read at poster distance.
+    fig, ax = plt.subplots(figsize=(10.2, 5.4))
     ax.axvline(50, color="#AAAAAA", ls=(0, (2, 3)), lw=1.2, zorder=1)
     ax.axhline(50, color="#AAAAAA", ls=(0, (2, 3)), lw=1.2, zorder=1)
     for lab in ["GA / FA", "C / B", "Stub / Start"]:
@@ -255,7 +272,7 @@ def fig_scatter(can):
     ax.set_title("Editorial need against current readership",
                  fontsize=14, color=INK, pad=10, loc="left", weight="bold")
     fig.tight_layout()
-    fig.savefig(f"{OUT}/fig3_impact_vs_attention.png", dpi=300, bbox_inches="tight")
+    save(fig, "fig3_impact_vs_attention.png")
     plt.close(fig)
     print(f"  fig3_impact_vs_attention.png  n={len(s):,}")
 
@@ -293,7 +310,7 @@ def fig_readability(can):
     ax.set_title(f"Readability: {pct:.0f}% of cancer articles exceed grade 12",
                  fontsize=14, color=INK, pad=10, loc="left", weight="bold")
     fig.tight_layout()
-    fig.savefig(f"{OUT}/fig5_readability.png", dpi=300, bbox_inches="tight")
+    save(fig, "fig5_readability.png")
     plt.close(fig)
     print(f"  fig5_readability.png   median={rl.median():.1f}  >grade12={pct:.1f}%")
 
