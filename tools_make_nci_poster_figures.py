@@ -264,17 +264,25 @@ def fig_readability(can):
     """Reading-grade distribution against comprehension benchmarks."""
     rl = can["reading_level"].dropna()
     rl = rl[(rl >= 0) & (rl <= 30)]
-    fig, ax = plt.subplots(figsize=(7.2, 3.9))
-    ax.hist(rl, bins=np.arange(0, 31, 1), color=SEQ_HUE, alpha=0.9, zorder=3)
-    # Stagger the two reference labels; at grade 8 vs 12 they collide otherwise.
-    ymax = ax.get_ylim()[1]
-    for g, lab, col, ha, dx, yfrac in [
-        (8, "avg US adult\n(grade 8)", "#B2182B", "right", -0.4, 0.97),
-        (12, "high school graduate\n(grade 12)", INK_MUTED, "left", 0.4, 0.70),
+    fig, ax = plt.subplots(figsize=(7.2, 4.2))
+    counts, _, _ = ax.hist(rl, bins=np.arange(0, 31, 1), color=SEQ_HUE,
+                           alpha=0.9, zorder=3)
+
+    # Reserve headroom above the tallest bar so both reference labels sit on
+    # clean surface. Placed over the bars they were grey-on-dark-blue and
+    # effectively unreadable; staggering them vertically only moved the problem.
+    peak = counts.max()
+    ax.set_ylim(0, peak * 1.30)
+    label_y = peak * 1.26
+    for g, lab, col, ha, dx in [
+        (8, "avg US adult\n(grade 8)", "#B2182B", "right", -0.45),
+        (12, "high school graduate\n(grade 12)", "#8A4B08", "left", 0.45),
     ]:
         ax.axvline(g, color=col, ls="--", lw=1.6, zorder=4)
-        ax.text(g + dx, ymax * yfrac, lab, fontsize=11,
-                color=col, va="top", ha=ha, linespacing=1.35)
+        ax.text(g + dx, label_y, lab, fontsize=11, weight="medium",
+                color=col, va="top", ha=ha, linespacing=1.35, zorder=6,
+                bbox=dict(facecolor=SURFACE, edgecolor="none",
+                          boxstyle="round,pad=0.25", alpha=0.92))
     pct = (rl > 12).mean() * 100
     ax.set_xlabel("Flesch-Kincaid grade level", fontsize=12.5, color=INK_MUTED)
     ax.set_ylabel("Articles", fontsize=12.5, color=INK_MUTED)
