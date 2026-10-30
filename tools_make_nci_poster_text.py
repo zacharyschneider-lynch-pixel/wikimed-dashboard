@@ -61,26 +61,28 @@ SECTIONS = [
     ("METHODS", [
         "__Article metadata.__ Five sequential Wikipedia and Wikimedia API phases supplied "
         "quality class, importance label, watcher count, article length, 12-month pageviews, "
-        "and unique editor counts for all 53,286 WPM articles.",
+        "and unique editor counts for all 53,286 WPM articles [7].",
         "__Supplemental signals.__ Separate pipelines added inbound link counts, 3-month "
         "pageview totals for traffic velocity, and search-intent fractions derived from the May "
-        "2026 Wikimedia clickstream dataset. TF-IDF scores computed from article lead sections "
-        "were matched against the 2026 NLM MeSH vocabulary to produce a Medical Relevance Score "
-        "(1-10).",
-        "__MeSH assignment.__ A seven-layer cascade assigned MeSH descriptors, ordered by data "
-        "reliability rather than coverage, with match confidence retained as metadata.",
+        "2026 Wikimedia clickstream dataset [10]. TF-IDF scores computed from article lead "
+        "sections were matched against the 2026 NLM MeSH vocabulary [8] to produce a Medical "
+        "Relevance Score (1-10).",
+        "__MeSH assignment.__ A seven-layer cascade assigned MeSH descriptors [8], ordered by "
+        "data reliability rather than coverage, with match confidence retained as metadata. "
+        "[Figure 1]",
         "__Cancer identification.__ Assigned descriptors were filtered against the MeSH C04 "
         "(Neoplasms) subtree and against antineoplastic agent descriptors reached through MeSH "
-        "PharmacologicalAction links, which capture drugs classified by chemical structure "
+        "PharmacologicalAction links [8], which capture drugs classified by chemical structure "
         "rather than clinical use. A title-keyword fallback covered articles without a MeSH "
         "assignment.",
         "__Scoring.__ A normalized Impact-Need Score (0-100) combined pageview reach (30%), "
         "importance (25%), quality deficit (25%), editor scarcity (10%), and search intent "
         "(10%). All components were percentile-ranked within the full corpus before weighting. "
-        "Readability was estimated by Flesch-Kincaid (FK) grade level from article lead sections.",
+        "Readability was estimated by Flesch-Kincaid (FK) grade level [9] from article lead "
+        "sections.",
         "__Dashboard.__ Built in Python (Streamlit, Plotly, pandas) and deployed on Streamlit "
         "Community Cloud, with a monthly GitHub Actions workflow re-fetching signals and "
-        "recomputing all scores automatically. [Figure 1]",
+        "recomputing all scores automatically.",
     ]),
     ("RESULTS", [
         "__Corpus and identification.__ Of 53,286 WPM articles, 1,859 were identified as "
@@ -104,19 +106,27 @@ SECTIONS = [
         "The Impact-Need Score surfaces the intersection of public reach and editorial gap, not "
         "the worst-quality articles alone. The cancer results show why that distinction matters. "
         "WikiProject Medicine volunteers have already brought most high-importance cancer "
-        "articles to B class or better, so a prioritization strategy resting on importance "
+        "articles to B class or better [7], so a prioritization strategy resting on importance "
         "labels alone would direct student effort toward the articles needing the least work. "
         "The articles with the largest remaining gap are individually rated Low or Mid "
         "importance but collectively reach millions of readers each year, a pattern visible only "
-        "when readership is measured directly rather than inferred from editorial labels.",
-        "Readability is a parallel and largely independent gap. A cancer article at grade 13.6 "
-        "sits above the level most adults read comfortably regardless of its quality class, and "
-        "raising an article from Stub to C does not by itself make it more accessible.",
+        "when readership is measured directly rather than inferred from editorial labels. "
+        "Wikipedia's search visibility is already known to be highest for rare and less common "
+        "conditions [2], which is consistent with a long tail carrying more traffic than its "
+        "importance labels imply.",
+        "Readability is a parallel and largely independent gap. The median cancer article sits "
+        "at Flesch-Kincaid grade 13.6 [9], above the eighth-grade level at which the average US "
+        "adult reads [11] and well above the sixth-grade ceiling commonly recommended for "
+        "patient-facing material [12]. This closely matches the grade 14.1 reported for "
+        "Wikipedia cancer content against the National Cancer Institute's Physician Data Query "
+        "database in 2011 [4], indicating that readability has not materially improved in the "
+        "fifteen years since. Raising an article from Stub to C class does not by itself make it "
+        "more accessible.",
         "__Limitations.__ Quality and importance ratings are volunteer-assigned and may lag "
-        "actual article content. The MeSH C04 subtree includes benign neoplasms, so the corpus "
-        "is neoplasm-related rather than strictly malignant. Readability is computed from lead "
-        "sections rather than full articles. The scoring weights are theoretically motivated and "
-        "have not yet been validated against editing outcomes.",
+        "actual article content [7]. The MeSH C04 subtree includes benign neoplasms [8], so the "
+        "corpus is neoplasm-related rather than strictly malignant. Readability is computed from "
+        "lead sections rather than full articles. The scoring weights are theoretically "
+        "motivated and have not yet been validated against editing outcomes.",
     ]),
     ("CONCLUSIONS", [
         "* Identified 1,859 cancer-related articles from 53,286 WikiProject Medicine articles "
@@ -186,6 +196,18 @@ REFERENCES = [
     ("Wikimedia Foundation. Wikipedia clickstream data. May 2026. "
      "https://dumps.wikimedia.org/other/clickstream/",
      "Methods: source of the search-intent component of the Impact-Need Score."),
+    ("Kutner M, Greenberg E, Jin Y, Paulsen C. The Health Literacy of America's Adults: "
+     "Results From the 2003 National Assessment of Adult Literacy (NCES 2006-483). "
+     "US Department of Education, National Center for Education Statistics; 2006.",
+     "Underpins the eighth-grade benchmark for the average US adult. A population mean rather "
+     "than a recommended standard, which is why reference 12 is cited alongside it."),
+    ("American Medical Association / National Institutes of Health patient education "
+     "readability guidance, commonly cited as a sixth-grade ceiling (NIH guidance is sometimes "
+     "reported as sixth to eighth grade).",
+     "NOT INDEPENDENTLY VERIFIED. Widely repeated across the readability literature, but "
+     "secondary sources disagree on the exact grade and none of those consulted cite a single "
+     "primary document. Trace it to the primary AMA or NIH publication before final submission, "
+     "or drop the clause and rest the argument on reference 11 alone."),
 ]
 
 CAPTIONS = [
