@@ -192,9 +192,11 @@ def fig_mesh_cascade():
 
         ax.text(X_METHOD, yc, method, fontsize=11.4, weight="bold",
                 color=INK, va="center", ha="left")
-        ax.text(X_SRC, yc, source, fontsize=10.2, color=INK_MUTED,
+        # Source and approach carry the substance of the figure, so they take
+        # body ink rather than muted; bold weight on METHOD still leads the eye.
+        ax.text(X_SRC, yc, source, fontsize=10.2, color=INK,
                 va="center", ha="left")
-        ax.text(X_APPR, yc, approach, fontsize=10.2, color=INK_MUTED,
+        ax.text(X_APPR, yc, approach, fontsize=10.2, color=INK,
                 va="center", ha="left")
 
         ax.add_patch(Rectangle((X_CONF, yc - 0.085), 0.17, 0.17,
