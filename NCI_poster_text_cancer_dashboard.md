@@ -10,9 +10,10 @@ Cancer Dashboard. Figures in `poster_figures/`.
 
 WikiMed Article Recommender: An Open-Source Dashboard for Data-Driven Prioritization of Cancer-Related Wikipedia Article Editing
 
-Zach Schneider-Lynch, Ed.M.; Jeremy Warner, MD, MS, FAMIA, FASCO
+Zach Schneider-Lynch, Ed.M.^1^, Sanjay Mishra^2^, Sheela Kusnoor^2^, Jeremy Warner, MD, MS, FAMIA, FASCO^1^
 
-*Warren Alpert Medical School of Brown University; Center for Clinical Cancer Informatics and Data Science (CCIDS)*
+^1^ *Warren Alpert Medical School of Brown University, Center for Clinical Cancer Informatics and Data Science (CCIDS), Providence, RI*
+^2^ *Vanderbilt University Medical Center, Nashville, TN*
 
 ---
 

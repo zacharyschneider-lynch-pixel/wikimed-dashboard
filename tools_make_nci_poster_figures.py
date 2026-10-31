@@ -105,6 +105,12 @@ def save(fig, name, attempts=6):
                 raise
             time.sleep(0.75)
 
+def fig_title(fig, num, text):
+    """Numbered title, flush to the figure's left edge rather than the axes'."""
+    fig.text(0.0, 1.015, f"Figure {num}: {text}", ha="left", va="bottom",
+             fontsize=14, weight="bold", color=INK)
+
+
 def fig_mesh_cascade():
     """Figure 1 - the seven-layer MeSH descriptor assignment cascade.
 
@@ -143,7 +149,7 @@ def fig_mesh_cascade():
 
     X_NUM, X_METHOD, X_SRC, X_APPR, X_CONF = 0.30, 0.78, 4.30, 6.50, 12.30
 
-    ax.text(0, 8.72, "MeSH descriptor assignment cascade",
+    ax.text(0, 8.72, "Figure 1: MeSH descriptor assignment cascade",
             fontsize=15.5, weight="bold", color=INK, va="top")
     ax.text(0, 8.32,
             "Seven layers applied in order of data reliability. Each layer processes only the "
@@ -220,8 +226,7 @@ def fig_identification(can):
     ax.set_axisbelow(True)
     despine(ax, keep=("bottom",))
     ax.tick_params(axis="y", length=0)
-    ax.set_title(f"Cancer-related articles identified (n = {total:,})",
-                 fontsize=14, color=INK, pad=10, loc="left", weight="bold")
+    fig_title(fig, 2, f"Cancer-related articles identified (n = {total:,})")
     fig.tight_layout()
     save(fig, "fig2_identification.png")
     plt.close(fig)
@@ -254,8 +259,7 @@ def fig_priority_matrix(can):
     ax.tick_params(length=0)
     for s in ax.spines.values():
         s.set_visible(False)
-    ax.set_title("Priority matrix: cancer articles by quality and importance",
-                 fontsize=14, color=INK, pad=10, loc="left", weight="bold")
+    fig_title(fig, 4, "Priority matrix of cancer articles by quality and importance")
     fig.tight_layout()
     save(fig, "fig4_priority_matrix.png")
     plt.close(fig)
@@ -288,8 +292,7 @@ def fig_scatter(can):
                     framealpha=0.95, edgecolor=GRID, title="Quality class")
     leg.get_title().set_fontsize(11.5)
     leg.get_title().set_color(INK_MUTED)
-    ax.set_title("Editorial need against current readership",
-                 fontsize=14, color=INK, pad=10, loc="left", weight="bold")
+    fig_title(fig, 3, "Editorial need against current readership")
     fig.tight_layout()
     save(fig, "fig3_impact_vs_attention.png")
     plt.close(fig)
@@ -326,8 +329,7 @@ def fig_readability(can):
     ax.set_axisbelow(True)
     despine(ax)
     ax.set_xlim(0, 30)
-    ax.set_title(f"Readability: {pct:.0f}% of cancer articles exceed grade 12",
-                 fontsize=14, color=INK, pad=10, loc="left", weight="bold")
+    fig_title(fig, 5, f"Reading grade distribution, {pct:.0f}% of cancer articles above grade 12")
     fig.tight_layout()
     save(fig, "fig5_readability.png")
     plt.close(fig)
