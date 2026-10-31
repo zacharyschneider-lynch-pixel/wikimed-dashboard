@@ -149,63 +149,60 @@ def fig_mesh_cascade():
          "Two passes: title alone, then title plus first sentence if uncertain"),
     ]
 
-    W = 14.0
-    fig, ax = plt.subplots(figsize=(W, 5.0))
+    W, F = 14.0, 1.50
+    fig, ax = plt.subplots(figsize=(W, 9.0))
     ax.set_xlim(0, W)
-    ax.set_ylim(1.35, 9.0)
+    ax.set_ylim(1.02, 11.0)
     ax.axis("off")
 
-    X_NUM, X_METHOD, X_SRC, X_APPR, X_CONF = 0.30, 0.78, 4.30, 6.50, 12.30
+    X_NUM, X_TEXT, X_SRC, X_CONF = 0.30, 0.95, 6.25, 11.70
 
-    ax.text(0, 8.72, "Figure 1: MeSH descriptor assignment cascade",
-            fontsize=15.5, weight="bold", color=INK, va="top")
-    ax.text(0, 8.32,
+    ax.text(0, 10.78, "Figure 1: MeSH descriptor assignment cascade",
+            fontsize=15.5 * F, weight="bold", color=INK, va="top")
+    ax.text(0, 10.22,
             "Seven layers applied in order of data reliability. Each layer processes only the "
             "articles the layers above it could not resolve.",
-            fontsize=10.3, color=INK_MUTED, va="top")
+            fontsize=10.3 * F, color=INK_MUTED, va="top")
 
-    # column header
-    yh = 7.62
-    for x, lab in [(X_NUM, ""), (X_METHOD, "METHOD"), (X_SRC, "SOURCE"),
-                   (X_APPR, "APPROACH"), (X_CONF, "CONFIDENCE")]:
-        if lab:
-            ax.text(x, yh, lab, fontsize=8.6, weight="bold", color=INK_MUTED,
-                    va="bottom", ha="left")
-    ax.plot([0, W], [yh - 0.12, yh - 0.12], color=INK, lw=1.1,
+    yh = 9.52
+    for x, lab in [(X_TEXT, "METHOD"), (X_SRC, "SOURCE"), (X_CONF, "CONFIDENCE")]:
+        ax.text(x, yh, lab, fontsize=8.6 * F, weight="bold", color=INK_MUTED,
+                va="bottom", ha="left")
+    ax.plot([0, W], [yh - 0.16, yh - 0.16], color=INK, lw=1.4,
             solid_capstyle="butt", zorder=3)
 
-    rowh = 0.86
-    top = yh - 0.12
+    rowh = 1.18
+    top = yh - 0.16
     for i, (num, method, source, tier, approach) in enumerate(LAYERS):
         yc = top - i * rowh - rowh / 2
+        y1, y2 = yc + 0.27, yc - 0.30      # line 1 (labels), line 2 (approach)
         accent = TIER[tier]
 
-        # cascade spine
         if i < len(LAYERS) - 1:
-            ax.plot([X_NUM + 0.09, X_NUM + 0.09], [yc - 0.17, yc - rowh + 0.17],
-                    color="#C4CCD4", lw=1.0, zorder=2)
-        ax.add_patch(plt.Circle((X_NUM + 0.09, yc), 0.145, facecolor=accent,
+            ax.plot([X_NUM + 0.13, X_NUM + 0.13], [y1 - 0.28, yc - rowh + 0.30],
+                    color="#C4CCD4", lw=1.2, zorder=2)
+        ax.add_patch(plt.Circle((X_NUM + 0.13, y1), 0.20, facecolor=accent,
                                 edgecolor="none", zorder=4))
-        ax.text(X_NUM + 0.09, yc, str(num), ha="center", va="center",
-                fontsize=9.2, weight="bold", zorder=5,
+        ax.text(X_NUM + 0.13, y1, str(num), ha="center", va="center",
+                fontsize=9.2 * F, weight="bold", zorder=5,
                 color=("white" if tier in ("Exact", "High") else INK))
 
-        ax.text(X_METHOD, yc, method, fontsize=11.4, weight="bold",
+        ax.text(X_TEXT, y1, method, fontsize=11.4 * F, weight="bold",
                 color=INK, va="center", ha="left")
-        # Source and approach carry the substance of the figure, so they take
-        # body ink rather than muted; bold weight on METHOD still leads the eye.
-        ax.text(X_SRC, yc, source, fontsize=10.2, color=INK,
-                va="center", ha="left")
-        ax.text(X_APPR, yc, approach, fontsize=10.2, color=INK,
+        ax.text(X_SRC, y1, source, fontsize=10.2 * F, color=INK,
                 va="center", ha="left")
 
-        ax.add_patch(Rectangle((X_CONF, yc - 0.085), 0.17, 0.17,
+        ax.add_patch(Rectangle((X_CONF, y1 - 0.11), 0.22, 0.22,
                                facecolor=accent, edgecolor="none", zorder=4))
-        ax.text(X_CONF + 0.30, yc, tier, fontsize=10.4, color=INK,
+        ax.text(X_CONF + 0.38, y1, tier, fontsize=10.4 * F, color=INK,
+                va="center", ha="left")
+
+        # Approach sits on its own line, indented under the method name.
+        ax.text(X_TEXT, y2, approach, fontsize=9.9 * F, color=INK_MUTED,
                 va="center", ha="left")
 
         ax.plot([0, W], [yc - rowh / 2, yc - rowh / 2],
-                color=GRID, lw=0.7, solid_capstyle="butt", zorder=1)
+                color=GRID, lw=0.9, solid_capstyle="butt", zorder=1)
 
     fig.tight_layout(pad=0.35)
     save(fig, "fig1_mesh_cascade.png")
