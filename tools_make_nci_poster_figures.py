@@ -105,10 +105,18 @@ def save(fig, name, attempts=6):
                 raise
             time.sleep(0.75)
 
+REF_W = 7.2   # width most poster figures are drawn at
+
+
 def fig_title(fig, num, text):
-    """Numbered title, flush to the figure's left edge rather than the axes'."""
+    """Numbered title, flush left, sized relative to the figure's width.
+
+    A fixed point size looks smaller on a wider figure once both are scaled to
+    the same column width on the poster, so scale against REF_W instead.
+    """
+    k = fig.get_size_inches()[0] / REF_W
     fig.text(0.0, 1.015, f"Figure {num}: {text}", ha="left", va="bottom",
-             fontsize=14, weight="bold", color=INK)
+             fontsize=14 * k, weight="bold", color=INK)
 
 
 def fig_mesh_cascade():
@@ -272,25 +280,28 @@ def fig_scatter(can):
     # Landscape rather than near-square. Both axes are 0-100 but they measure
     # different things, so equal aspect buys nothing and a wider frame spreads
     # the dense 40-80 band enough to read at poster distance.
-    fig, ax = plt.subplots(figsize=(10.2, 5.4))
+    FIG_W = 10.2
+    K = FIG_W / REF_W          # keeps type matched to the 7.2in figures
+    fig, ax = plt.subplots(figsize=(FIG_W, 5.4))
+    ax.tick_params(labelsize=11 * K)
     ax.axvline(50, color="#AAAAAA", ls=(0, (2, 3)), lw=1.2, zorder=1)
     ax.axhline(50, color="#AAAAAA", ls=(0, (2, 3)), lw=1.2, zorder=1)
     for lab in ["GA / FA", "C / B", "Stub / Start"]:
         sub = s[s["q3"] == lab]
         ax.scatter(sub["wiki_attention_score"], sub["impact_need_score"],
-                   s=26, c=Q3[lab], label=f"{lab}  (n={len(sub):,})",
+                   s=26 * K, c=Q3[lab], label=f"{lab}  (n={len(sub):,})",
                    alpha=0.72, linewidths=0.6, edgecolors=SURFACE, zorder=3)
     ax.set_xlim(0, 100); ax.set_ylim(0, 100)
-    ax.set_xlabel("Wiki Attention Score (0–100)", fontsize=12.5, color=INK_MUTED)
-    ax.set_ylabel("Impact-Need Score (0–100)", fontsize=12.5, color=INK_MUTED)
+    ax.set_xlabel("Wiki Attention Score (0–100)", fontsize=12.5 * K, color=INK_MUTED)
+    ax.set_ylabel("Impact-Need Score (0–100)", fontsize=12.5 * K, color=INK_MUTED)
     ax.grid(True, color=GRID, lw=0.7, zorder=0)
     ax.set_axisbelow(True)
     despine(ax)
     ax.text(98, 97, "high reach, large gap", ha="right", va="top",
-            fontsize=11.5, color=INK_MUTED, style="italic")
-    leg = ax.legend(loc="lower left", frameon=True, fontsize=11.5,
+            fontsize=11.5 * K, color=INK_MUTED, style="italic")
+    leg = ax.legend(loc="lower left", frameon=True, fontsize=11.5 * K,
                     framealpha=0.95, edgecolor=GRID, title="Quality class")
-    leg.get_title().set_fontsize(11.5)
+    leg.get_title().set_fontsize(11.5 * K)
     leg.get_title().set_color(INK_MUTED)
     fig_title(fig, 3, "Editorial need against current readership")
     fig.tight_layout()
